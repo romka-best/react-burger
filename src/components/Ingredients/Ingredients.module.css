@@ -1,0 +1,29 @@
+.root {
+  max-height: calc(100vh - 34rem);
+
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #8585ad #2f2f37;
+}
+
+.root::-webkit-scrollbar {
+  width: .8rem;
+  background: #2f2f37;
+}
+
+.root::-webkit-scrollbar-thumb {
+  background-color: #8585ad;
+}
+
+.title {
+
+}
+
+.data {
+  display: grid;
+  grid-template-columns: repeat(2, 27.2rem);
+  grid-auto-rows: 20.8rem;
+  row-gap: 3.2rem;
+  column-gap: 2.4rem;
+  justify-items: center;
+}

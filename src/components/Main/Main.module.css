@@ -1,0 +1,7 @@
+.root {
+  display: flex;
+  gap: 4rem;
+
+  margin: 0 auto;
+  width: 124rem;
+}
