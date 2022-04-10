@@ -1,24 +1,21 @@
 import React from 'react';
-import logo from '../../assets/images/logo.svg';
-import './App.css';
+
+import {mockData} from '../../utils/data';
+
+import AppHeader from '../AppHeader/AppHeader';
+import Main from '../Main/Main';
+
+import appStyles from './App.module.css';
 
 function App() {
+  const [state, setState] = React.useState({
+    currentPage: "Конструктор"
+  });
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className={appStyles.root}>
+      <AppHeader state={state}/>
+      <Main state={state} data={mockData}/>
     </div>
   );
 }
