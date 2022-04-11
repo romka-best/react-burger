@@ -5,14 +5,20 @@ import {CurrencyIcon, Counter} from '@ya.praktikum/react-developer-burger-ui-com
 
 import ingredientStyles from './Ingredient.module.css';
 
-const Ingredient = ({ingredient}) => {
+const Ingredient = ({ingredient, onClickModal}) => {
+  const ingredientRef = React.useRef(null);
+
+  const handleClickIngredient = () => {
+    onClickModal(ingredientRef.current, ingredient);
+  }
+
   const {
     name,
     price,
     image,
   } = ingredient;
   return (
-    <div className={ingredientStyles.root}>
+    <div className={ingredientStyles.root} onClick={handleClickIngredient} ref={ingredientRef}>
       <Counter count={1} size="default" />
       <img className={`${ingredientStyles.image} ml-4 mr-4`} src={image} alt={name}/>
       <div className={`${ingredientStyles.price} mt-2 mb-2`}>
@@ -40,6 +46,7 @@ const ingredientPropTypes = PropTypes.shape({
 
 Ingredient.propTypes = {
   ingredient: ingredientPropTypes.isRequired,
+  onClickModal: PropTypes.func.isRequired,
 }
 
 export default Ingredient;
