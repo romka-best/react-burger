@@ -21,16 +21,16 @@
 
   overflow-y: auto;
   scrollbar-width: thin;
-  scrollbar-color: #8585ad #2f2f37;
+  scrollbar-color: var(--text-secondary-color) var(--interface-input-color);
 }
 
 .list::-webkit-scrollbar {
   width: .8rem;
-  background: #2f2f37;
+  background: var(--interface-input-color);
 }
 
 .list::-webkit-scrollbar-thumb {
-  background-color: #8585ad;
+  background-color: var(--text-secondary-color);
 }
 
 .constructorElement {
