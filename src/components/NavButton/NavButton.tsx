@@ -7,7 +7,7 @@ const NavButton = ({icon, selected, children}) => {
   return (
     <li className={`${navButtonStyles.root} pl-5 pr-5 pb-4 pt-4`}>
       <a href="/"
-         className={`${navButtonStyles.link} ${selected ? 
+         className={`${navButtonStyles.link} ${selected ?
            `${navButtonStyles.root_selected} text text_type_main-default`
            : 'text text_type_main-default text_color_inactive'}`}>
         {icon}

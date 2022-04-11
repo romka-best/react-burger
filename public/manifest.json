@@ -1,6 +1,6 @@
 {
-  "short_name": "React Burger",
-  "name": "Create React Burger Sample",
+  "short_name": "ReaBur",
+  "name": "React Burger",
   "icons": [
     {
       "src": "favicon.ico",
@@ -21,5 +21,5 @@
   "start_url": ".",
   "display": "standalone",
   "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "background_color": "#131316"
 }

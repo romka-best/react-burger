@@ -5,20 +5,53 @@ import {ConstructorElement, DragIcon, CurrencyIcon, Button} from '@ya.praktikum/
 
 import burgerConstructorStyles from './BurgerConstructor.module.css';
 
-const BurgerConstructor = ({products}) => {
+interface IngredientParams {
+  _id: string,
+  name: string,
+  type: string,
+  proteins: number,
+  fat: number,
+  carbohydrates: number,
+  calories: number,
+  price: number,
+  image: string,
+  image_mobile: string,
+  image_large: string
+}
+
+const BurgerConstructor = ({ingredients, onClickModal}) => {
+  let buns: IngredientParams[] = [];
+  let other: IngredientParams[] = [];
+  let sum = 0;
+
+  for (let i = 0; i < ingredients.length; i++) {
+    if (ingredients[i].type === "bun") {
+      buns.push(ingredients[i])
+    } else {
+      other.push(ingredients[i])
+    }
+    sum += ingredients[i].price;
+  }
+
+  const handleClickButton = () => {
+    onClickModal(elementsRef.current);
+  }
+
+  const elementsRef = React.useRef(null);
+
   return (
     <section className={`${burgerConstructorStyles.root} mt-25`}>
-      <div className={burgerConstructorStyles.ingredients}>
+      <div className={burgerConstructorStyles.ingredients} ref={elementsRef}>
         <div className={`${burgerConstructorStyles.constructorElement} mr-4`}>
           <ConstructorElement
             type={'top'}
             isLocked
-            text={`${products[0].name} (верх)`}
-            price={products[0].price}
-            thumbnail={products[0].image}/>
+            text={`${buns[0].name} (верх)`}
+            price={buns[0].price}
+            thumbnail={buns[0].image}/>
         </div>
         <ul className={`${burgerConstructorStyles.list} mt-4 mb-4 ml-4`}>
-          {products.slice(1, products.length - 1).map((product, index) => {
+          {other.map((product, index) => {
             const {
               name,
               price,
@@ -41,19 +74,19 @@ const BurgerConstructor = ({products}) => {
           <ConstructorElement
             type={'bottom'}
             isLocked
-            text={`${products[products.length - 1].name} (низ)`}
-            price={products[products.length - 1].price}
-            thumbnail={products[products.length - 1].image}/>
+            text={`${buns[1].name} (низ)`}
+            price={buns[1].price}
+            thumbnail={buns[1].image}/>
         </div>
       </div>
       <div className={`${burgerConstructorStyles.info} mt-10 mr-4`}>
         <div className={`${burgerConstructorStyles.priceBlock} mr-10`}>
-          <p className={`${burgerConstructorStyles.price} text text_type_digits-medium mr-2`}>610</p>
+          <p className={`${burgerConstructorStyles.price} text text_type_digits-medium mr-2`}>{sum}</p>
           <div className={burgerConstructorStyles.icon}>
             <CurrencyIcon type={'primary'}/>
           </div>
         </div>
-        <Button type="primary" size="medium">
+        <Button type="primary" size="medium" onClick={handleClickButton}>
           Оформить заказ
         </Button>
       </div>
@@ -62,7 +95,8 @@ const BurgerConstructor = ({products}) => {
 }
 
 BurgerConstructor.propTypes = {
-  products: PropTypes.arrayOf(PropTypes.object).isRequired,
+  ingredients: PropTypes.arrayOf(PropTypes.object).isRequired,
+  onClickModal: PropTypes.func.isRequired,
 }
 
 export default BurgerConstructor;
