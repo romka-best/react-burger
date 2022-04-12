@@ -1,31 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
 import {ConstructorElement, DragIcon, CurrencyIcon, Button} from '@ya.praktikum/react-developer-burger-ui-components';
+
+import {IngredientParams} from '../../utils/types';
 
 import burgerConstructorStyles from './BurgerConstructor.module.css';
 
-interface IngredientParams {
-  _id: string,
-  name: string,
-  type: string,
-  proteins: number,
-  fat: number,
-  carbohydrates: number,
-  calories: number,
-  price: number,
-  image: string,
-  image_mobile: string,
-  image_large: string
-}
-
 const BurgerConstructor = ({ingredients, onClickModal}) => {
-  let buns: IngredientParams[] = [];
-  let other: IngredientParams[] = [];
+  const buns: IngredientParams[] = [];
+  const other: IngredientParams[] = [];
   let sum = 0;
 
   for (let i = 0; i < ingredients.length; i++) {
-    if (ingredients[i].type === "bun") {
+    if (ingredients[i].type === 'bun') {
       buns.push(ingredients[i])
     } else {
       other.push(ingredients[i])
@@ -74,9 +61,9 @@ const BurgerConstructor = ({ingredients, onClickModal}) => {
           <ConstructorElement
             type={'bottom'}
             isLocked
-            text={`${buns[1].name} (низ)`}
-            price={buns[1].price}
-            thumbnail={buns[1].image}/>
+            text={`${buns[0].name} (низ)`}
+            price={buns[0].price}
+            thumbnail={buns[0].image}/>
         </div>
       </div>
       <div className={`${burgerConstructorStyles.info} mt-10 mr-4`}>
