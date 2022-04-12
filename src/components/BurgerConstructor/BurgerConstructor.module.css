@@ -20,6 +20,7 @@
   max-height: calc(100vh - 54rem);
 
   overflow-y: auto;
+  scrollbar-gutter: stable;
   scrollbar-width: thin;
   scrollbar-color: var(--text-secondary-color) var(--interface-input-color);
 }

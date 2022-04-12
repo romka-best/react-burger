@@ -2,27 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import Ingredient from '../Ingredient/Ingredient';
+import {IngredientParams} from '../../utils/types';
 
 import ingredientsStyles from './Ingredients.module.css';
 
-interface IngredientParams {
-  _id: string,
-  name: string,
-  type: string,
-  proteins: number,
-  fat: number,
-  carbohydrates: number,
-  calories: number,
-  price: number,
-  image: string,
-  image_mobile: string,
-  image_large: string
-}
-
 const Ingredients = ({data, onClickModal}) => {
-  let buns: IngredientParams[] = [];
-  let sauces: IngredientParams[] = [];
-  let main: IngredientParams[] = [];
+  const buns: IngredientParams[] = [];
+  const sauces: IngredientParams[] = [];
+  const main: IngredientParams[] = [];
   for (let i = 0; i < data.length; i++) {
     switch (data[i].type) {
       case "bun":
