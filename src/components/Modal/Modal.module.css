@@ -1,0 +1,42 @@
+.root {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  opacity: 0;
+  visibility: hidden;
+  transition: visibility .5s, opacity .5s linear;
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+}
+
+.root_opened {
+  visibility: visible;
+  opacity: 1;
+}
+
+
+.wrapper {
+  position: relative;
+
+  width: 72rem;
+  background-color: var(--interface-modal-bg-color);
+  border-radius: 4rem;
+}
+
+.closeButton {
+  position: absolute;
+  top: 6rem;
+  right: 4rem;
+
+  transition: opacity linear .2s;
+}
+
+.closeButton:hover {
+  opacity: 80%;
+  cursor: pointer;
+}

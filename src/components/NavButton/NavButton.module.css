@@ -1,0 +1,25 @@
+.root {
+  transition: opacity linear .2s;
+}
+
+.root:hover {
+  opacity: 50%;
+  cursor: pointer;
+}
+
+.root:not(:first-child) {
+  margin-left: .8rem;
+}
+
+.link {
+  text-decoration: none;
+  display: flex;
+}
+
+.text {
+
+}
+
+.root_selected {
+  color: #f2f2f3;
+}

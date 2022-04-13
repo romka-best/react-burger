@@ -1,0 +1,75 @@
+.root {
+
+}
+
+.ingredients {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.6rem;
+
+  max-height: calc(100vh - 54rem);
+
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: var(--text-secondary-color) var(--interface-input-color);
+}
+
+.list::-webkit-scrollbar {
+  width: .8rem;
+  background: var(--interface-input-color);
+}
+
+.list::-webkit-scrollbar-thumb {
+  background-color: var(--text-secondary-color);
+}
+
+.constructorElement {
+  align-self: flex-end;
+}
+
+.element {
+  display: flex;
+  align-items: center;
+  gap: .8rem;
+
+  width: 56.8rem;
+  max-height: 8rem;
+}
+
+.info {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.priceBlock {
+  display: flex;
+  align-items: center;
+
+  min-height: 6.4rem;
+}
+
+.price {
+
+}
+
+.icon {
+  width: 3.6rem;
+  max-height: 3.6rem;
+}
+
+.icon > svg {
+  width: 100%;
+  height: 100%;
+}

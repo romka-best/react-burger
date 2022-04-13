@@ -1,0 +1,46 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  align-self: flex-start;
+
+  height: 6.4rem;
+}
+
+.image {
+  width: 48rem;
+  height: 24rem;
+}
+
+.description {
+
+}
+
+.values {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  min-width: 39rem;
+
+  display: flex;
+  gap: 2rem;
+}
+
+.value {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.typeText {
+
+}
+
+.valueText {
+
+}

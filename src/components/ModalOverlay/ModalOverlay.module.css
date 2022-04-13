@@ -1,0 +1,19 @@
+.root {
+  width: 100vw;
+  height: 100vh;
+
+  opacity: 0;
+  visibility: hidden;
+  transition: visibility .5s, opacity .5s linear;
+
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.root_opened {
+  visibility: visible;
+  opacity: 1;
+}

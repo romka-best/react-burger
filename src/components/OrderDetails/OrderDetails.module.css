@@ -1,0 +1,18 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.orderNumber {
+  text-shadow: 0 0 1.6rem rgba(51, 51, 255, 0.25), 0 0 .8rem rgba(51, 51, 255, 0.25), 0 .4rem 3.2rem rgba(51, 51, 255, 0.5);
+}
+
+.text {
+
+}
+
+.done {
+  width: 12rem;
+  height: 12rem;
+}
