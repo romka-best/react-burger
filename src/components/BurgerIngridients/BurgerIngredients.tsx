@@ -6,7 +6,7 @@ import burgerIngredientsStyles from './BurgerIngredients.module.css';
 
 import Ingredients from '../Ingredients/Ingredients';
 
-const BurgerIngredients = ({ingredients, onClickModal}) => {
+const BurgerIngredients = ({onClickModal}) => {
   const [current, setCurrent] = React.useState('buns');
 
   return (
@@ -23,13 +23,12 @@ const BurgerIngredients = ({ingredients, onClickModal}) => {
           Начинки
         </Tab>
       </div>
-      <Ingredients data={ingredients} onClickModal={onClickModal}/>
+      <Ingredients onClickModal={onClickModal}/>
     </section>
   );
 }
 
 BurgerIngredients.propTypes = {
-  ingredients: PropTypes.arrayOf(PropTypes.object).isRequired,
   onClickModal: PropTypes.func.isRequired,
 }
 

@@ -3,22 +3,25 @@ import PropTypes from 'prop-types';
 
 import Ingredient from '../Ingredient/Ingredient';
 import {IngredientParams} from '../../utils/types';
+import {IngredientsContext} from '../../services/ingredientsContext';
 
 import ingredientsStyles from './Ingredients.module.css';
 
-const Ingredients = ({data, onClickModal}) => {
+const Ingredients = ({onClickModal}) => {
+  const data: IngredientParams[] = React.useContext(IngredientsContext).ingredients;
+
   const buns: IngredientParams[] = [];
   const sauces: IngredientParams[] = [];
   const main: IngredientParams[] = [];
   for (let i = 0; i < data.length; i++) {
     switch (data[i].type) {
-      case "bun":
+      case 'bun':
         buns.push(data[i]);
         break;
-      case "sauce":
+      case 'sauce':
         sauces.push(data[i]);
         break;
-      case "main":
+      case 'main':
         main.push(data[i]);
         break;
     }
@@ -49,7 +52,6 @@ const Ingredients = ({data, onClickModal}) => {
 }
 
 Ingredients.propTypes = {
-  data: PropTypes.arrayOf(PropTypes.object).isRequired,
   onClickModal: PropTypes.func.isRequired,
 }
 

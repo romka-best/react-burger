@@ -1,6 +1,5 @@
 import React from 'react';
 
-import {BASE_URL} from '../../utils/constants';
 import {IngredientParams} from '../../utils/types';
 
 import ErrorBoundary from '../ErrorBoundary/ErrorBoundary';
@@ -18,10 +17,6 @@ import appStyles from './App.module.css';
 function App() {
   const [state, setState] = React.useState({
     currentPage: 'Конструктор',
-    isLoading: true,
-    hasError: false,
-    textError: '',
-    ingredients: [],
     modalIsVisible: false,
     modalType: '',
     modalData: {},
@@ -29,7 +24,7 @@ function App() {
 
   const handleOpenModal = (ref, data: {}) => {
     if (ref.classList.contains(burgerConstructorStyles.ingredients)) {
-      setState({...state, modalIsVisible: true, modalType: 'orderDetails'});
+      setState({...state, modalIsVisible: true, modalType: 'orderDetails', modalData: data});
     } else if (ref.classList.contains(ingredientStyles.root)) {
       setState({...state, modalIsVisible: true, modalType: 'ingredientDetails', modalData: data});
     }
@@ -42,7 +37,7 @@ function App() {
   const getActualModal = () => {
     switch (state.modalType) {
       case 'orderDetails':
-        return (<OrderDetails/>)
+        return (<OrderDetails details={state.modalData}/>)
       case 'ingredientDetails':
         if (instanceOfIngredientParams(state.modalData)) {
           return (<IngredientDetails ingredientDetails={state.modalData}/>)
@@ -56,33 +51,6 @@ function App() {
   const handleCloseModal = () => {
     setState({...state, modalIsVisible: false, modalType: ''});
   }
-
-  React.useEffect(
-    () => {
-      const getIngredients = () => {
-        setState({...state, hasError: false, isLoading: true});
-        fetch(`${BASE_URL}/ingredients`)
-          .then(res => {
-            if (res.ok) {
-              return res.json();
-            }
-            switch (res.status) {
-              case 404:
-                return Promise.reject(`Мы не смогли найти то, что вы искали 🔎 Статус ошибки: ${res.status}`);
-              case 500:
-                return Promise.reject(`Произошла ошибка на стороне сервера 🖥 Статус ошибки: ${res.status}`);
-              default:
-                return Promise.reject(`Произошла неизвестная ошибка. Код ошибки: ${res.status}`);
-            }
-          })
-          .then(data => setState({...state, ingredients: data.data, isLoading: false}))
-          .catch(e => {
-            setState({...state, hasError: true, isLoading: false, textError: e.toString()});
-          });
-      };
-      getIngredients();
-    }, []
-  );
 
   return (
     <div className={appStyles.root}>
