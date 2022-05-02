@@ -25,7 +25,7 @@ OrderDetails.propTypes = {
 const orderDetailsPropTypes = PropTypes.shape({
   name: PropTypes.string.isRequired,
   order: PropTypes.object.isRequired,
-  success: PropTypes.string
+  success: PropTypes.bool
 });
 
 OrderDetails.propTypes = {

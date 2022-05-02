@@ -9,7 +9,7 @@ import BurgerConstructor from '../BurgerConstructor/BurgerConstructor';
 import {BASE_URL} from '../../utils/constants';
 import {IngredientsContext} from '../../services/ingredientsContext';
 import {TotalPriceContext} from '../../services/totalPriceContext';
-import {IngredientParams} from '../../utils/types';
+import {defaultIngredientParams, IngredientParams} from '../../utils/types';
 
 import mainStyles from './Main.module.css';
 
@@ -22,19 +22,7 @@ const Main = ({onClickModal}) => {
 
   const [ingredientsState, setIngredientsState] = React.useState({
     ingredients: [],
-    bun: {
-      _id: '',
-      name: '',
-      type: '',
-      proteins: -1,
-      fat: -1,
-      carbohydrates: -1,
-      calories: -1,
-      price: -1,
-      image: '',
-      image_mobile: '',
-      image_large: ''
-    },
+    bun: defaultIngredientParams,
     other: []
   });
 
