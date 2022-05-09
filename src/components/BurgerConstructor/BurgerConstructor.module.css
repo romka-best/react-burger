@@ -34,17 +34,15 @@
   background-color: var(--text-secondary-color);
 }
 
-.constructorElement {
-  align-self: flex-end;
+.dropTarget {
+
 }
 
-.element {
-  display: flex;
-  align-items: center;
-  gap: .8rem;
+.dropTargetIsOver {
+  border: 0.5rem var(--text-primary-color) dashed;
+}
 
-  width: 56.8rem;
-  max-height: 8rem;
+.constructorElement {
 }
 
 .info {
@@ -62,6 +60,10 @@
 
 .price {
 
+}
+
+.infoMessage {
+  text-align: center;
 }
 
 .icon {

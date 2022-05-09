@@ -11,15 +11,6 @@ const Modal = ({children, onClose}) => {
   const modalRoot = document.getElementById('modals') as HTMLElement;
   const [show, setShow] = React.useState(false);
 
-  React.useEffect(() => {
-    setShow(true);
-    document.addEventListener('keydown', handleEscClose);
-
-    return () => {
-      document.removeEventListener('keydown', handleEscClose);
-    }
-  }, []);
-
   const handleEscClose = (evt) => {
     if (evt.code === 'Escape') {
       closeModal();
@@ -36,6 +27,15 @@ const Modal = ({children, onClose}) => {
   const closeModal = () => {
     setShow(false);
   }
+
+  React.useEffect(() => {
+    setShow(true);
+    document.addEventListener('keydown', handleEscClose);
+
+    return () => {
+      document.removeEventListener('keydown', handleEscClose);
+    }
+  }, []);
 
   return ReactDOM.createPortal((
       <ModalOverlay show={show}>

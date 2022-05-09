@@ -7,6 +7,10 @@
   transition: opacity linear .2s;
 }
 
+.ingredient {
+
+}
+
 .root:hover {
   cursor: pointer;
   opacity: 80%;

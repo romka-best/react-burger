@@ -11,7 +11,36 @@ interface IngredientParams {
   price: number,
   image: string,
   image_mobile: string,
-  image_large: string
+  image_large: string,
+  count?: number
+}
+
+interface InitialIngredientsParams {
+  ingredients: Array<IngredientParams>,
+  currentIngredient: IngredientParams,
+  ingredientsRequest: boolean,
+  ingredientsFailed: boolean,
+  ingredientsFailedTextError: string,
+}
+
+interface InitialBurgerConstructorParams {
+  ingredients: Array<IngredientParams>,
+  buns: Array<IngredientParams>,
+  totalPrice: number,
+}
+
+interface InitialOrderParams {
+  number: number
+}
+
+interface ReducersParams {
+  ingredients: InitialIngredientsParams,
+  burgerConstructor: InitialBurgerConstructorParams,
+  order: InitialOrderParams
+}
+
+interface ItemParams {
+  index: number
 }
 
 const defaultIngredientParams = {
@@ -42,5 +71,12 @@ const ingredientDetailsPropTypes = PropTypes.shape({
   image_large: PropTypes.string.isRequired
 });
 
-export type {IngredientParams};
+export type {
+  IngredientParams,
+  InitialIngredientsParams,
+  InitialOrderParams,
+  InitialBurgerConstructorParams,
+  ReducersParams,
+  ItemParams
+};
 export {defaultIngredientParams, ingredientDetailsPropTypes};

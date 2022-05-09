@@ -1,7 +1,7 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 
 import {Logo, BurgerIcon, ListIcon, ProfileIcon} from '@ya.praktikum/react-developer-burger-ui-components';
+
 import NavButton from '../NavButton/NavButton';
 
 import headerStyles from './AppHeader.module.css';
