@@ -35,11 +35,22 @@
 }
 
 .dropTarget {
-
+  border: .4rem transparent solid;
 }
 
-.dropTargetIsOver {
-  border: 0.5rem var(--text-primary-color) dashed;
+.dropTargetIsOverIngredient {
+  border: .4rem var(--text-primary-color) dashed;
+  transition: border .5s ease-in-out;
+}
+
+.dropTargetIsOverTopBun {
+  border-radius: var(--top-constructor-item-border-radius);
+  composes: dropTargetIsOverIngredient;
+}
+
+.dropTargetIsOverBottomBun {
+  border-radius: var(--bottom-constructor-item-border-radius);
+  composes: dropTargetIsOverIngredient;
 }
 
 .constructorElement {

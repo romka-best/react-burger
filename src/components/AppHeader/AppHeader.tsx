@@ -6,7 +6,11 @@ import NavButton from '../NavButton/NavButton';
 
 import headerStyles from './AppHeader.module.css';
 
-const AppHeader = ({currentPage}) => {
+interface AppHeaderProps {
+  currentPage: string
+}
+
+const AppHeader = ({currentPage}: AppHeaderProps) => {
   return (
     <header className={`${headerStyles.root} pt-4 pb-4`}>
       <nav className={headerStyles.navigation}>

@@ -6,42 +6,43 @@ import {useDrag} from 'react-dnd';
 import {CurrencyIcon, Counter} from '@ya.praktikum/react-developer-burger-ui-components';
 
 import ingredientStyles from './Ingredient.module.css';
-import {ingredientDetailsPropTypes} from '../../utils/types';
+import {ingredientDetailsPropTypes, IngredientParams} from '../../utils/types';
 
-const Ingredient = ({ingredient, onClickModal, count = 0}) => {
-  const ingredientRef = React.useRef(null);
+interface IngredientProps {
+  ingredient: IngredientParams,
+  onClickModal: Function,
+  count: number
+}
 
+const Ingredient = ({ingredient, onClickModal, count = 0}: IngredientProps) => {
   const handleClickIngredient = () => {
-    onClickModal(ingredientRef.current, ingredient);
+    onClickModal('ingredientDetails', ingredient);
   }
 
   const {
     _id,
-    type,
     name,
     price,
     image,
   } = ingredient;
 
-  const [{opacity}, ref] = useDrag({
-    type: type === 'bun' ? 'buns' : 'ingredients',
+  const [{ingredientStyleRoot}, ref] = useDrag({
+    type: 'NEW_INGREDIENT',
     item: {_id},
     collect: monitor => ({
-      opacity: monitor.isDragging() ? 0.5 : 1
+      ingredientStyleRoot: monitor.isDragging() ? `${ingredientStyles.root} ${ingredientStyles.rootDrag}` : ingredientStyles.root,
     })
   });
 
   return (
-    <div className={ingredientStyles.root} onClick={handleClickIngredient} ref={ingredientRef}>
-      <div className={ingredientStyles.ingredient} ref={ref} style={{opacity}}>
-        <Counter count={count} size="default"/>
-        <img className={`${ingredientStyles.image} ml-4 mr-4`} src={image} alt={name}/>
-        <div className={`${ingredientStyles.price} mt-2 mb-2`}>
-          <p className={`${ingredientStyles.priceText} text text_type_digits-default mr-2`}>{price}</p>
-          <CurrencyIcon type="primary"/>
-        </div>
-        <p className={`${ingredientStyles.name} text text_type_main-default`}>{name}</p>
+    <div className={ingredientStyleRoot} ref={ref} onClick={handleClickIngredient}>
+      <Counter count={count} size='default'/>
+      <img className={`${ingredientStyles.image} ml-4 mr-4`} src={image} alt={name}/>
+      <div className={`${ingredientStyles.price} mt-2 mb-2`}>
+        <p className={`${ingredientStyles.priceText} text text_type_digits-default mr-2`}>{price}</p>
+        <CurrencyIcon type='primary'/>
       </div>
+      <p className={`${ingredientStyles.name} text text_type_main-default`}>{name}</p>
     </div>
   );
 }

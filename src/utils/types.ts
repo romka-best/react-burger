@@ -15,6 +15,11 @@ interface IngredientParams {
   count?: number
 }
 
+interface ActionParams {
+  type: string,
+  value?: IngredientParams
+}
+
 interface InitialIngredientsParams {
   ingredients: Array<IngredientParams>,
   currentIngredient: IngredientParams,
@@ -30,7 +35,10 @@ interface InitialBurgerConstructorParams {
 }
 
 interface InitialOrderParams {
-  number: number
+  number: number,
+  orderRequest: boolean,
+  orderFailed: boolean,
+  orderFailedTextError: string,
 }
 
 interface ReducersParams {
@@ -41,20 +49,6 @@ interface ReducersParams {
 
 interface ItemParams {
   index: number
-}
-
-const defaultIngredientParams = {
-  _id: '',
-  name: '',
-  type: '',
-  proteins: -1,
-  fat: -1,
-  carbohydrates: -1,
-  calories: -1,
-  price: -1,
-  image: '',
-  image_mobile: '',
-  image_large: ''
 }
 
 const ingredientDetailsPropTypes = PropTypes.shape({
@@ -77,6 +71,8 @@ export type {
   InitialOrderParams,
   InitialBurgerConstructorParams,
   ReducersParams,
-  ItemParams
+  ItemParams,
+  ActionParams,
 };
-export {defaultIngredientParams, ingredientDetailsPropTypes};
+
+export {ingredientDetailsPropTypes};

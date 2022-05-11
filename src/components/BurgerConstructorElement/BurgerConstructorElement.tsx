@@ -1,18 +1,30 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import {useDrag, useDrop} from 'react-dnd';
+import {DropTargetMonitor, useDrag, useDrop} from 'react-dnd';
 
 import {
   DragIcon,
   ConstructorElement
 } from '@ya.praktikum/react-developer-burger-ui-components';
 
-import {ingredientDetailsPropTypes, ItemParams} from '../../utils/types';
+import {ingredientDetailsPropTypes, IngredientParams, ItemParams} from '../../utils/types';
 
 import burgerConstructorElementStyles from './BurgerConstructorElement.module.css';
 
-const BurgerConstructorElement = ({product, index, deleteIngredient, moveBurgerConstructorIngredient}) => {
+interface BurgerConstructorElementProps {
+  product: IngredientParams,
+  index: number,
+  deleteIngredient: Function,
+  moveBurgerConstructorIngredient: Function
+}
+
+const BurgerConstructorElement = ({
+                                    product,
+                                    index,
+                                    deleteIngredient,
+                                    moveBurgerConstructorIngredient
+                                  }: BurgerConstructorElementProps) => {
   const {
     name,
     price,
@@ -20,22 +32,21 @@ const BurgerConstructorElement = ({product, index, deleteIngredient, moveBurgerC
   } = product;
 
   const [{isDragging}, dragRef] = useDrag({
-    type: 'burgerConstructorIngredient',
+    type: 'BURGER_CONSTRUCTOR_INGREDIENT',
     item: {index},
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),
   });
 
-  const [, dropRef] = useDrop({
-    accept: 'burgerConstructorIngredient',
-    hover: (item: ItemParams, monitor) => {
+  const [{canDrop}, dropRef] = useDrop({
+    accept: 'BURGER_CONSTRUCTOR_INGREDIENT',
+    hover: (item: ItemParams, monitor: DropTargetMonitor) => {
       const dragIndex = item.index;
       const hoverIndex = index;
       const hoverBoundingRect = ref.current?.getBoundingClientRect()!;
       const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
-      // @ts-ignore
-      const hoverActualY = monitor.getClientOffset().y - hoverBoundingRect.top;
+      const hoverActualY = monitor.getClientOffset()!.y - hoverBoundingRect.top;
 
       if (dragIndex < hoverIndex && hoverActualY < hoverMiddleY) return;
       if (dragIndex > hoverIndex && hoverActualY > hoverMiddleY) return;
@@ -43,6 +54,11 @@ const BurgerConstructorElement = ({product, index, deleteIngredient, moveBurgerC
       moveBurgerConstructorIngredient(dragIndex, hoverIndex);
       item.index = hoverIndex;
     },
+    collect: (monitor) => {
+      return ({
+        canDrop: monitor.canDrop()
+      })
+    }
   });
 
   const ref = React.useRef<HTMLLIElement>(null);
@@ -52,7 +68,8 @@ const BurgerConstructorElement = ({product, index, deleteIngredient, moveBurgerC
 
   return (
     // @ts-ignore
-    <li ref={dragDropRef} className={`${burgerConstructorElementStyles.root} mr-4`}
+    <li ref={dragDropRef}
+        className={`${burgerConstructorElementStyles.root} ${canDrop ? burgerConstructorElementStyles.rootCanDrop : ''} mr-4`}
         style={{opacity}}>
       <DragIcon type={'primary'}/>
       <ConstructorElement

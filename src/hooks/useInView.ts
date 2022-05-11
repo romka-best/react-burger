@@ -1,6 +1,6 @@
-import {useEffect, useState} from 'react';
+import {useEffect, useState, MutableRefObject} from 'react';
 
-export function useInView(ref) {
+export function useInView(ref: MutableRefObject<HTMLElement> | MutableRefObject<null>) {
   const [isInView, setIsInView] = useState(false);
 
   useEffect(() => {

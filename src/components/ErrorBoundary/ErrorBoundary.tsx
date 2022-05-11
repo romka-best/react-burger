@@ -1,18 +1,22 @@
-import React from 'react';
+import React, {ErrorInfo} from 'react';
 
 import errorBoundaryStyles from './ErrorBoundary.module.css';
 
+interface ErrorBoundaryProps {
+
+}
+
 export default class ErrorBoundary extends React.Component<{}, { hasError: boolean }> {
-  constructor(props) {
+  constructor(props: ErrorBoundaryProps) {
     super(props);
     this.state = {hasError: false};
   }
 
-  static getDerivedStateFromError(error) {
+  static getDerivedStateFromError(error: string) {
     return {hasError: true};
   }
 
-  componentDidCatch(error, info) {
+  componentDidCatch(error: Error, info: ErrorInfo) {
     console.log("Возникла ошибка!", error, info);
   }
 

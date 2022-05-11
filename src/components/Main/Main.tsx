@@ -1,27 +1,33 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
-
-import {useSelector, useDispatch} from 'react-redux';
+import {DndProvider} from 'react-dnd';
+import {HTML5Backend} from 'react-dnd-html5-backend';
 
 import Spinner from '../Spinner/Spinner';
 import CustomError from '../CustomError/CustomError';
 import BurgerIngredients from '../BurgerIngredients/BurgerIngredients';
 import BurgerConstructor from '../BurgerConstructor/BurgerConstructor';
 
-import {getIngredients} from '../../services/slices';
-import {AppDispatch} from '../../services/store';
+import {getIngredients} from '../../services/slices/indredients';
+import {useAppDispatch, useAppSelector} from '../../services/store';
 
 import {ReducersParams} from '../../utils/types';
 
 import mainStyles from './Main.module.css';
 
-const Main = ({onClickModal}) => {
-  const dispatch: AppDispatch = useDispatch();
-  const {ingredientsRequest, ingredientsFailed, ingredientsFailedTextError} = useSelector((state: ReducersParams) => {
+interface MainProps {
+  onClickModal: Function
+}
+
+const Main = ({onClickModal}: MainProps) => {
+  const dispatch = useAppDispatch();
+  const {ingredientsRequest, ingredientsFailed, ingredientsFailedTextError} = useAppSelector((state: ReducersParams) => {
     return state.ingredients;
+  });
+
+  const {orderRequest, orderFailed, orderFailedTextError} = useAppSelector((state: ReducersParams) => {
+    return state.order;
   });
 
   React.useEffect(
@@ -32,11 +38,14 @@ const Main = ({onClickModal}) => {
 
   return (
     <main className={`${mainStyles.root}`}>
-      {ingredientsRequest && !ingredientsFailed && (<Spinner/>)}
-      {ingredientsFailed && !ingredientsRequest && (
+      {(ingredientsRequest && !ingredientsFailed && (<Spinner/>)) ||
+      (orderRequest && !orderFailed && (<Spinner/>))}
+      {(ingredientsFailed && !ingredientsRequest && (
         <CustomError textError={ingredientsFailedTextError}/>
-      )}
-      {!ingredientsRequest && !ingredientsFailed &&
+      )) || (orderFailed && !orderRequest && (
+        <CustomError textError={orderFailedTextError}/>
+      ))}
+      {!ingredientsRequest && !ingredientsFailed && !orderRequest && !orderFailed &&
       (
         <DndProvider backend={HTML5Backend}>
           <BurgerIngredients onClickModal={onClickModal}/>

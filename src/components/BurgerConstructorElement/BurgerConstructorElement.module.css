@@ -10,3 +10,7 @@
 .root:hover {
   cursor: grab;
 }
+
+.rootCanDrop {
+  cursor: grabbing;
+}

@@ -1,13 +1,11 @@
-import {useSelector} from 'react-redux';
-
+import {useAppSelector} from '../../services/store';
 import {ReducersParams} from '../../utils/types';
 
 import done from '../../assets/images/done.png';
 import orderDetailsStyles from './OrderDetails.module.css';
 
-
 const OrderDetails = () => {
-  const number = useSelector(
+  const number = useAppSelector(
     (state: ReducersParams) => {
       return state.order.number
     }

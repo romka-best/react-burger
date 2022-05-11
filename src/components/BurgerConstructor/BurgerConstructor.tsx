@@ -3,25 +3,28 @@ import PropTypes from 'prop-types';
 
 import {useDrop} from 'react-dnd';
 
-import {useSelector, useDispatch} from 'react-redux';
-
 import {ConstructorElement, CurrencyIcon, Button} from '@ya.praktikum/react-developer-burger-ui-components';
 
-import {ReducersParams} from '../../utils/types';
-import {burgerConstructorSlice, createOrder} from '../../services/slices';
-import {AppDispatch} from '../../services/store';
+import {IngredientParams, ReducersParams} from '../../utils/types';
+import {burgerConstructorSlice} from '../../services/slices/burgerConstructor';
+import {createOrder} from '../../services/slices/order';
+import {useAppDispatch, useAppSelector} from '../../services/store';
 
 import BurgerConstructorElement from '../BurgerConstructorElement/BurgerConstructorElement';
 
 import burgerConstructorStyles from './BurgerConstructor.module.css';
 
-const BurgerConstructor = ({onClickModal}) => {
-  const dispatch: AppDispatch = useDispatch();
-  const {buns, ingredients, totalPrice} = useSelector(
+interface BurgerConstructorProps {
+  onClickModal: Function
+}
+
+const BurgerConstructor = ({onClickModal}: BurgerConstructorProps) => {
+  const dispatch = useAppDispatch();
+  const {buns, ingredients, totalPrice} = useAppSelector(
     (state: ReducersParams) => state.burgerConstructor
   );
 
-  const {ingredients: allIngredients} = useSelector(
+  const {ingredients: allIngredients} = useAppSelector(
     (state: ReducersParams) => state.ingredients
   )
 
@@ -29,32 +32,27 @@ const BurgerConstructor = ({onClickModal}) => {
     const ingredientsIds: string[] = [buns[0]._id, buns[1]._id];
     ingredientsIds.push(...ingredients.map((ingredient) => ingredient._id));
     dispatch(createOrder(ingredientsIds))
+      .unwrap()
       .then(orderDetails => {
-        onClickModal(elementsRef.current, orderDetails.payload);
+        onClickModal('orderDetails', orderDetails);
       });
   }
 
-  const elementsRef = React.useRef(null);
-
-  const moveBun = (item) => {
-    const bun = allIngredients.filter((ingredient) => ingredient._id === item._id)[0];
+  const moveBun = (bun: IngredientParams) => {
     if (buns.length > 0) {
-      dispatch(burgerConstructorSlice.actions.decrementTotalPrice(buns[0].price));
-      dispatch(burgerConstructorSlice.actions.decrementTotalPrice(buns[1].price));
+      dispatch(burgerConstructorSlice.actions.decrementTotalPrice(buns[0].price + buns[1].price));
       dispatch(burgerConstructorSlice.actions.removeBuns());
     }
     dispatch(burgerConstructorSlice.actions.addBuns(bun));
-    dispatch(burgerConstructorSlice.actions.incrementTotalPrice(bun.price));
-    dispatch(burgerConstructorSlice.actions.incrementTotalPrice(bun.price));
+    dispatch(burgerConstructorSlice.actions.incrementTotalPrice(bun.price + bun.price));
   }
 
-  const moveIngredient = (item) => {
-    const ingredient = allIngredients.filter((ingredient) => ingredient._id === item._id)[0];
+  const moveIngredient = (ingredient: IngredientParams) => {
     dispatch(burgerConstructorSlice.actions.addIngredient(ingredient));
     dispatch(burgerConstructorSlice.actions.incrementTotalPrice(ingredient.price));
   }
 
-  const deleteIngredient = (deletedIngredientId) => {
+  const deleteIngredient = (deletedIngredientId: string) => {
     const ingredient = ingredients.filter((ingredient) => ingredient._id === deletedIngredientId)[0];
     dispatch(burgerConstructorSlice.actions.removeIngredient(ingredient._id));
     dispatch(burgerConstructorSlice.actions.decrementTotalPrice(ingredient.price));
@@ -67,42 +65,34 @@ const BurgerConstructor = ({onClickModal}) => {
     dispatch(burgerConstructorSlice.actions.changeSort({dragIndex, hoverIndex, dragItem, hoverItem}));
   }, [ingredients])
 
-  const [{isHover: isHoverFirstBunTarget}, dropFirstBunTarget] = useDrop({
-    accept: 'buns',
-    drop(item) {
-      moveBun(item);
+  const [{isHoverBun, isHoverIngredient, canDrop}, dropTarget] = useDrop({
+    accept: 'NEW_INGREDIENT',
+    drop(dragItem: IngredientParams) {
+      const ingredient = allIngredients.filter((ingredient) => ingredient._id === dragItem._id)[0];
+      const dragBuns = canDrop && ingredient && ingredient.type === 'bun';
+      const dragIngredients = canDrop && ingredient && ingredient.type !== 'bun';
+      if (dragBuns) {
+        moveBun(ingredient);
+      } else if (dragIngredients) {
+        moveIngredient(ingredient);
+      }
     },
-    collect: monitor => ({
-      isHover: monitor.isOver()
-    }),
+    collect: (monitor) => {
+      const ingredient = monitor.getItem() && allIngredients.filter((ingredient) => ingredient._id === monitor.getItem()._id)[0];
+      return ({
+        isHoverBun: monitor.isOver() && ingredient.type === 'bun',
+        isHoverIngredient: monitor.isOver() && ingredient.type !== 'bun',
+        canDrop: monitor.canDrop()
+      })
+    },
   });
-
-  const [{isHover: isHoverSecondBunTarget}, dropSecondBunTarget] = useDrop({
-    accept: 'buns',
-    drop(item) {
-      moveBun(item);
-    },
-    collect: monitor => ({
-      isHover: monitor.isOver()
-    }),
-  });
-
-  const [{isHover: isHoverIngredientsTarget}, dropIngredientTarget] = useDrop({
-    accept: 'ingredients',
-    drop(item) {
-      moveIngredient(item);
-    },
-    collect: monitor => ({
-      isHover: monitor.isOver()
-    })
-  })
 
   return (
     <section className={`${burgerConstructorStyles.root} mt-25`}>
-      <div className={burgerConstructorStyles.ingredients} ref={elementsRef}>
-        <div ref={dropFirstBunTarget}
-             className={`${isHoverFirstBunTarget || isHoverSecondBunTarget ?
-               burgerConstructorStyles.dropTargetIsOver : burgerConstructorStyles.dropTarget}`}>
+      <div className={burgerConstructorStyles.ingredients} ref={dropTarget}>
+        <div
+          className={`${isHoverBun ?
+            burgerConstructorStyles.dropTargetIsOverTopBun : burgerConstructorStyles.dropTarget}`}>
           {buns[0] ? (
             <div className={`${burgerConstructorStyles.constructorElement}`}>
               <ConstructorElement
@@ -116,10 +106,10 @@ const BurgerConstructor = ({onClickModal}) => {
             👉 Перетащите сюда булки слева, чтобы добавить в корзину 👈
           </p>}
         </div>
-        <div className={`${isHoverIngredientsTarget ?
-          burgerConstructorStyles.dropTargetIsOver : burgerConstructorStyles.dropTarget}`} ref={dropIngredientTarget}>
+        <div className={`${isHoverIngredient ?
+          burgerConstructorStyles.dropTargetIsOverIngredient : burgerConstructorStyles.dropTarget}`}>
           {ingredients.length > 0 ? (
-            <ul className={`${burgerConstructorStyles.list} mt-4 mb-4`}>
+            <ul className={`${burgerConstructorStyles.list} mt-3 mb-3`}>
               {ingredients.map((product, index) => {
 
                 return (
@@ -129,15 +119,15 @@ const BurgerConstructor = ({onClickModal}) => {
                 )
               })}
             </ul>
-          ) : <p className={`${burgerConstructorStyles.infoMessage} text text_type_main-medium mt-4 mb-4 ml-4`}>
+          ) : <p className={`${burgerConstructorStyles.infoMessage} text text_type_main-medium mt-3 mb-3 ml-4`}>
             👉 Перетащите сюда ингредиенты слева, чтобы добавить в корзину 👈
           </p>
           }
         </div>
         {buns[1] && (
-          <div ref={dropSecondBunTarget}
-               className={`${isHoverFirstBunTarget || isHoverSecondBunTarget ?
-                 burgerConstructorStyles.dropTargetIsOver : burgerConstructorStyles.dropTarget}`}>
+          <div
+            className={`${isHoverBun ?
+              burgerConstructorStyles.dropTargetIsOverBottomBun : burgerConstructorStyles.dropTarget}`}>
             <div className={`${burgerConstructorStyles.constructorElement}`}>
               <ConstructorElement
                 type={'bottom'}

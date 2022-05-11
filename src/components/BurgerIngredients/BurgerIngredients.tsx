@@ -6,35 +6,31 @@ import burgerIngredientsStyles from './BurgerIngredients.module.css';
 
 import Ingredients from '../Ingredients/Ingredients';
 
-const BurgerIngredients = ({onClickModal}) => {
+interface BurgerIngredientsProps {
+  onClickModal: Function
+}
+
+const BurgerIngredients = ({onClickModal}: BurgerIngredientsProps) => {
   const [current, setCurrent] = React.useState('buns');
+
+  const handleClick = (value: string) => {
+    setCurrent(value);
+    document.getElementById(value)!.scrollIntoView({
+      behavior: 'smooth'
+    });
+  }
 
   return (
     <section className={`${burgerIngredientsStyles.root}`}>
       <h1 className={`${burgerIngredientsStyles.title} text text_type_main-large mt-10 mb-5`}>Соберите бургер</h1>
       <div className={burgerIngredientsStyles.tabs}>
-        <Tab active={current === 'buns'} value={'buns'} onClick={() => {
-          setCurrent('buns');
-          document.getElementById('buns')!.scrollIntoView({
-            behavior: 'smooth'
-          });
-        }}>
+        <Tab active={current === 'buns'} value={'buns'} onClick={handleClick}>
           Булки
         </Tab>
-        <Tab active={current === 'sauces'} value={'sauces'} onClick={() => {
-          setCurrent('sauces');
-          document.getElementById('sauces')!.scrollIntoView({
-            behavior: 'smooth'
-          });
-        }}>
+        <Tab active={current === 'sauces'} value={'sauces'} onClick={handleClick}>
           Соусы
         </Tab>
-        <Tab active={current === 'main'} value={'main'} onClick={() => {
-          setCurrent('main');
-          document.getElementById('main')!.scrollIntoView({
-            behavior: 'smooth'
-          });
-        }}>
+        <Tab active={current === 'main'} value={'main'} onClick={handleClick}>
           Начинки
         </Tab>
       </div>

@@ -1,8 +1,15 @@
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import navButtonStyles from './NavButton.module.css';
 
-const NavButton = ({icon, selected, children}) => {
+interface NavButtonProps {
+  icon: React.ReactElement,
+  selected: boolean,
+  children: string
+}
+
+const NavButton = ({icon, selected, children}: NavButtonProps) => {
   return (
     <li className={`${navButtonStyles.root} pl-5 pr-5 pb-4 pt-4`}>
       <a href="/"

@@ -1,12 +1,13 @@
 import React from 'react';
 
-import ingredientDetailsStyle from './IngredientDetails.module.css';
 import {ReducersParams} from '../../utils/types';
-import {useSelector} from "react-redux";
+import {useAppSelector} from '../../services/store';
+
+import ingredientDetailsStyle from './IngredientDetails.module.css';
 
 
 const IngredientDetails = () => {
-  const currentIngredient = useSelector((state: ReducersParams) => {
+  const currentIngredient = useAppSelector((state: ReducersParams) => {
     return state.ingredients.currentIngredient;
   })
   return (

@@ -1,7 +1,5 @@
 import React from 'react';
 
-import {useDispatch} from 'react-redux';
-
 import CustomError from '../CustomError/CustomError';
 import AppHeader from '../AppHeader/AppHeader';
 import Main from '../Main/Main';
@@ -9,11 +7,9 @@ import OrderDetails from '../OrderDetails/OrderDetails';
 import IngredientDetails from '../IngredientDetails/IngredientDetails';
 import Modal from '../Modal/Modal';
 
-import {AppDispatch} from '../../services/store';
-import {ingredientsSlice} from '../../services/slices';
+import {useAppDispatch} from '../../services/store';
+import {ingredientsSlice} from '../../services/slices/indredients';
 
-import burgerConstructorStyles from '../BurgerConstructor/BurgerConstructor.module.css';
-import ingredientStyles from '../Ingredient/Ingredient.module.css';
 import appStyles from './App.module.css';
 
 function App() {
@@ -23,12 +19,12 @@ function App() {
     modalType: '',
   });
 
-  const dispatch: AppDispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const handleOpenModal = (ref, data) => {
-    if (ref.classList.contains(burgerConstructorStyles.ingredients)) {
+  const handleOpenModal = (modalType: 'orderDetails' | 'ingredientDetails', data: object) => {
+    if (modalType === 'orderDetails') {
       setState({...state, modalIsVisible: true, modalType: 'orderDetails'});
-    } else if (ref.classList.contains(ingredientStyles.root)) {
+    } else if (modalType === 'ingredientDetails') {
       setState({...state, modalIsVisible: true, modalType: 'ingredientDetails'});
       dispatch(ingredientsSlice.actions.putIngredientDetails(data));
     }
