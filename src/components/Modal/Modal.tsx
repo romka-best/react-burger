@@ -7,9 +7,32 @@ import ModalOverlay from '../ModalOverlay/ModalOverlay';
 
 import modalStyles from './Modal.module.css';
 
-const Modal = ({children, onClose}) => {
+interface ModalProps {
+  children: React.ReactElement,
+  onClose: React.TransitionEventHandler<HTMLDivElement>
+}
+
+const Modal = ({children, onClose}: ModalProps) => {
   const modalRoot = document.getElementById('modals') as HTMLElement;
   const [show, setShow] = React.useState(false);
+
+  const handleEscClose = (evt: KeyboardEvent) => {
+    if (evt.code === 'Escape') {
+      closeModal();
+    }
+  }
+
+  const handleCloseModal = (evt: React.SyntheticEvent) => {
+    const target = evt.target as HTMLElement;
+    if (target.classList.contains(modalStyles.root_opened)) {
+      closeModal();
+    }
+    evt.stopPropagation();
+  }
+
+  const closeModal = () => {
+    setShow(false);
+  }
 
   React.useEffect(() => {
     setShow(true);
@@ -20,27 +43,10 @@ const Modal = ({children, onClose}) => {
     }
   }, []);
 
-  const handleEscClose = (evt) => {
-    if (evt.code === 'Escape') {
-      closeModal();
-    }
-  }
-
-  const handleCloseModal = (evt) => {
-    if (evt.target.classList.contains(modalStyles.root_opened)) {
-      closeModal();
-    }
-    evt.stopPropagation();
-  }
-
-  const closeModal = () => {
-    setShow(false);
-  }
-
   return ReactDOM.createPortal((
       <ModalOverlay show={show}>
         <div className={`${modalStyles.root} ${show && modalStyles.root_opened}`} onClick={handleCloseModal}
-             onTransitionEnd={!show ? onClose : null}>
+             onTransitionEnd={!show ? onClose : undefined}>
           <div className={modalStyles.wrapper}>
             <div className={modalStyles.closeButton} onClick={closeModal}>
               <CloseIcon type='primary'/>

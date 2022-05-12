@@ -1,8 +1,5 @@
 import React from 'react';
 
-import {IngredientParams} from '../../utils/types';
-
-import ErrorBoundary from '../ErrorBoundary/ErrorBoundary';
 import CustomError from '../CustomError/CustomError';
 import AppHeader from '../AppHeader/AppHeader';
 import Main from '../Main/Main';
@@ -10,8 +7,9 @@ import OrderDetails from '../OrderDetails/OrderDetails';
 import IngredientDetails from '../IngredientDetails/IngredientDetails';
 import Modal from '../Modal/Modal';
 
-import burgerConstructorStyles from '../BurgerConstructor/BurgerConstructor.module.css';
-import ingredientStyles from '../Ingredient/Ingredient.module.css';
+import {useAppDispatch} from '../../services/store';
+import {ingredientsSlice} from '../../services/slices/indredients';
+
 import appStyles from './App.module.css';
 
 function App() {
@@ -19,30 +17,25 @@ function App() {
     currentPage: 'Конструктор',
     modalIsVisible: false,
     modalType: '',
-    modalData: {},
   });
 
-  const handleOpenModal = (ref, data: {}) => {
-    if (ref.classList.contains(burgerConstructorStyles.ingredients)) {
-      setState({...state, modalIsVisible: true, modalType: 'orderDetails', modalData: data});
-    } else if (ref.classList.contains(ingredientStyles.root)) {
-      setState({...state, modalIsVisible: true, modalType: 'ingredientDetails', modalData: data});
-    }
-  }
+  const dispatch = useAppDispatch();
 
-  function instanceOfIngredientParams(object: any): object is IngredientParams {
-    return '_id' in object;
+  const handleOpenModal = (modalType: 'orderDetails' | 'ingredientDetails', data: object) => {
+    if (modalType === 'orderDetails') {
+      setState({...state, modalIsVisible: true, modalType: 'orderDetails'});
+    } else if (modalType === 'ingredientDetails') {
+      setState({...state, modalIsVisible: true, modalType: 'ingredientDetails'});
+      dispatch(ingredientsSlice.actions.putIngredientDetails(data));
+    }
   }
 
   const getActualModal = () => {
     switch (state.modalType) {
       case 'orderDetails':
-        return (<OrderDetails details={state.modalData}/>)
+        return (<OrderDetails/>)
       case 'ingredientDetails':
-        if (instanceOfIngredientParams(state.modalData)) {
-          return (<IngredientDetails ingredientDetails={state.modalData}/>)
-        }
-        return (<CustomError textError={'Неуспешная попытка открыть подробную информацию об ингредиенте 😢'}/>);
+        return (<IngredientDetails/>)
       default:
         return (<CustomError textError={'При открытии модального окна произошла ошибка 😢'}/>);
     }
@@ -54,11 +47,9 @@ function App() {
 
   return (
     <div className={appStyles.root}>
-      <ErrorBoundary>
-        <AppHeader currentPage={state.currentPage}/>
-        <Main state={state} onClickModal={handleOpenModal}/>
-        {state.modalIsVisible && <Modal onClose={handleCloseModal}>{getActualModal()}</Modal>}
-      </ErrorBoundary>
+      <AppHeader currentPage={state.currentPage}/>
+      <Main state={state} onClickModal={handleOpenModal}/>
+      {state.modalIsVisible && <Modal onClose={handleCloseModal}>{getActualModal()}</Modal>}
     </div>
   );
 }

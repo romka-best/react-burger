@@ -1,5 +1,6 @@
 .root {
   position: relative;
+  cursor: pointer;
 
   display: flex;
   flex-direction: column;
@@ -8,8 +9,12 @@
 }
 
 .root:hover {
-  cursor: pointer;
-  opacity: 80%;
+  opacity: .8;
+}
+
+.rootDrag {
+  cursor: grabbing;
+  opacity: .5;
 }
 
 .image {

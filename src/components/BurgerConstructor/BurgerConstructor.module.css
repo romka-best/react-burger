@@ -34,17 +34,26 @@
   background-color: var(--text-secondary-color);
 }
 
-.constructorElement {
-  align-self: flex-end;
+.dropTarget {
+  border: .4rem transparent solid;
 }
 
-.element {
-  display: flex;
-  align-items: center;
-  gap: .8rem;
+.dropTargetIsOverIngredient {
+  border: .4rem var(--text-primary-color) dashed;
+  transition: border .5s ease-in-out;
+}
 
-  width: 56.8rem;
-  max-height: 8rem;
+.dropTargetIsOverTopBun {
+  border-radius: var(--top-constructor-item-border-radius);
+  composes: dropTargetIsOverIngredient;
+}
+
+.dropTargetIsOverBottomBun {
+  border-radius: var(--bottom-constructor-item-border-radius);
+  composes: dropTargetIsOverIngredient;
+}
+
+.constructorElement {
 }
 
 .info {
@@ -62,6 +71,10 @@
 
 .price {
 
+}
+
+.infoMessage {
+  text-align: center;
 }
 
 .icon {

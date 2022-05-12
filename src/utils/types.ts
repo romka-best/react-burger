@@ -11,21 +11,44 @@ interface IngredientParams {
   price: number,
   image: string,
   image_mobile: string,
-  image_large: string
+  image_large: string,
+  count?: number
 }
 
-const defaultIngredientParams = {
-  _id: '',
-  name: '',
-  type: '',
-  proteins: -1,
-  fat: -1,
-  carbohydrates: -1,
-  calories: -1,
-  price: -1,
-  image: '',
-  image_mobile: '',
-  image_large: ''
+interface ActionParams {
+  type: string,
+  value?: IngredientParams
+}
+
+interface InitialIngredientsParams {
+  ingredients: Array<IngredientParams>,
+  currentIngredient: IngredientParams,
+  ingredientsRequest: boolean,
+  ingredientsFailed: boolean,
+  ingredientsFailedTextError: string,
+}
+
+interface InitialBurgerConstructorParams {
+  ingredients: Array<IngredientParams>,
+  buns: Array<IngredientParams>,
+  totalPrice: number,
+}
+
+interface InitialOrderParams {
+  number: number,
+  orderRequest: boolean,
+  orderFailed: boolean,
+  orderFailedTextError: string,
+}
+
+interface ReducersParams {
+  ingredients: InitialIngredientsParams,
+  burgerConstructor: InitialBurgerConstructorParams,
+  order: InitialOrderParams
+}
+
+interface ItemParams {
+  index: number
 }
 
 const ingredientDetailsPropTypes = PropTypes.shape({
@@ -42,5 +65,14 @@ const ingredientDetailsPropTypes = PropTypes.shape({
   image_large: PropTypes.string.isRequired
 });
 
-export type {IngredientParams};
-export {defaultIngredientParams, ingredientDetailsPropTypes};
+export type {
+  IngredientParams,
+  InitialIngredientsParams,
+  InitialOrderParams,
+  InitialBurgerConstructorParams,
+  ReducersParams,
+  ItemParams,
+  ActionParams,
+};
+
+export {ingredientDetailsPropTypes};

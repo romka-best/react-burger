@@ -3,11 +3,16 @@ import PropTypes from 'prop-types';
 
 import modalOverlayStyles from './ModalOverlay.module.css';
 
-const ModalOverlay = ({children, show}) => {
+interface ModalOverlayProps {
+  children: React.ReactElement,
+  show: boolean
+}
+
+const ModalOverlay = ({children, show}: ModalOverlayProps) => {
   return (
-      <div className={`${modalOverlayStyles.root} ${show && modalOverlayStyles.root_opened}`}>
-        {children}
-      </div>
+    <div className={`${modalOverlayStyles.root} ${show && modalOverlayStyles.root_opened}`}>
+      {children}
+    </div>
   );
 }
 
