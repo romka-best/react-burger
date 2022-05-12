@@ -58,6 +58,7 @@ export const orderSlice = createSlice({
           orderRequest: false,
           orderFailed: true,
           orderFailedTextError: action.toString(),
+          number: initialOrderState.number
         };
       })
   }
