@@ -7,7 +7,7 @@ import {ActionParams, IngredientParams, ReducersParams} from '../../utils/types'
 
 import Ingredient from '../Ingredient/Ingredient';
 
-import ingredientsStyles from './Ingredients.module.css';
+import ingredientsStyles from './Ingredients.module.scss';
 
 interface IngredientsProps {
   onClickModal: Function,
@@ -155,10 +155,10 @@ const Ingredients = ({onClickModal, setCurrentTab}: IngredientsProps) => {
   }, [burgerConstructorIngredients.length, burgerConstructorBuns.length])
 
   return (
-    <div className={`${ingredientsStyles.root} mt-10`}>
+    <div className={`${ingredientsStyles.root}`}>
       <section id={'buns'} ref={bunsRef}>
         <h2 className={`${ingredientsStyles.title} text text_type_main-medium mb-6`}>Булки</h2>
-        <div className={`${ingredientsStyles.data} ml-4`}>
+        <div className={ingredientsStyles.data}>
           {
             buns.map((bun) => {
               return (
@@ -171,7 +171,7 @@ const Ingredients = ({onClickModal, setCurrentTab}: IngredientsProps) => {
       </section>
       <section id={'sauces'} ref={saucesRef}>
         <h2 className={`${ingredientsStyles.title} text text_type_main-medium mt-10 mb-6`}>Соусы</h2>
-        <div className={`${ingredientsStyles.data} ml-4`}>
+        <div className={ingredientsStyles.data}>
           {
             sauces.map((sauce) => (
               <Ingredient count={sauce.count ? sauce.count : 0} key={sauce._id} ingredient={sauce}
@@ -182,7 +182,7 @@ const Ingredients = ({onClickModal, setCurrentTab}: IngredientsProps) => {
       </section>
       <section id={'main'} ref={mainRef}>
         <h2 className={`${ingredientsStyles.title} text text_type_main-medium mt-10 mb-6`} id={'main'}>Начинки</h2>
-        <div className={`${ingredientsStyles.data} ml-4`}>
+        <div className={ingredientsStyles.data}>
           {
             main.map((main) => (
               <Ingredient count={main.count ? main.count : 0} key={main._id} ingredient={main}

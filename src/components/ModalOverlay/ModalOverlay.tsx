@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import modalOverlayStyles from './ModalOverlay.module.css';
+import modalOverlayStyles from './ModalOverlay.module.scss';
 
 interface ModalOverlayProps {
   children: React.ReactElement,

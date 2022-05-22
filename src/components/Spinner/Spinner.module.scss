@@ -1,3 +1,5 @@
+@import '../../assets/scss/variables.module.scss';
+
 .root {
   position: absolute;
   top: 50%;
@@ -22,7 +24,7 @@
 
   top: -7.2rem;
   left: 1.8rem;
-  background-color: var(--button-active-color);
+  background-color: $button-active-color;
   background-image: -moz-linear-gradient(0deg, #801AB2 0%, #131316 50%);
   background-image: -webkit-linear-gradient(0deg, #801AB2 0%, #131316 50%);
   background-image: linear-gradient(0deg, #801AB2 0%, #131316 50%);
@@ -37,7 +39,7 @@
 
   top: 50%;
   left: 50%;
-  background-color: var(--interface-bg-color);
+  background-color: $interface-bg-color;
   border-radius: 100%;
 }
 

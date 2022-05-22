@@ -1,3 +1,5 @@
+@import '../../assets/scss/variables.module.scss';
+
 .root {
   display: flex;
   align-items: center;
@@ -24,7 +26,7 @@
   position: relative;
 
   width: 72rem;
-  background-color: var(--interface-modal-bg-color);
+  background-color: $interface-modal-bg-color;
   border-radius: 4rem;
 }
 

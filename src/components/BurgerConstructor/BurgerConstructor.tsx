@@ -12,7 +12,7 @@ import {useAppDispatch, useAppSelector} from '../../services/store';
 
 import BurgerConstructorElement from '../BurgerConstructorElement/BurgerConstructorElement';
 
-import burgerConstructorStyles from './BurgerConstructor.module.css';
+import burgerConstructorStyles from './BurgerConstructor.module.scss';
 
 interface BurgerConstructorProps {
   onClickModal: Function

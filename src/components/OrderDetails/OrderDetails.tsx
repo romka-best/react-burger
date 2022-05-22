@@ -2,7 +2,7 @@ import {useAppSelector} from '../../services/store';
 import {ReducersParams} from '../../utils/types';
 
 import done from '../../assets/images/done.png';
-import orderDetailsStyles from './OrderDetails.module.css';
+import orderDetailsStyles from './OrderDetails.module.scss';
 
 const OrderDetails = () => {
   const number = useAppSelector(
