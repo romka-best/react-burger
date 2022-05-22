@@ -1,0 +1,18 @@
+@import '../../assets/scss/variables.module.scss';
+
+.root {
+  display: block;
+}
+
+.title {
+  margin: 4rem 0 2rem;
+
+  @media screen and (max-width: $large-mobile) {
+    text-align: center;
+    margin: 1.6rem .8rem .8rem;
+  }
+}
+
+.tabs {
+  display: flex;
+}

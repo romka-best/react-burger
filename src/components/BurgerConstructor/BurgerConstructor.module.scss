@@ -1,5 +1,7 @@
-.root {
+@import '../../assets/scss/variables.module.scss';
 
+.root {
+  display: block;
 }
 
 .ingredients {
@@ -22,16 +24,16 @@
   overflow-y: auto;
   scrollbar-gutter: stable;
   scrollbar-width: thin;
-  scrollbar-color: var(--text-secondary-color) var(--interface-input-color);
+  scrollbar-color: $text-secondary-color $interface-input-color;
 }
 
 .list::-webkit-scrollbar {
   width: .8rem;
-  background: var(--interface-input-color);
+  background: $interface-input-color;
 }
 
 .list::-webkit-scrollbar-thumb {
-  background-color: var(--text-secondary-color);
+  background-color: $text-secondary-color;
 }
 
 .dropTarget {
@@ -39,7 +41,7 @@
 }
 
 .dropTargetIsOverIngredient {
-  border: .4rem var(--text-primary-color) dashed;
+  border: .4rem $text-primary-color dashed;
   transition: border .5s ease-in-out;
 }
 
@@ -54,6 +56,7 @@
 }
 
 .constructorElement {
+  display: block;
 }
 
 .info {
@@ -70,7 +73,7 @@
 }
 
 .price {
-
+  display: block;
 }
 
 .infoMessage {

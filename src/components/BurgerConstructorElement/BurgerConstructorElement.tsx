@@ -10,7 +10,7 @@ import {
 
 import {ingredientDetailsPropTypes, IngredientParams, ItemParams} from '../../utils/types';
 
-import burgerConstructorElementStyles from './BurgerConstructorElement.module.css';
+import burgerConstructorElementStyles from './BurgerConstructorElement.module.scss';
 
 interface BurgerConstructorElementProps {
   product: IngredientParams,

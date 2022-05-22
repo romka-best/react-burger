@@ -41,10 +41,22 @@ interface InitialOrderParams {
   orderFailedTextError: string,
 }
 
+interface InitialUiParams {
+  width: number,
+  type: 'desktop' | 'laptop' | 'tablet' | 'mobile',
+  breakpoints: {
+    desktop?: number,
+    laptop: number,
+    tablet: number,
+    mobile: number,
+  }
+}
+
 interface ReducersParams {
   ingredients: InitialIngredientsParams,
   burgerConstructor: InitialBurgerConstructorParams,
-  order: InitialOrderParams
+  order: InitialOrderParams,
+  ui: InitialUiParams,
 }
 
 interface ItemParams {
@@ -70,6 +82,7 @@ export type {
   InitialIngredientsParams,
   InitialOrderParams,
   InitialBurgerConstructorParams,
+  InitialUiParams,
   ReducersParams,
   ItemParams,
   ActionParams,

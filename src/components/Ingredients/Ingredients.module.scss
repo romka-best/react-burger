@@ -1,0 +1,52 @@
+@import '../../assets/scss/variables.module.scss';
+
+.root {
+  max-height: calc(100vh - 28.4rem);;
+
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: $text-secondary-color $interface-input-color;
+
+  margin-top: 4rem;
+
+  @media screen and (max-width: $large-mobile) {
+    margin: 2rem .8rem 0;
+  }
+}
+
+.root::-webkit-scrollbar {
+  width: .8rem;
+
+  @media screen and (max-width: $large-mobile) {
+    display: none;
+  }
+}
+
+.root::-webkit-scrollbar-track {
+  background: $interface-input-color;
+  margin-bottom: 5.2rem;
+}
+
+.root::-webkit-scrollbar-thumb {
+  background-color: $text-secondary-color;
+}
+
+.title {
+  display: block;
+}
+
+.data {
+  display: grid;
+  grid-template-columns: repeat(2, 27.2rem);
+  grid-auto-rows: 20.8rem;
+  row-gap: 3.2rem;
+  column-gap: 2.4rem;
+  justify-items: center;
+
+  @media screen and (max-width: $large-mobile) {
+    grid-template-columns: repeat(2, auto);
+    grid-auto-rows: 24rem;
+    row-gap: 1.2rem;
+    column-gap: 1.6rem;
+  }
+}

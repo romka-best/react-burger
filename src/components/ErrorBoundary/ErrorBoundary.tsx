@@ -1,6 +1,6 @@
 import React, {ErrorInfo} from 'react';
 
-import errorBoundaryStyles from './ErrorBoundary.module.css';
+import errorBoundaryStyles from './ErrorBoundary.module.scss';
 
 interface ErrorBoundaryProps {
 

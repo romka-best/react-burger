@@ -3,7 +3,7 @@ import React from 'react';
 import {ReducersParams} from '../../utils/types';
 import {useAppSelector} from '../../services/store';
 
-import ingredientDetailsStyle from './IngredientDetails.module.css';
+import ingredientDetailsStyle from './IngredientDetails.module.scss';
 
 
 const IngredientDetails = () => {
