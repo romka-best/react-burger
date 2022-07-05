@@ -4,6 +4,7 @@ import {
   InitialIngredientsParams,
 } from '../../utils/types';
 import {defaultIngredientParams} from '../../utils/defaultData';
+import {AxiosError} from "axios";
 
 const initialIngredientsState: InitialIngredientsParams = {
   ingredients: [],
@@ -16,18 +17,24 @@ const initialIngredientsState: InitialIngredientsParams = {
 export const getIngredients = createAsyncThunk(
   'ingredients/getIngredients',
   async (_, thunkApi) => {
-    const res = await DataService.getAllIngredients();
-    if (200 <= res.status && res.status <= 299) {
+    try {
+      const res = await DataService.getAllIngredients();
       return res.data.data;
+    } catch (error) {
+      if (error instanceof AxiosError && error.response) {
+        switch (error.response.status) {
+          case 0:
+            return thunkApi.rejectWithValue(`Ошибка подключения к сети. Проверьте подключение к интернету, пожалуйста 🌐`);
+          case 404:
+            return thunkApi.rejectWithValue(`Мы не смогли найти то, что вы искали 🔎 Статус ошибки: ${error.response.status}`);
+          case 500:
+            return thunkApi.rejectWithValue(`Произошла ошибка на стороне сервера 🖥 Статус ошибки: ${error.response.status}`);
+          default:
+            return thunkApi.rejectWithValue(`Произошла неизвестная ошибка 😥 Код ошибки: ${error.response.status}`);
+        }
+      }
     }
-    switch (res.status) {
-      case 404:
-        return thunkApi.rejectWithValue(`Мы не смогли найти то, что вы искали 🔎 Статус ошибки: ${res.status}`);
-      case 500:
-        return thunkApi.rejectWithValue(`Произошла ошибка на стороне сервера 🖥 Статус ошибки: ${res.status}`);
-      default:
-        return thunkApi.rejectWithValue(`Произошла неизвестная ошибка. Код ошибки: ${res.status}`);
-    }
+    return thunkApi.rejectWithValue(`Произошла неизвестная ошибка 😥`);
   }
 );
 
@@ -72,7 +79,7 @@ export const ingredientsSlice = createSlice({
           ...state,
           ingredientsRequest: false,
           ingredientsFailed: true,
-          ingredientsFailedTextError: action.toString()
+          ingredientsFailedTextError: action.payload as string,
         }
       })
   }

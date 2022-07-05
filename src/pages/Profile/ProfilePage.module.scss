@@ -1,0 +1,89 @@
+@import '../../assets/scss/variables.module';
+
+.root {
+  display: flex;
+  justify-content: center;
+  column-gap: 6rem;
+
+  padding-top: 12rem;
+
+  @media screen and (max-width: $large-mobile) {
+    flex-direction: column;
+    align-items: center;
+    column-gap: 0;
+
+    padding-top: $height-navigation-menu-mobile + 1.6rem;
+  }
+}
+
+.title {
+  @media screen and (max-width: $large-mobile) {
+    margin-bottom: 2.4rem;
+  }
+}
+
+.navigation {
+  display: flex;
+  flex-direction: column;
+  max-width: 32rem;
+}
+
+.navButtons {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  min-width: 39rem;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.navButton {
+  transition: opacity linear .2s;
+
+  display: flex;
+  align-items: center;
+  height: 6.4rem;
+}
+
+.navButton:hover {
+  opacity: 50%;
+  cursor: pointer;
+}
+
+.navButtonLink {
+  text-decoration: none;
+  display: flex;
+}
+
+.navButtonText {
+  display: block;
+}
+
+.navButton_selected {
+  color: #f2f2f3;
+}
+
+.info {
+  margin-top: 8rem;
+}
+
+.inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 2.4rem;
+
+  @media screen and (max-width: $large-mobile) {
+    gap: 2rem;
+  }
+}
+
+.choiceButtons {
+  display: flex;
+  align-items: center;
+  gap: .8rem;
+
+  @media screen and (max-width: $large-mobile) {
+    flex-direction: column;
+  }
+}

@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import Tab from '../Tab/Tab';
 import burgerIngredientsStyles from './BurgerIngredients.module.scss';
@@ -8,11 +7,7 @@ import Ingredients from '../Ingredients/Ingredients';
 import {useAppSelector} from "../../services/store";
 import {ReducersParams} from "../../utils/types";
 
-interface BurgerIngredientsProps {
-  onClickModal: Function
-}
-
-const BurgerIngredients = ({onClickModal}: BurgerIngredientsProps) => {
+const BurgerIngredients = () => {
   const [current, setCurrent] = React.useState('buns');
 
   const handleClick = (value: string) => {
@@ -31,13 +26,10 @@ const BurgerIngredients = ({onClickModal}: BurgerIngredientsProps) => {
 
   return (
     <section className={`${burgerIngredientsStyles.root}`}>
-      {
-        type === 'desktop' || type === 'laptop' || type === 'tablet' ? (
-          <h1 className={`${burgerIngredientsStyles.title} text text_type_main-large`}>Соберите бургер</h1>
-        ) : type === 'mobile' && (
-          <h1 className={`${burgerIngredientsStyles.title} text text_type_main-medium`}>Соберите бургер</h1>
-        )
-      }
+      <h1
+        className={`${burgerIngredientsStyles.title} text ${type === 'desktop' || type === 'laptop' || type === 'tablet' ? 'text_type_main-large' : 'text_type_main-medium'}`}>
+        Соберите бургер
+      </h1>
       <div className={burgerIngredientsStyles.tabs}>
         <Tab active={current === 'buns'} value={'buns'} onClick={handleClick}>
           Булки
@@ -49,13 +41,9 @@ const BurgerIngredients = ({onClickModal}: BurgerIngredientsProps) => {
           Начинки
         </Tab>
       </div>
-      <Ingredients onClickModal={onClickModal} setCurrentTab={setCurrent}/>
+      <Ingredients setCurrentTab={setCurrent}/>
     </section>
   );
-}
-
-BurgerIngredients.propTypes = {
-  onClickModal: PropTypes.func.isRequired,
 }
 
 export default BurgerIngredients;

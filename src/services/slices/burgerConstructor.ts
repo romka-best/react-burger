@@ -35,6 +35,14 @@ export const burgerConstructorSlice = createSlice({
         })
       }
     },
+    clearAll: (state) => {
+      return {
+        ...state,
+        ingredients: [],
+        buns: [],
+        totalPrice: 0
+      }
+    },
     addBuns: (state, {payload}: { payload: IngredientParams }) => {
       return {
         ...state,

@@ -1,6 +1,6 @@
 {
   "name": "react-burger",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "private": true,
   "dependencies": {
     "@reduxjs/toolkit": "^1.8.1",
@@ -13,6 +13,7 @@
     "@types/react-dom": "^17.0.14",
     "@ya.praktikum/react-developer-burger-ui-components": "^1.13.1",
     "axios": "^0.27.2",
+    "axios-retry": "^3.2.5",
     "classnames": "^2.3.1",
     "eslint": "^8.15.0",
     "react": "^17.0.2",
@@ -21,6 +22,7 @@
     "react-dnd-touch-backend": "^16.0.1",
     "react-dom": "^17.0.2",
     "react-redux": "^8.0.1",
+    "react-router-dom": "^5.2.1",
     "react-scripts": "5.0.0",
     "redux": "^4.2.0",
     "redux-thunk": "^2.4.1",
@@ -51,5 +53,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/react-router-dom": "^5.3.3"
   }
 }

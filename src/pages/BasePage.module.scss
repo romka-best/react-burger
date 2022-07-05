@@ -1,0 +1,15 @@
+@import '../assets/scss/variables.module';
+
+.animation {
+  opacity: 0;
+  animation: fade 2s forwards;
+}
+
+@keyframes fade {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}

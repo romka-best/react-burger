@@ -1,0 +1,37 @@
+@import '../../assets/scss/variables.module.scss';
+
+.root {
+  display: flex;
+  gap: .8rem;
+
+  width: 92.5%;
+}
+
+.image {
+  display: flex;
+  align-self: center;
+
+  width: 5.2rem;
+  max-height: 4rem;
+}
+
+.name {
+  display: -webkit-box;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+
+  max-width: 16.5rem;
+}
+
+.price {
+  display: flex;
+  align-self: flex-start;
+
+  margin-left: auto;
+}
+
+.priceText {
+  margin-right: .8rem;
+}

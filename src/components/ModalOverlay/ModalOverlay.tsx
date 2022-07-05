@@ -10,7 +10,7 @@ interface ModalOverlayProps {
 
 const ModalOverlay = ({children, show}: ModalOverlayProps) => {
   return (
-    <div className={`${modalOverlayStyles.root} ${show && modalOverlayStyles.root_opened}`}>
+    <div className={`${modalOverlayStyles.root} ${show ? modalOverlayStyles.root_opened : ''}`}>
       {children}
     </div>
   );

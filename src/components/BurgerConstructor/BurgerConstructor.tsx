@@ -1,6 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-
+import {useHistory} from 'react-router-dom';
 import {useDrop} from 'react-dnd';
 
 import {ConstructorElement, CurrencyIcon, Button} from '@ya.praktikum/react-developer-burger-ui-components';
@@ -9,34 +8,41 @@ import {IngredientParams, ReducersParams} from '../../utils/types';
 import {burgerConstructorSlice} from '../../services/slices/burgerConstructor';
 import {createOrder} from '../../services/slices/order';
 import {useAppDispatch, useAppSelector} from '../../services/store';
+import {modalSlice} from '../../services/slices/modal';
 
 import BurgerConstructorElement from '../BurgerConstructorElement/BurgerConstructorElement';
 
 import burgerConstructorStyles from './BurgerConstructor.module.scss';
 
-interface BurgerConstructorProps {
-  onClickModal: Function
-}
-
-const BurgerConstructor = ({onClickModal}: BurgerConstructorProps) => {
+const BurgerConstructor = () => {
   const dispatch = useAppDispatch();
+  const history = useHistory();
+
   const {buns, ingredients, totalPrice} = useAppSelector(
     (state: ReducersParams) => state.burgerConstructor
   );
 
+  const {isAuthenticated} = useAppSelector(
+    (state: ReducersParams) => state.user
+  );
+
   const {ingredients: allIngredients} = useAppSelector(
     (state: ReducersParams) => state.ingredients
-  )
+  );
 
-  const handleClickButton = () => {
+  const handleClickButton = React.useCallback(() => {
+    if (!isAuthenticated) {
+      history.replace({pathname: '/login'});
+      return;
+    }
     const ingredientsIds: string[] = [buns[0]._id, buns[1]._id];
     ingredientsIds.push(...ingredients.map((ingredient) => ingredient._id));
     dispatch(createOrder(ingredientsIds))
       .unwrap()
-      .then(orderDetails => {
-        onClickModal('orderDetails', orderDetails);
+      .then(() => {
+        dispatch(modalSlice.actions.openModal('orderDetails'));
       });
-  }
+  }, [buns, dispatch, history, ingredients, isAuthenticated]);
 
   const moveBun = (bun: IngredientParams) => {
     if (buns.length > 0) {
@@ -63,7 +69,7 @@ const BurgerConstructor = ({onClickModal}: BurgerConstructorProps) => {
     const hoverItem = ingredients[hoverIndex];
 
     dispatch(burgerConstructorSlice.actions.changeSort({dragIndex, hoverIndex, dragItem, hoverItem}));
-  }, [ingredients])
+  }, [dispatch, ingredients]);
 
   const [{isHoverBun, isHoverIngredient, canDrop}, dropTarget] = useDrop({
     accept: 'NEW_INGREDIENT',
@@ -83,7 +89,7 @@ const BurgerConstructor = ({onClickModal}: BurgerConstructorProps) => {
         isHoverBun: monitor.isOver() && ingredient.type === 'bun',
         isHoverIngredient: monitor.isOver() && ingredient.type !== 'bun',
         canDrop: monitor.canDrop()
-      })
+      });
     },
   });
 
@@ -152,10 +158,6 @@ const BurgerConstructor = ({onClickModal}: BurgerConstructorProps) => {
       </div>
     </section>
   );
-}
-
-BurgerConstructor.propTypes = {
-  onClickModal: PropTypes.func.isRequired,
 }
 
 export default BurgerConstructor;

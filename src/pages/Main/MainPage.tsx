@@ -5,24 +5,20 @@ import {DndProvider} from 'react-dnd';
 import {HTML5Backend} from 'react-dnd-html5-backend';
 import {TouchBackend} from 'react-dnd-touch-backend';
 
-import Spinner from '../Spinner/Spinner';
-import CustomError from '../CustomError/CustomError';
-import BurgerIngredients from '../BurgerIngredients/BurgerIngredients';
-import BurgerConstructor from '../BurgerConstructor/BurgerConstructor';
+import Spinner from '../../components/Spinner/Spinner';
+import CustomError from '../../components/CustomError/CustomError';
+import BurgerIngredients from '../../components/BurgerIngredients/BurgerIngredients';
+import BurgerConstructor from '../../components/BurgerConstructor/BurgerConstructor';
+import BurgerConstructorInfo from '../../components/BurgerConstructorInfo/BurgerConstructorInfo';
 
 import {getIngredients} from '../../services/slices/ingredients';
 import {useAppDispatch, useAppSelector} from '../../services/store';
 
 import {ReducersParams} from '../../utils/types';
 
-import mainStyles from './Main.module.scss';
-import BurgerConstructorInfo from "../BurgerConstructorInfo/BurgerConstructorInfo";
+import mainStyles from './MainPage.module.scss';
 
-interface MainProps {
-  onClickModal: Function
-}
-
-const Main = ({onClickModal}: MainProps) => {
+const MainPage = () => {
   const dispatch = useAppDispatch();
   const {
     ingredientsRequest,
@@ -61,13 +57,13 @@ const Main = ({onClickModal}: MainProps) => {
           {
             type === 'desktop' || type === 'laptop' || type === 'tablet' ? (
               <DndProvider backend={HTML5Backend}>
-                <BurgerIngredients onClickModal={onClickModal}/>
-                <BurgerConstructor onClickModal={onClickModal}/>
+                <BurgerIngredients/>
+                <BurgerConstructor/>
               </DndProvider>
             ) : type === 'mobile' && (
               <DndProvider backend={TouchBackend}>
-                <BurgerIngredients onClickModal={onClickModal}/>
-                <BurgerConstructorInfo onClickModal={onClickModal}/>
+                <BurgerIngredients/>
+                <BurgerConstructorInfo/>
               </DndProvider>
             )
           }
@@ -78,13 +74,4 @@ const Main = ({onClickModal}: MainProps) => {
   );
 }
 
-const mainPropTypes = PropTypes.shape({
-  currentPage: PropTypes.string.isRequired,
-});
-
-Main.propTypes = {
-  state: mainPropTypes.isRequired,
-  onClickModal: PropTypes.func.isRequired,
-}
-
-export default Main;
+export default MainPage;

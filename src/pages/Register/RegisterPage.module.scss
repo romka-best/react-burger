@@ -1,0 +1,45 @@
+@import '../../assets/scss/variables.module';
+
+.root {
+  composes: root from '../Login/LoginPage.module.scss';
+  composes: animation from '../BasePage.module.scss';
+}
+
+.title {
+  composes: title from '../Login/LoginPage.module.scss';
+}
+
+.form {
+  composes: form from '../Login/LoginPage.module.scss';
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.listErrors {
+  margin: 0;
+  padding: 0;
+}
+
+.error:first-of-type {
+  list-style-type: none;
+}
+
+.errorText {
+  color: $interface-error-color;
+}
+
+.anotherVariants {
+  composes: anotherVariants from '../Login/LoginPage.module.scss';
+}
+
+.anotherVariantText:not(:last-child) {
+  margin-bottom: 2rem;
+}
+
+.anotherVariantLink {
+  composes: anotherVariantLink from '../Login/LoginPage.module.scss';
+}

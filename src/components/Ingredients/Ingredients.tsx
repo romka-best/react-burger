@@ -10,11 +10,10 @@ import Ingredient from '../Ingredient/Ingredient';
 import ingredientsStyles from './Ingredients.module.scss';
 
 interface IngredientsProps {
-  onClickModal: Function,
   setCurrentTab: Function
 }
 
-const Ingredients = ({onClickModal, setCurrentTab}: IngredientsProps) => {
+const Ingredients = ({setCurrentTab}: IngredientsProps) => {
   const ingredients: IngredientParams[] = useAppSelector((state: ReducersParams) => {
     return state.ingredients.ingredients;
   });
@@ -162,8 +161,7 @@ const Ingredients = ({onClickModal, setCurrentTab}: IngredientsProps) => {
           {
             buns.map((bun) => {
               return (
-                <Ingredient count={bun.count ? bun.count : 0} key={bun._id} ingredient={bun}
-                            onClickModal={onClickModal}/>
+                <Ingredient count={bun.count ? bun.count : 0} key={bun._id} ingredient={bun}/>
               )
             })
           }
@@ -174,8 +172,7 @@ const Ingredients = ({onClickModal, setCurrentTab}: IngredientsProps) => {
         <div className={ingredientsStyles.data}>
           {
             sauces.map((sauce) => (
-              <Ingredient count={sauce.count ? sauce.count : 0} key={sauce._id} ingredient={sauce}
-                          onClickModal={onClickModal}/>
+              <Ingredient count={sauce.count ? sauce.count : 0} key={sauce._id} ingredient={sauce}/>
             ))
           }
         </div>
@@ -185,8 +182,7 @@ const Ingredients = ({onClickModal, setCurrentTab}: IngredientsProps) => {
         <div className={ingredientsStyles.data}>
           {
             main.map((main) => (
-              <Ingredient count={main.count ? main.count : 0} key={main._id} ingredient={main}
-                          onClickModal={onClickModal}/>
+              <Ingredient count={main.count ? main.count : 0} key={main._id} ingredient={main}/>
             ))
           }
         </div>
@@ -196,7 +192,6 @@ const Ingredients = ({onClickModal, setCurrentTab}: IngredientsProps) => {
 }
 
 Ingredients.propTypes = {
-  onClickModal: PropTypes.func.isRequired,
   setCurrentTab: PropTypes.func.isRequired,
 }
 

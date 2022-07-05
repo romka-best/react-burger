@@ -1,23 +1,31 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-
+import React, {SyntheticEvent} from 'react';
+import {useLocation, useHistory} from 'react-router-dom';
 import {useDrag} from 'react-dnd';
 
 import {CurrencyIcon, Counter, Button} from '@ya.praktikum/react-developer-burger-ui-components';
 
-import ingredientStyles from './Ingredient.module.scss';
 import {ingredientDetailsPropTypes, IngredientParams, ReducersParams} from '../../utils/types';
-import {useAppSelector} from "../../services/store";
+import {useAppDispatch, useAppSelector} from '../../services/store';
+import {modalSlice} from '../../services/slices/modal';
+import {ingredientsSlice} from '../../services/slices/ingredients';
+
+import ingredientStyles from './Ingredient.module.scss';
+import {burgerConstructorSlice} from "../../services/slices/burgerConstructor";
 
 interface IngredientProps {
   ingredient: IngredientParams,
-  onClickModal: Function,
   count: number
 }
 
-const Ingredient = ({ingredient, onClickModal, count = 0}: IngredientProps) => {
+const Ingredient = ({ingredient, count = 0}: IngredientProps) => {
+  const dispatch = useAppDispatch();
+  const history = useHistory();
+  const location = useLocation();
+
   const handleClickIngredient = () => {
-    onClickModal('ingredientDetails', ingredient);
+    dispatch(ingredientsSlice.actions.putIngredientDetails(ingredient));
+    history.replace({pathname: `/ingredients/${ingredient._id}`}, {background: location});
+    dispatch(modalSlice.actions.openModal('ingredientDetails'));
   }
 
   const {
@@ -25,7 +33,26 @@ const Ingredient = ({ingredient, onClickModal, count = 0}: IngredientProps) => {
     name,
     price,
     image,
+    type
   } = ingredient;
+
+  const {buns} = useAppSelector(
+    (state: ReducersParams) => state.burgerConstructor
+  );
+
+  const addBuns = (bun: IngredientParams) => {
+    if (buns.length > 0) {
+      dispatch(burgerConstructorSlice.actions.decrementTotalPrice(buns[0].price + buns[1].price));
+      dispatch(burgerConstructorSlice.actions.removeBuns());
+    }
+    dispatch(burgerConstructorSlice.actions.addBuns(bun));
+    dispatch(burgerConstructorSlice.actions.incrementTotalPrice(bun.price + bun.price));
+  }
+
+  const addIngredient = (ingredient: IngredientParams) => {
+    dispatch(burgerConstructorSlice.actions.addIngredient(ingredient));
+    dispatch(burgerConstructorSlice.actions.incrementTotalPrice(ingredient.price));
+  }
 
   const [{ingredientStyleRoot}, ref] = useDrag({
     type: 'NEW_INGREDIENT',
@@ -35,20 +62,16 @@ const Ingredient = ({ingredient, onClickModal, count = 0}: IngredientProps) => {
     })
   });
 
-  const {type} = useAppSelector((state: ReducersParams) => {
+  const {type: typeDevice} = useAppSelector((state: ReducersParams) => {
     return state.ui;
   });
 
   return (
     <div className={ingredientStyles.root}>
       <div className={ingredientStyleRoot} ref={ref} onClick={handleClickIngredient}>
-        {
-          type === 'desktop' || type === 'laptop' || type === 'tablet' ? (
-            <Counter count={count} size='default'/>
-          ) : type === 'mobile' && (
-            <Counter count={count} size='small'/>
-          )
-        }
+        <Counter count={count}
+                 size={typeDevice === 'desktop' || typeDevice === 'laptop' || typeDevice === 'tablet' ? 'default' : 'small'}
+        />
         <img className={ingredientStyles.image} src={image} alt={name}/>
         <div className={ingredientStyles.price}>
           <p className={`${ingredientStyles.priceText} text text_type_digits-default`}>{price}</p>
@@ -57,8 +80,14 @@ const Ingredient = ({ingredient, onClickModal, count = 0}: IngredientProps) => {
         <p className={`${ingredientStyles.name} text text_type_main-default`}>{name}</p>
       </div>
       {
-        type === 'mobile' && (
-          <Button type='secondary' size='small'>
+        typeDevice === 'mobile' && (
+          <Button type='secondary' size='small' onClick={() => {
+            if (type === 'bun') {
+              addBuns(ingredient);
+            } else {
+              addIngredient(ingredient);
+            }
+          }}>
             Добавить
           </Button>
         )
@@ -69,7 +98,6 @@ const Ingredient = ({ingredient, onClickModal, count = 0}: IngredientProps) => {
 
 Ingredient.propTypes = {
   ingredient: ingredientDetailsPropTypes.isRequired,
-  onClickModal: PropTypes.func.isRequired,
 }
 
 export default Ingredient;

@@ -5,12 +5,14 @@ import {DropTargetMonitor, useDrag, useDrop} from 'react-dnd';
 
 import {
   DragIcon,
-  ConstructorElement
+  ConstructorElement, LockIcon
 } from '@ya.praktikum/react-developer-burger-ui-components';
+import ConstructorElementMobile from '../ConstructorElementMobile/ConstructorElementMobile';
 
-import {ingredientDetailsPropTypes, IngredientParams, ItemParams} from '../../utils/types';
+import {ingredientDetailsPropTypes, IngredientParams, ItemParams, ReducersParams} from '../../utils/types';
 
 import burgerConstructorElementStyles from './BurgerConstructorElement.module.scss';
+import {useAppSelector} from '../../services/store';
 
 interface BurgerConstructorElementProps {
   product: IngredientParams,
@@ -29,7 +31,13 @@ const BurgerConstructorElement = ({
     name,
     price,
     image,
+    type,
+    image_mobile
   } = product;
+
+  const {type: typeDevice} = useAppSelector((state: ReducersParams) => {
+    return state.ui;
+  });
 
   const [{isDragging}, dragRef] = useDrag({
     type: 'BURGER_CONSTRUCTOR_INGREDIENT',
@@ -67,20 +75,38 @@ const BurgerConstructorElement = ({
   const opacity = isDragging ? 0.5 : 1;
 
   return (
-    // @ts-ignore
-    <li ref={dragDropRef}
-        className={`${burgerConstructorElementStyles.root} ${canDrop ? burgerConstructorElementStyles.rootCanDrop : ''} mr-4`}
-        style={{opacity}}>
-      <DragIcon type={'primary'}/>
-      <ConstructorElement
-        isLocked={false}
-        text={name}
-        price={price}
-        thumbnail={image}
-        handleClose={() => deleteIngredient(product._id)
-        }
-      />
-    </li>
+    <>
+      {typeDevice === 'desktop' || typeDevice === 'laptop' || typeDevice === 'tablet' ? (
+        // @ts-ignore
+        <li ref={dragDropRef}
+            className={`${burgerConstructorElementStyles.root} ${canDrop ? burgerConstructorElementStyles.rootCanDrop : ''}`}
+            style={{opacity}}>
+          <DragIcon type={'primary'}/>
+          <ConstructorElement
+            isLocked={false}
+            text={name}
+            price={price}
+            thumbnail={image}
+            handleClose={() => deleteIngredient(product._id)}
+          />
+        </li>
+      ) : (
+        // @ts-ignore
+        <li ref={type !== 'bun' ? dragDropRef : null}
+            className={`${burgerConstructorElementStyles.root} ${canDrop ? burgerConstructorElementStyles.rootCanDrop : ''}`}
+            style={{opacity}}>
+          <div className={burgerConstructorElementStyles.icon}>
+            {type === 'bun' ? (<LockIcon type={'primary'}/>) : (<DragIcon type={'primary'}/>)}
+          </div>
+          <ConstructorElementMobile
+            text={name}
+            price={price}
+            thumbnail={image_mobile}
+            handleClose={() => deleteIngredient(product._id)}
+          />
+        </li>
+      )}
+    </>
   );
 }
 
