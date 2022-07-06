@@ -1,0 +1,16 @@
+@import '../../assets/scss/variables.module';
+
+.root {
+  display: flex;
+  gap: 4rem;
+
+  margin: 0 auto;
+  max-width: 124rem;
+
+  composes: animation from '../BasePage.module.scss';
+
+  @media screen and (max-width: $large-mobile) {
+    flex-direction: column;
+    gap: 0;
+  }
+}

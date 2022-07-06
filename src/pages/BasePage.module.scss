@@ -1,10 +1,6 @@
-.root {
-  display: flex;
-  gap: 4rem;
+@import '../assets/scss/variables.module';
 
-  margin: 0 auto;
-  width: 124rem;
-
+.animation {
   opacity: 0;
   animation: fade 2s forwards;
 }

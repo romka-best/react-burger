@@ -2,6 +2,13 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  margin-top: 4rem;
+  margin-bottom: 6rem;
+}
+
+.root_big {
+  margin-top: 12rem;
 }
 
 .title {
@@ -9,16 +16,27 @@
   align-items: center;
   align-self: flex-start;
 
+  margin-left: 4rem;
   height: 6.4rem;
+}
+
+.title_big {
+  margin: 0;
+  align-self: center;
+
 }
 
 .image {
   width: 48rem;
   height: 24rem;
+
+  margin: 0 2rem 0;
 }
 
 .description {
+  display: block;
 
+  margin: 1.6rem 0 3.2rem;
 }
 
 .values {
@@ -38,9 +56,11 @@
 }
 
 .typeText {
+  display: block;
 
+  margin-bottom: .8rem;
 }
 
 .valueText {
-
+  display: block;
 }

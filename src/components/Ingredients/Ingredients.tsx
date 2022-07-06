@@ -1,20 +1,20 @@
-import React, {useRef} from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-
-import {useInView} from '../../hooks/useInView';
-import {useAppSelector} from '../../services/store';
-import {ActionParams, IngredientParams, ReducersParams} from '../../utils/types';
 
 import Ingredient from '../Ingredient/Ingredient';
 
-import ingredientsStyles from './Ingredients.module.css';
+import {ActionParams, IngredientParams, ReducersParams} from '../../utils/types';
+import {useAppSelector} from '../../services/store';
+
+import {useInView} from '../../hooks/useInView';
+
+import ingredientsStyles from './Ingredients.module.scss';
 
 interface IngredientsProps {
-  onClickModal: Function,
   setCurrentTab: Function
 }
 
-const Ingredients = ({onClickModal, setCurrentTab}: IngredientsProps) => {
+const Ingredients = ({setCurrentTab}: IngredientsProps) => {
   const ingredients: IngredientParams[] = useAppSelector((state: ReducersParams) => {
     return state.ingredients.ingredients;
   });
@@ -49,7 +49,7 @@ const Ingredients = ({onClickModal, setCurrentTab}: IngredientsProps) => {
               count: action.value.count
             }
           }
-          return ingredient
+          return ingredient;
         })
       }
       default:
@@ -63,39 +63,29 @@ const Ingredients = ({onClickModal, setCurrentTab}: IngredientsProps) => {
 
   React.useEffect(() => {
     for (let i = 0; i < ingredients.length; i++) {
+      const action = {
+        type: 'add',
+        value: {
+          ...ingredients[i],
+          count: 0
+        }
+      };
       switch (ingredients[i].type) {
         case 'bun': {
-          bunsDispatch({
-            type: 'add',
-            value: {
-              ...ingredients[i],
-              count: 0
-            }
-          });
+          bunsDispatch(action);
           break;
         }
         case 'sauce': {
-          saucesDispatch({
-            type: 'add',
-            value: {
-              ...ingredients[i],
-              count: 0
-            }
-          });
+          saucesDispatch(action);
           break;
         }
         case 'main': {
-          mainDispatch({
-            type: 'add',
-            value: {
-              ...ingredients[i],
-              count: 0
-            }
-          });
+          mainDispatch(action);
           break;
         }
       }
     }
+
     return () => {
       bunsDispatch({type: 'removeAll'});
       saucesDispatch({type: 'removeAll'});
@@ -103,9 +93,9 @@ const Ingredients = ({onClickModal, setCurrentTab}: IngredientsProps) => {
     }
   }, []);
 
-  const bunsRef = useRef(null);
-  const saucesRef = useRef(null);
-  const mainRef = useRef(null);
+  const bunsRef = React.useRef(null);
+  const saucesRef = React.useRef(null);
+  const mainRef = React.useRef(null);
 
   const bunsInView = useInView(bunsRef);
   const saucesInView = useInView(saucesRef);
@@ -131,63 +121,51 @@ const Ingredients = ({onClickModal, setCurrentTab}: IngredientsProps) => {
 
     const updateCount = (listIds: string[], array: IngredientParams[], dispatch: React.Dispatch<ActionParams>) => {
       for (let i = 0; i < array.length; i++) {
-        if (listIds.indexOf(array[i]._id) !== -1) {
-          dispatch({
-            type: 'update', value: {
-              ...array[i],
-              count: listIds.filter((ingredientId) => ingredientId === array[i]._id).length
-            }
-          })
-        } else {
-          dispatch({
-            type: 'update', value: {
-              ...array[i],
-              count: 0
-            }
-          })
-        }
+        dispatch({
+          type: 'update',
+          value: {
+            ...array[i],
+            count: listIds.indexOf(array[i]._id) !== -1 ? listIds.filter((ingredientId) => ingredientId === array[i]._id).length : 0
+          }
+        })
       }
     }
 
     updateCount(burgerConstructorBunsIds, buns, bunsDispatch);
     updateCount(burgerConstructorIngredientsIds, sauces, saucesDispatch);
     updateCount(burgerConstructorIngredientsIds, main, mainDispatch);
-  }, [burgerConstructorIngredients.length, burgerConstructorBuns.length])
+  }, [burgerConstructorIngredients.length, burgerConstructorBuns]);
 
   return (
-    <div className={`${ingredientsStyles.root} mt-10`}>
+    <div className={`${ingredientsStyles.root}`}>
       <section id={'buns'} ref={bunsRef}>
-        <h2 className={`${ingredientsStyles.title} text text_type_main-medium mb-6`}>Булки</h2>
-        <div className={`${ingredientsStyles.data} ml-4`}>
+        <h2 className={`${ingredientsStyles.title} text text_type_main-medium`}>Булки</h2>
+        <div className={ingredientsStyles.data}>
           {
-            buns.map((bun) => {
-              return (
-                <Ingredient count={bun.count ? bun.count : 0} key={bun._id} ingredient={bun}
-                            onClickModal={onClickModal}/>
-              )
-            })
+            buns.map((bun) =>
+              <Ingredient count={bun.count ? bun.count : 0} key={bun._id} ingredient={bun}/>
+            )
           }
         </div>
       </section>
-      <section id={'sauces'} ref={saucesRef}>
-        <h2 className={`${ingredientsStyles.title} text text_type_main-medium mt-10 mb-6`}>Соусы</h2>
-        <div className={`${ingredientsStyles.data} ml-4`}>
+      <section id={'sauces'} ref={saucesRef} onScroll={() => {
+      }}>
+        <h2 className={`${ingredientsStyles.title} text text_type_main-medium`}>Соусы</h2>
+        <div className={ingredientsStyles.data}>
           {
-            sauces.map((sauce) => (
-              <Ingredient count={sauce.count ? sauce.count : 0} key={sauce._id} ingredient={sauce}
-                          onClickModal={onClickModal}/>
-            ))
+            sauces.map((sauce) =>
+              <Ingredient count={sauce.count ? sauce.count : 0} key={sauce._id} ingredient={sauce}/>
+            )
           }
         </div>
       </section>
       <section id={'main'} ref={mainRef}>
-        <h2 className={`${ingredientsStyles.title} text text_type_main-medium mt-10 mb-6`} id={'main'}>Начинки</h2>
-        <div className={`${ingredientsStyles.data} ml-4`}>
+        <h2 className={`${ingredientsStyles.title} text text_type_main-medium`} id={'main'}>Начинки</h2>
+        <div className={ingredientsStyles.data}>
           {
-            main.map((main) => (
-              <Ingredient count={main.count ? main.count : 0} key={main._id} ingredient={main}
-                          onClickModal={onClickModal}/>
-            ))
+            main.map((main) =>
+              <Ingredient count={main.count ? main.count : 0} key={main._id} ingredient={main}/>
+            )
           }
         </div>
       </section>
@@ -196,7 +174,6 @@ const Ingredients = ({onClickModal, setCurrentTab}: IngredientsProps) => {
 }
 
 Ingredients.propTypes = {
-  onClickModal: PropTypes.func.isRequired,
   setCurrentTab: PropTypes.func.isRequired,
 }
 

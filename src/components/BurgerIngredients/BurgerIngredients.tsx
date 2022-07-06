@@ -1,28 +1,36 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
-import {Tab} from '@ya.praktikum/react-developer-burger-ui-components';
-import burgerIngredientsStyles from './BurgerIngredients.module.css';
-
+import Tab from '../Tab/Tab';
 import Ingredients from '../Ingredients/Ingredients';
 
-interface BurgerIngredientsProps {
-  onClickModal: Function
-}
+import {ReducersParams} from '../../utils/types';
+import {useAppSelector} from '../../services/store';
 
-const BurgerIngredients = ({onClickModal}: BurgerIngredientsProps) => {
+import burgerIngredientsStyles from './BurgerIngredients.module.scss';
+
+const BurgerIngredients = () => {
   const [current, setCurrent] = React.useState('buns');
 
   const handleClick = (value: string) => {
-    setCurrent(value);
-    document.getElementById(value)!.scrollIntoView({
-      behavior: 'smooth'
-    });
-  }
+    const element = document.getElementById(value);
+    if (element !== null) {
+      setCurrent(value);
+      element.scrollIntoView({
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  const {type} = useAppSelector((state: ReducersParams) => {
+    return state.ui;
+  });
 
   return (
     <section className={`${burgerIngredientsStyles.root}`}>
-      <h1 className={`${burgerIngredientsStyles.title} text text_type_main-large mt-10 mb-5`}>Соберите бургер</h1>
+      <h1
+        className={`${burgerIngredientsStyles.title} text ${type === 'desktop' || type === 'laptop' || type === 'tablet' ? 'text_type_main-large' : 'text_type_main-medium'}`}>
+        Соберите бургер
+      </h1>
       <div className={burgerIngredientsStyles.tabs}>
         <Tab active={current === 'buns'} value={'buns'} onClick={handleClick}>
           Булки
@@ -34,13 +42,9 @@ const BurgerIngredients = ({onClickModal}: BurgerIngredientsProps) => {
           Начинки
         </Tab>
       </div>
-      <Ingredients onClickModal={onClickModal} setCurrentTab={setCurrent}/>
+      <Ingredients setCurrentTab={setCurrent}/>
     </section>
   );
-}
-
-BurgerIngredients.propTypes = {
-  onClickModal: PropTypes.func.isRequired,
 }
 
 export default BurgerIngredients;

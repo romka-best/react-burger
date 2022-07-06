@@ -20,6 +20,11 @@ interface ActionParams {
   value?: IngredientParams
 }
 
+interface InitialModalParams {
+  modalIsVisible: boolean,
+  modalType: '' | 'orderDetails' | 'ingredientDetails',
+}
+
 interface InitialIngredientsParams {
   ingredients: Array<IngredientParams>,
   currentIngredient: IngredientParams,
@@ -41,14 +46,44 @@ interface InitialOrderParams {
   orderFailedTextError: string,
 }
 
+interface InitialUiParams {
+  width: number,
+  type: 'desktop' | 'laptop' | 'tablet' | 'mobile',
+  breakpoints: {
+    desktop?: number,
+    laptop: number,
+    tablet: number,
+    mobile: number,
+  }
+}
+
+interface InitialUserParams {
+  isAuthenticated: boolean,
+  email: string,
+  name: string,
+  userRequest: boolean,
+  userFailed: boolean,
+  userFailedTextError: string,
+}
+
 interface ReducersParams {
+  user: InitialUserParams,
+  modal: InitialModalParams,
   ingredients: InitialIngredientsParams,
   burgerConstructor: InitialBurgerConstructorParams,
-  order: InitialOrderParams
+  order: InitialOrderParams,
+  ui: InitialUiParams,
 }
 
 interface ItemParams {
   index: number
+}
+
+interface LocationState {
+  background: any;
+  from: {
+    pathname: string;
+  };
 }
 
 const ingredientDetailsPropTypes = PropTypes.shape({
@@ -67,12 +102,16 @@ const ingredientDetailsPropTypes = PropTypes.shape({
 
 export type {
   IngredientParams,
+  InitialModalParams,
   InitialIngredientsParams,
   InitialOrderParams,
   InitialBurgerConstructorParams,
+  InitialUiParams,
+  InitialUserParams,
   ReducersParams,
   ItemParams,
   ActionParams,
+  LocationState,
 };
 
 export {ingredientDetailsPropTypes};

@@ -1,55 +1,110 @@
+/*
+  1. React-библиотеки
+  2. Чужие страницы
+  3. Чужие компоненты
+  4. Утилсы, services
+  5. Функции свои
+  6. Свои стили
+ */
+
 import React from 'react';
 
 import CustomError from '../CustomError/CustomError';
 import AppHeader from '../AppHeader/AppHeader';
-import Main from '../Main/Main';
 import OrderDetails from '../OrderDetails/OrderDetails';
 import IngredientDetails from '../IngredientDetails/IngredientDetails';
 import Modal from '../Modal/Modal';
 
-import {useAppDispatch} from '../../services/store';
-import {ingredientsSlice} from '../../services/slices/indredients';
+import {Route, Switch, useLocation} from 'react-router-dom';
+import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
+import MainPage from '../../pages/Main/MainPage';
+import LoginPage from '../../pages/Login/LoginPage';
+import RegisterPage from '../../pages/Register/RegisterPage';
+import ForgotPasswordPage from '../../pages/ForgotPassword/ForgotPasswordPage';
+import ResetPasswordPage from '../../pages/ResetPassword/ResetPasswordPage';
+import ProfilePage from '../../pages/Profile/ProfilePage';
+import NotFound404Page from '../../pages/NotFound404/NotFound404Page';
 
-import appStyles from './App.module.css';
+import {LocationState, ReducersParams} from '../../utils/types';
+import {useAppDispatch, useAppSelector} from '../../services/store';
+import {uiSlice} from '../../services/slices/ui';
+
+import appStyles from './App.module.scss';
 
 function App() {
-  const [state, setState] = React.useState({
-    currentPage: 'Конструктор',
-    modalIsVisible: false,
-    modalType: '',
+  const dispatch = useAppDispatch();
+  const location = useLocation<LocationState>();
+
+  const {modalIsVisible, modalType} = useAppSelector((state: ReducersParams) => {
+    return state.modal;
   });
 
-  const dispatch = useAppDispatch();
-
-  const handleOpenModal = (modalType: 'orderDetails' | 'ingredientDetails', data: object) => {
-    if (modalType === 'orderDetails') {
-      setState({...state, modalIsVisible: true, modalType: 'orderDetails'});
-    } else if (modalType === 'ingredientDetails') {
-      setState({...state, modalIsVisible: true, modalType: 'ingredientDetails'});
-      dispatch(ingredientsSlice.actions.putIngredientDetails(data));
-    }
-  }
-
   const getActualModal = () => {
-    switch (state.modalType) {
+    switch (modalType) {
       case 'orderDetails':
         return (<OrderDetails/>)
-      case 'ingredientDetails':
-        return (<IngredientDetails/>)
       default:
         return (<CustomError textError={'При открытии модального окна произошла ошибка 😢'}/>);
     }
   }
 
-  const handleCloseModal = () => {
-    setState({...state, modalIsVisible: false, modalType: ''});
-  }
+  React.useEffect(() => {
+    const handleSubscribeResize = () => {
+      dispatch(uiSlice.actions.updateTypeDevice(document.documentElement.clientWidth));
+    }
+
+    const onSubscribeResize = () => window.addEventListener('resize', handleSubscribeResize);
+    const offSubscribeResize = () => window.removeEventListener('resize', handleSubscribeResize);
+    handleSubscribeResize();
+    onSubscribeResize();
+
+    return () => offSubscribeResize();
+
+  }, [dispatch]);
+
+  const background = location.state?.background;
 
   return (
     <div className={appStyles.root}>
-      <AppHeader currentPage={state.currentPage}/>
-      <Main state={state} onClickModal={handleOpenModal}/>
-      {state.modalIsVisible && <Modal onClose={handleCloseModal}>{getActualModal()}</Modal>}
+      <Route path='/'>
+        <AppHeader/>
+      </Route>
+      <Switch location={background || location}>
+        <Route path='/' exact={true}>
+          <MainPage/>
+        </Route>
+        <ProtectedRoute path='/login' exact={true} isNeedAuth={false}>
+          <LoginPage/>
+        </ProtectedRoute>
+        <ProtectedRoute path='/register' exact={true} isNeedAuth={false}>
+          <RegisterPage/>
+        </ProtectedRoute>
+        <ProtectedRoute path='/forgot-password' exact={true} isNeedAuth={false}>
+          <ForgotPasswordPage/>
+        </ProtectedRoute>
+        <ProtectedRoute path='/reset-password' exact={true} isNeedAuth={false}>
+          <ResetPasswordPage/>
+        </ProtectedRoute>
+        <ProtectedRoute path='/profile'>
+          <ProfilePage/>
+        </ProtectedRoute>
+        <Route path='/ingredients/:id'>
+          <IngredientDetails/>
+        </Route>
+        <Route>
+          <NotFound404Page/>
+        </Route>
+      </Switch>
+      <Switch>
+        {background && (
+          <Route path='/ingredients/:id'>
+            <Modal>
+              <IngredientDetails/>
+            </Modal>
+          </Route>
+        )}
+      </Switch>
+      {(modalIsVisible && modalType !== 'ingredientDetails') && <Modal>{getActualModal()}</Modal>}
     </div>
   );
 }

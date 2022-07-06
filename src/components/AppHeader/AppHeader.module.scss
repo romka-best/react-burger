@@ -1,0 +1,169 @@
+@import '../../assets/scss/variables.module.scss';
+
+.root {
+  background-color: $interface-modal-bg-color;
+
+  box-shadow: 0 2.4rem 3.2rem rgba(0, 0, 0, .04),
+  0 1.6rem 2.4rem rgba(0, 0, 0, .04),
+  0 .4rem .8rem rgba(0, 0, 0, .04),
+  0 0 .1rem rgba(0, 0, 0, .04);
+
+  padding-top: 1.6rem;
+  padding-bottom: 1.6rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+
+  @media screen and (max-width: $large-mobile) {
+    padding: 0;
+    min-height: 6.4rem;
+  }
+}
+
+.navigation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 128rem;
+
+  @media screen and (max-width: $large-mobile) {
+    margin-left: .8rem;
+    margin-right: .8rem;
+    width: 100%;
+  }
+}
+
+.navButtons {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  min-width: 39rem;
+
+  display: flex;
+
+  @media screen and (max-width: $large-mobile) {
+    min-width: 30.4rem;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.navButtons_left {
+  justify-content: flex-start;
+}
+
+.navButtons_right {
+  justify-content: flex-end;
+}
+
+.logoButtonImage {
+  width: 100%;
+}
+
+.logoButton {
+  width: 4rem;
+  max-height: 4rem;
+}
+
+.menuButton {
+  width: 2.4rem;
+  max-height: 2.4rem;
+}
+
+.navButton {
+  transition: opacity linear .2s;
+}
+
+.navButton:hover {
+  opacity: 50%;
+  cursor: pointer;
+}
+
+.navButton:not(:first-child) {
+  margin-left: .8rem;
+}
+
+.navButtonLink {
+  padding: 1.6rem 2rem 1.6rem 2rem;
+
+  text-decoration: none;
+  display: flex;
+}
+
+.navButtonText {
+  margin-left: .8rem;
+}
+
+.navButton_selected {
+  color: #f2f2f3;
+}
+
+.rootExpandedMenu {
+  width: 100%;
+  height: 100vh;
+  background-color: $interface-modal-bg-color;
+}
+
+.expandedMenuHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 1.6rem 0 1.6rem;
+}
+
+.expandedMenuTitle {
+  display: block;
+}
+
+.expandedMenuPages {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.expandedMenuPage {
+  text-decoration: none;
+  display: flex;
+}
+
+.expandedMenuPageButton {
+  padding: 1.2rem 0;
+}
+
+.expandedMenuPage_selected {
+  color: #f2f2f3;
+}
+
+.expandedMenuPageText {
+  margin-left: .8rem;
+}
+
+.expandedMenuIconArrow {
+  display: flex;
+  margin-left: auto;
+}
+
+.expandedMenuSubPages {
+  composes: expandedMenuPages;
+  margin-top: 1.2rem;
+}
+
+.expandedMenuSubPage {
+  composes: expandedMenuPage;
+}
+
+.expandedMenuSubPageButton {
+  padding: 1rem 0;
+}
+
+.expandedMenuSubPage_selected {
+  composes: expandedMenuPage_selected;
+}
+
+.expandedMenuSubPageText {
+  margin-left: 4rem;
+}

@@ -1,6 +1,6 @@
 import React, {ErrorInfo} from 'react';
 
-import errorBoundaryStyles from './ErrorBoundary.module.css';
+import errorBoundaryStyles from './ErrorBoundary.module.scss';
 
 interface ErrorBoundaryProps {
 
@@ -17,7 +17,7 @@ export default class ErrorBoundary extends React.Component<{}, { hasError: boole
   }
 
   componentDidCatch(error: Error, info: ErrorInfo) {
-    console.log("Возникла ошибка!", error, info);
+    console.log('Возникла ошибка!', error, info);
   }
 
   render() {
