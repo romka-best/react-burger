@@ -1,14 +1,12 @@
 import React, {SyntheticEvent} from 'react';
-
 import {Link, useHistory} from 'react-router-dom';
 
 import {Input, Button} from '@ya.praktikum/react-developer-burger-ui-components';
 
-import {useAppDispatch, useAppSelector} from '../../services/store';
-import {sendCodeForResetPassword, userSlice} from '../../services/slices/user';
-
 import {ReducersParams} from '../../utils/types';
 import {isCorrectEmail} from '../../utils/functions';
+import {useAppDispatch, useAppSelector} from '../../services/store';
+import {sendCodeForResetPassword, userSlice} from '../../services/slices/user';
 
 import forgotPasswordStyles from './ForgotPasswordPage.module.scss';
 

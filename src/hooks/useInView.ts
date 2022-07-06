@@ -10,7 +10,7 @@ export function useInView(ref: MutableRefObject<HTMLElement> | MutableRefObject<
       {
         root: null,
         rootMargin: '0%',
-        threshold: 0
+        threshold: 0.1
       }
     );
     if (ref.current) {

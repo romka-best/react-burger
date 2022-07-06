@@ -1,16 +1,15 @@
 import React, {SyntheticEvent} from 'react';
 import {NavLink, useRouteMatch, Switch, Route, useHistory, Redirect} from 'react-router-dom';
 
-import {useAppDispatch, useAppSelector} from '../../services/store';
-import {getUserInfo, logout, userSlice, updateUserInfo} from '../../services/slices/user';
+import {Button, Input} from '@ya.praktikum/react-developer-burger-ui-components';
 
 import {ReducersParams} from '../../utils/types';
 import {isCorrectEmail, isCorrectPassword, isCorrectName} from '../../utils/functions';
+import {useAppDispatch, useAppSelector} from '../../services/store';
+import {getUserInfo, logout, userSlice, updateUserInfo} from '../../services/slices/user';
 
-import {Button, Input} from '@ya.praktikum/react-developer-burger-ui-components';
-
+import {NameParams, LoginParams, PasswordParams} from './ProfilePageTypes';
 import profileStyles from './ProfilePage.module.scss';
-import resetPasswordStyles from "../ResetPassword/ResetPasswordPage.module.scss";
 
 const ProfilePage = () => {
   const dispatch = useAppDispatch();
@@ -18,33 +17,19 @@ const ProfilePage = () => {
   const history = useHistory();
   const {path} = useRouteMatch();
 
-  const [nameParams, setNameParams] = React.useState<{
-    oldName: string,
-    name: string,
-    canChange: boolean,
-    correctName: boolean
-  }>({
+  const [nameParams, setNameParams] = React.useState<NameParams>({
     oldName: '',
     name: '',
     canChange: false,
     correctName: true
   });
-  const [loginParams, setLoginParams] = React.useState<{
-    oldLogin: string,
-    login: string,
-    correctLogin: boolean,
-    canChange: boolean
-  }>({
+  const [loginParams, setLoginParams] = React.useState<LoginParams>({
     oldLogin: '',
     login: '',
     correctLogin: true,
     canChange: false
   });
-  const [passwordParams, setPasswordParams] = React.useState<{
-    password: string,
-    canChange: boolean,
-    correctPassword: boolean,
-  }>({
+  const [passwordParams, setPasswordParams] = React.useState<PasswordParams>({
     password: '',
     canChange: false,
     correctPassword: false,
@@ -267,7 +252,7 @@ const ProfilePage = () => {
                    size={type === 'mobile' ? 'small' : 'default'}
             />
             <Input type={passwordParams.canChange ? 'text' : 'password'}
-                   placeholder={type === 'mobile' ? 'Пароль': 'Введите новый пароль'}
+                   placeholder={type === 'mobile' ? 'Пароль' : 'Введите новый пароль'}
                    value={passwordParams.password}
                    onChange={(e) => setPasswordParams({
                      ...passwordParams,

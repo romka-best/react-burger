@@ -1,7 +1,7 @@
 import React from 'react';
 import {useLocation, useRouteMatch} from 'react-router-dom';
 
-import {IngredientParams, ReducersParams} from '../../utils/types';
+import {IngredientParams, LocationState, ReducersParams} from '../../utils/types';
 import {useAppDispatch, useAppSelector} from '../../services/store';
 import {getIngredients, ingredientsSlice} from '../../services/slices/ingredients';
 
@@ -9,8 +9,8 @@ import ingredientDetailsStyle from './IngredientDetails.module.scss';
 
 const IngredientDetails = () => {
   const dispatch = useAppDispatch();
-  const location = useLocation();
-  const {params} = useRouteMatch();
+  const location = useLocation<LocationState>();
+  const {params} = useRouteMatch<{ id: string }>();
   const currentIngredient = useAppSelector((state: ReducersParams) => {
     return state.ingredients.currentIngredient;
   });
@@ -21,7 +21,6 @@ const IngredientDetails = () => {
         dispatch(getIngredients())
           .unwrap()
           .then((allIngredients) => {
-            // @ts-ignore
             const ingredient = allIngredients.filter((ingredient: IngredientParams) => ingredient._id === params.id)[0];
             dispatch(ingredientsSlice.actions.putIngredientDetails(ingredient));
           });
@@ -29,7 +28,6 @@ const IngredientDetails = () => {
     }, [params, currentIngredient._id, dispatch]
   );
 
-  // @ts-ignore
   const background = location.state?.background;
 
   return (

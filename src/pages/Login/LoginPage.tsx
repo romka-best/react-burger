@@ -1,20 +1,13 @@
 import React, {SyntheticEvent} from 'react';
-
 import {Link, useHistory, useLocation} from 'react-router-dom';
 
 import {PasswordInput, Button, Input} from '@ya.praktikum/react-developer-burger-ui-components';
 
+import {LocationState, ReducersParams} from '../../utils/types';
 import {useAppDispatch, useAppSelector} from '../../services/store';
 import {userSlice, signIn} from '../../services/slices/user';
 
 import loginStyles from './LoginPage.module.scss';
-import {ReducersParams} from '../../utils/types';
-
-interface LocationState {
-  from: {
-    pathname: string;
-  };
-}
 
 const LoginPage = () => {
   const dispatch = useAppDispatch();

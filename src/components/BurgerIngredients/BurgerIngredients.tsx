@@ -1,11 +1,12 @@
 import React from 'react';
 
 import Tab from '../Tab/Tab';
-import burgerIngredientsStyles from './BurgerIngredients.module.scss';
-
 import Ingredients from '../Ingredients/Ingredients';
-import {useAppSelector} from "../../services/store";
-import {ReducersParams} from "../../utils/types";
+
+import {ReducersParams} from '../../utils/types';
+import {useAppSelector} from '../../services/store';
+
+import burgerIngredientsStyles from './BurgerIngredients.module.scss';
 
 const BurgerIngredients = () => {
   const [current, setCurrent] = React.useState('buns');

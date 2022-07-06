@@ -32,7 +32,11 @@
 }
 
 .title {
-  display: block;
+  margin-bottom: 2.4rem;
+}
+
+.title:not(:first-of-type) {
+  margin: 4rem 0 2.4rem;
 }
 
 .data {

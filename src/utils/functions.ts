@@ -21,7 +21,7 @@ export const isCorrectName = (name: string) => {
   return Boolean(
     String(name)
       .match(
-        /^[0-9a-zA-Z]{2,}$/
+        /^[0-9a-zA-Zа-яА-Я]{2,}$/
       )
   )
 }

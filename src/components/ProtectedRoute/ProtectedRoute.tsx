@@ -3,11 +3,9 @@ import React from 'react';
 import {Redirect, Route} from 'react-router-dom';
 
 import {ReducersParams} from '../../utils/types';
+import {getCookie} from '../../utils/functions';
 import {useAppDispatch, useAppSelector} from '../../services/store';
 import {updateToken, userSlice} from '../../services/slices/user';
-
-import {getCookie} from '../../utils/functions';
-
 
 interface ProtectedRouteProps {
   children: React.ReactElement,

@@ -79,6 +79,13 @@ interface ItemParams {
   index: number
 }
 
+interface LocationState {
+  background: any;
+  from: {
+    pathname: string;
+  };
+}
+
 const ingredientDetailsPropTypes = PropTypes.shape({
   _id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
@@ -104,6 +111,7 @@ export type {
   ReducersParams,
   ItemParams,
   ActionParams,
+  LocationState,
 };
 
 export {ingredientDetailsPropTypes};

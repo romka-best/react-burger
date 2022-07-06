@@ -1,15 +1,14 @@
 import React, {SyntheticEvent} from 'react';
-
 import {Link, useHistory} from 'react-router-dom';
 
 import {Input, PasswordInput, Button} from '@ya.praktikum/react-developer-burger-ui-components';
 
+import {ReducersParams} from '../../utils/types';
+import {isCorrectEmail, isCorrectName, isCorrectPassword} from '../../utils/functions';
 import {useAppDispatch, useAppSelector} from '../../services/store';
 import {registration, userSlice} from '../../services/slices/user';
 
 import registerStyles from './RegisterPage.module.scss';
-import {ReducersParams} from '../../utils/types';
-import {isCorrectEmail, isCorrectName, isCorrectPassword} from '../../utils/functions';
 
 const RegisterPage = () => {
   const dispatch = useAppDispatch();

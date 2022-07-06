@@ -1,14 +1,13 @@
 import React, {SyntheticEvent} from 'react';
-
 import {Link, useHistory} from 'react-router-dom';
 
 import {Input, Button} from '@ya.praktikum/react-developer-burger-ui-components';
 
+import {ReducersParams} from '../../utils/types';
 import {useAppDispatch, useAppSelector} from '../../services/store';
 import {userSlice, resetPassword} from '../../services/slices/user';
 
 import resetPasswordStyles from './ResetPasswordPage.module.scss';
-import {ReducersParams} from '../../utils/types';
 
 const ForgotPasswordPage = () => {
   const dispatch = useAppDispatch();

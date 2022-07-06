@@ -2,15 +2,15 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {useHistory} from 'react-router-dom';
 import PropTypes from 'prop-types';
+
 import {CloseIcon} from '@ya.praktikum/react-developer-burger-ui-components';
 
 import ModalOverlay from '../ModalOverlay/ModalOverlay';
 
+import {ReducersParams} from '../../utils/types';
 import {useAppDispatch, useAppSelector} from '../../services/store';
 import {modalSlice} from '../../services/slices/modal';
 import {burgerConstructorSlice} from '../../services/slices/burgerConstructor';
-
-import {ReducersParams} from '../../utils/types';
 
 import modalStyles from './Modal.module.scss';
 

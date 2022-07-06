@@ -1,4 +1,4 @@
-import React, {SyntheticEvent} from 'react';
+import React from 'react';
 import {NavLink, useHistory, useRouteMatch} from 'react-router-dom';
 
 import {
@@ -7,7 +7,9 @@ import {
   ListIcon,
   ProfileIcon,
   MenuIcon,
-  CloseIcon, ArrowDownIcon, ArrowUpIcon
+  CloseIcon,
+  ArrowDownIcon,
+  ArrowUpIcon
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import LogoMobile from '../../assets/images/logo.svg';
 
@@ -138,7 +140,7 @@ const AppHeader = () => {
                         (<ProfileIcon type={'secondary'}/>)}
                       <p className={`${headerStyles.expandedMenuPageText} text text_type_main-default`}>Личный
                         кабинет</p>
-                      <div className={headerStyles.expandedMenuIconArrow} onClick={(evt: SyntheticEvent) => {
+                      <div className={headerStyles.expandedMenuIconArrow} onClick={(evt: React.SyntheticEvent) => {
                         evt.stopPropagation();
                         evt.preventDefault();
                       }}>

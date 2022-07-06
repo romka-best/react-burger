@@ -1,3 +1,12 @@
+/*
+  1. React-библиотеки
+  2. Чужие страницы
+  3. Чужие компоненты
+  4. Утилсы, services
+  5. Функции свои
+  6. Свои стили
+ */
+
 import React from 'react';
 
 import CustomError from '../CustomError/CustomError';
@@ -16,7 +25,7 @@ import ResetPasswordPage from '../../pages/ResetPassword/ResetPasswordPage';
 import ProfilePage from '../../pages/Profile/ProfilePage';
 import NotFound404Page from '../../pages/NotFound404/NotFound404Page';
 
-import {ReducersParams} from '../../utils/types';
+import {LocationState, ReducersParams} from '../../utils/types';
 import {useAppDispatch, useAppSelector} from '../../services/store';
 import {uiSlice} from '../../services/slices/ui';
 
@@ -24,7 +33,7 @@ import appStyles from './App.module.scss';
 
 function App() {
   const dispatch = useAppDispatch();
-  const location = useLocation();
+  const location = useLocation<LocationState>();
 
   const {modalIsVisible, modalType} = useAppSelector((state: ReducersParams) => {
     return state.modal;
@@ -53,7 +62,6 @@ function App() {
 
   }, [dispatch]);
 
-  // @ts-ignore
   const background = location.state?.background;
 
   return (
@@ -96,7 +104,7 @@ function App() {
           </Route>
         )}
       </Switch>
-      {modalIsVisible && modalType !== 'ingredientDetails' && <Modal>{getActualModal()}</Modal>}
+      {(modalIsVisible && modalType !== 'ingredientDetails') && <Modal>{getActualModal()}</Modal>}
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import React, {SyntheticEvent} from 'react';
+import React from 'react';
 import {useLocation, useHistory} from 'react-router-dom';
 import {useDrag} from 'react-dnd';
 
@@ -8,9 +8,9 @@ import {ingredientDetailsPropTypes, IngredientParams, ReducersParams} from '../.
 import {useAppDispatch, useAppSelector} from '../../services/store';
 import {modalSlice} from '../../services/slices/modal';
 import {ingredientsSlice} from '../../services/slices/ingredients';
+import {burgerConstructorSlice} from '../../services/slices/burgerConstructor';
 
 import ingredientStyles from './Ingredient.module.scss';
-import {burgerConstructorSlice} from "../../services/slices/burgerConstructor";
 
 interface IngredientProps {
   ingredient: IngredientParams,
@@ -35,24 +35,6 @@ const Ingredient = ({ingredient, count = 0}: IngredientProps) => {
     image,
     type
   } = ingredient;
-
-  const {buns} = useAppSelector(
-    (state: ReducersParams) => state.burgerConstructor
-  );
-
-  const addBuns = (bun: IngredientParams) => {
-    if (buns.length > 0) {
-      dispatch(burgerConstructorSlice.actions.decrementTotalPrice(buns[0].price + buns[1].price));
-      dispatch(burgerConstructorSlice.actions.removeBuns());
-    }
-    dispatch(burgerConstructorSlice.actions.addBuns(bun));
-    dispatch(burgerConstructorSlice.actions.incrementTotalPrice(bun.price + bun.price));
-  }
-
-  const addIngredient = (ingredient: IngredientParams) => {
-    dispatch(burgerConstructorSlice.actions.addIngredient(ingredient));
-    dispatch(burgerConstructorSlice.actions.incrementTotalPrice(ingredient.price));
-  }
 
   const [{ingredientStyleRoot}, ref] = useDrag({
     type: 'NEW_INGREDIENT',
@@ -83,9 +65,9 @@ const Ingredient = ({ingredient, count = 0}: IngredientProps) => {
         typeDevice === 'mobile' && (
           <Button type='secondary' size='small' onClick={() => {
             if (type === 'bun') {
-              addBuns(ingredient);
+              dispatch(burgerConstructorSlice.actions.addBuns(ingredient))
             } else {
-              addIngredient(ingredient);
+              dispatch(burgerConstructorSlice.actions.addIngredient(ingredient));
             }
           }}>
             Добавить

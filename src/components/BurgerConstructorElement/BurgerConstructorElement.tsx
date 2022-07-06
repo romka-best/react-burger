@@ -1,18 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
 import {DropTargetMonitor, useDrag, useDrop} from 'react-dnd';
 
 import {
   DragIcon,
-  ConstructorElement, LockIcon
+  ConstructorElement,
+  LockIcon
 } from '@ya.praktikum/react-developer-burger-ui-components';
+
 import ConstructorElementMobile from '../ConstructorElementMobile/ConstructorElementMobile';
 
 import {ingredientDetailsPropTypes, IngredientParams, ItemParams, ReducersParams} from '../../utils/types';
+import {useAppSelector} from '../../services/store';
 
 import burgerConstructorElementStyles from './BurgerConstructorElement.module.scss';
-import {useAppSelector} from '../../services/store';
 
 interface BurgerConstructorElementProps {
   product: IngredientParams,

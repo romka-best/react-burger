@@ -1,4 +1,5 @@
 import React from 'react';
+
 import tabStyles from './Tab.module.scss';
 
 const Tab: React.FC<{

@@ -13,7 +13,7 @@ export const burgerConstructorSlice = createSlice({
   name: 'burgerConstructor',
   initialState: initialBurgerConstructorState,
   reducers: {
-    addIngredient: (state, {payload}: { payload: IngredientParams }) => {
+    addOnlyIngredient: (state, {payload}: { payload: IngredientParams }) => {
       return {
         ...state,
         ingredients: [
@@ -22,7 +22,17 @@ export const burgerConstructorSlice = createSlice({
         ]
       }
     },
-    removeIngredient: (state, action) => {
+    addIngredient: (state, {payload}: { payload: IngredientParams }) => {
+      return {
+        ...state,
+        ingredients: [
+          ...state.ingredients,
+          payload
+        ],
+        totalPrice: state.totalPrice + payload.price
+      }
+    },
+    removeOnlyIngredient: (state, action) => {
       let findId = false;
       return {
         ...state,
@@ -35,6 +45,20 @@ export const burgerConstructorSlice = createSlice({
         })
       }
     },
+    removeIngredient: (state, {payload: removedIngredient}: { payload: IngredientParams }) => {
+      let findId = false;
+      return {
+        ...state,
+        ingredients: [...state.ingredients].filter((ingredient) => {
+          if (ingredient._id === removedIngredient._id && !findId) {
+            findId = true;
+            return false;
+          }
+          return true;
+        }),
+        totalPrice: state.totalPrice - removedIngredient.price
+      }
+    },
     clearAll: (state) => {
       return {
         ...state,
@@ -43,7 +67,19 @@ export const burgerConstructorSlice = createSlice({
         totalPrice: 0
       }
     },
-    addBuns: (state, {payload}: { payload: IngredientParams }) => {
+    addBuns: (state, {payload: bun}: { payload: IngredientParams }) => {
+      let totalPrice = state.totalPrice;
+      if (state.buns.length > 0) {
+        totalPrice -= state.buns[0].price;
+        totalPrice -= state.buns[1].price;
+      }
+      return {
+        ...state,
+        buns: [bun, bun],
+        totalPrice: totalPrice + bun.price * 2
+      }
+    },
+    addOnlyBuns: (state, {payload}: { payload: IngredientParams }) => {
       return {
         ...state,
         buns: [
