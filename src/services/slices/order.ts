@@ -7,6 +7,14 @@ import {AxiosError} from 'axios';
 
 const initialOrderState: InitialOrderParams = {
   number: -1,
+  name: '',
+  status: {
+    text: '',
+    textColor: ''
+  },
+  date: '',
+  ingredients: [],
+  totalPrice: 0,
   orderRequest: false,
   orderFailed: false,
   orderFailedTextError: '',
@@ -39,7 +47,19 @@ export const createOrder = createAsyncThunk(
 export const orderSlice = createSlice({
   name: 'order',
   initialState: initialOrderState,
-  reducers: {},
+  reducers: {
+    putOrderDetails: (state, action) => {
+      return {
+        ...state,
+        number: action.payload.number,
+        name: action.payload.name,
+        status: action.payload.status,
+        date: action.payload.date,
+        ingredients: action.payload.ingredients,
+        totalPrice: action.payload.totalPrice
+      }
+    }
+  },
   extraReducers: (builder) => {
     builder
       .addCase(createOrder.fulfilled, (state, action) => {

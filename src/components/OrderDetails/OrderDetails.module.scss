@@ -1,18 +1,80 @@
+@import '../../assets/scss/variables.module';
+
 .root {
   display: flex;
   flex-direction: column;
+  max-width: 64rem;
+
+  margin: 4rem auto;
+
+  &_size_big {
+    margin: 11.3vh auto 0;
+  }
+}
+
+.id {
+  margin-bottom: 4rem;
+  text-align: center;
+}
+
+.title {
+
+}
+
+.info {
+  margin-bottom: 6rem;
+}
+
+.status {
+  margin-top: 1.2rem;
+}
+
+.ingredients {
+  display: flex;
+  flex-direction: column;
+}
+
+.listOfIngredients {
+  list-style: none;
+  margin: 2.4rem 0 4rem;
+  padding: 0 2.4rem 0 0;
+
+  max-height: calc(100vh - 58rem);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.6rem;
+
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: $text-secondary-color $interface-input-color;
+
+  &::-webkit-scrollbar {
+    width: .8rem;
+    background: $interface-input-color;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: $text-secondary-color;
+  }
+}
+
+.date {
+
+}
+
+.timePriceBlock {
+  display: flex;
+  justify-content: space-between;
+}
+
+.priceBlock {
+  display: flex;
   align-items: center;
 }
 
-.orderNumber {
-  text-shadow: 0 0 1.6rem rgba(51, 51, 255, 0.25), 0 0 .8rem rgba(51, 51, 255, 0.25), 0 .4rem 3.2rem rgba(51, 51, 255, 0.5);
-}
-
-.text {
-  display: block;
-}
-
-.done {
-  width: 12rem;
-  height: 12rem;
+.price {
+  margin-right: .8rem;
 }

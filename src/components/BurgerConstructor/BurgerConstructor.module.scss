@@ -2,6 +2,57 @@
 
 .root {
   margin-top: 10rem;
+
+  &_mobile {
+    display: block;
+  }
+}
+
+.rootFooter {
+  &_mobile {
+    background-color: $interface-modal-bg-color;
+    border-radius: 1.5rem 1.5rem 0 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 2rem;
+    padding: 1.6rem .8rem;
+
+    gap: 1.6rem;
+
+    position: relative;
+    z-index: 10;
+  }
+}
+
+.rootExpandedMenu {
+  &_mobile {
+    width: 100%;
+    height: 100vh;
+    background-color: $interface-bg-color;
+
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+}
+
+.expandedMenu {
+  &__header {
+    &_mobile {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 1.6rem .8rem 1.6rem;
+    }
+  }
+
+  &__title {
+    &_mobile {
+      display: block;
+    }
+  }
 }
 
 .ingredients {
@@ -26,15 +77,26 @@
   scrollbar-gutter: stable;
   scrollbar-width: thin;
   scrollbar-color: $text-secondary-color $interface-input-color;
-}
 
-.list::-webkit-scrollbar {
-  width: .8rem;
-  background: $interface-input-color;
-}
+  &_mobile {
+    list-style: none;
+    padding: 0;
+    margin: 0;
 
-.list::-webkit-scrollbar-thumb {
-  background-color: $text-secondary-color;
+    display: flex;
+    flex-direction: column;
+
+    max-height: calc(100% - 13.2rem);
+  }
+
+  &::-webkit-scrollbar {
+    width: .8rem;
+    background: $interface-input-color;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: $text-secondary-color;
+  }
 }
 
 .dropTarget {
@@ -74,20 +136,39 @@
 
   margin-right: 4rem;
   min-height: 6.4rem;
+
+  &_mobile {
+    display: flex;
+    gap: .8rem;
+  }
 }
 
 .price {
   margin-right: .8rem;
+
+  &_mobile {
+    min-width: 6rem;
+    text-align: right;
+  }
 }
 
 .infoMessage {
   text-align: center;
   margin: 1.6rem 0 1.6rem 1.6rem;
+
+  &_mobile {
+    composes: infoMessage;
+  }
 }
 
 .icon {
   width: 3.6rem;
   max-height: 3.6rem;
+
+  &_mobile {
+    width: 2.4rem;
+    max-height: 2.4rem;
+  }
 }
 
 .icon > svg {
@@ -95,79 +176,7 @@
   height: 100%;
 }
 
-// Мобильная верстка
-.root_mobile {
-  display: block;
-}
-
-.rootFooter_mobile {
-  background-color: $interface-modal-bg-color;
-  border-radius: 1.5rem 1.5rem 0 0;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 2rem;
-  padding: 1.6rem .8rem;
-
-  gap: 1.6rem;
-
-  position: relative;
-  z-index: 10;
-}
-
-.priceBlock_mobile {
-  display: flex;
-  gap: .8rem;
-}
-
-.price_mobile {
-  min-width: 6rem;
-  text-align: right;
-}
-
-.icon_mobile {
-  width: 2.4rem;
-  max-height: 2.4rem;
-}
-
 .icon_mobile > svg {
   width: 100%;
   height: 100%;
-}
-
-.rootExpandedMenu_mobile {
-  width: 100%;
-  height: 100vh;
-  background-color: $interface-bg-color;
-
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-.expandedMenuHeader_mobile {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin: 1.6rem .8rem 1.6rem;
-}
-
-.expandedMenuTitle_mobile {
-  display: block;
-}
-
-.infoMessage_mobile {
-  composes: infoMessage;
-}
-
-.list_mobile {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-
-  display: flex;
-  flex-direction: column;
-
-  max-height: calc(100% - 13.2rem);
 }

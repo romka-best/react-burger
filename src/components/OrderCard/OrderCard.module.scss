@@ -1,0 +1,102 @@
+@import '../../assets/scss/variables.module';
+
+.root {
+  display: flex;
+  flex-direction: column;
+  padding: 2.4rem;
+  gap: 2.4rem;
+
+  background: $interface-modal-bg-color;
+
+  box-shadow: 0 .4rem .8rem rgba(0, 0, 0, .04), 0 0 .2rem rgba(0, 0, 0, .06), 0 0 .1rem rgba(0, 0, 0, .04);
+  border-radius: 4rem;
+
+  width: 90%;
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+
+  &_vertical {
+    flex-direction: column;
+  }
+}
+
+.id {
+
+}
+
+.date {
+  margin-left: 1.6rem;
+}
+
+.name {
+  display: block;
+}
+
+.status {
+  margin-top: .2rem;
+}
+
+.ingredients {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  max-width: 30.4rem;
+  max-height: 6.4rem;
+}
+
+.ingredient {
+  margin: 0;
+  width: 6rem;
+  height: 6rem;
+
+  border: .2rem solid transparent;
+  border-radius: 50%;
+
+  background-image: linear-gradient($interface-modal-bg-color, $interface-modal-bg-color), $button-normal-color;
+  background-origin: border-box;
+  background-clip: content-box, border-box;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  position: relative;
+
+  &__photo {
+    width: 6.4rem;
+    max-height: 6.4rem;
+
+    &_location_last {
+      opacity: .6;
+    }
+  }
+
+  &:not(:first-of-type) {
+    margin-left: -2rem;
+  }
+}
+
+.ingredientsCount {
+  position: absolute;
+  text-align: center;
+  z-index: 1;
+}
+
+.priceBlock {
+  display: flex;
+  align-items: center;
+  margin-left: 2.4rem;
+}
+
+.price {
+  margin-right: .8rem;
+}

@@ -8,10 +8,9 @@ interface ConstructorElementMobileProps {
   text: string,
   price: number,
   thumbnail: string,
-  handleClose: Function
 }
 
-const ConstructorElementMobile = ({text, price, thumbnail, handleClose}: ConstructorElementMobileProps) => {
+const ConstructorElementMobile = ({text, price, thumbnail}: ConstructorElementMobileProps) => {
   return (
     <div className={constructorElementMobileStyles.root}>
       <img className={constructorElementMobileStyles.image} src={thumbnail} alt={text}/>

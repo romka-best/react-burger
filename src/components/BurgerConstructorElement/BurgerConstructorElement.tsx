@@ -103,7 +103,6 @@ const BurgerConstructorElement = ({
             text={name}
             price={price}
             thumbnail={image_mobile}
-            handleClose={() => deleteIngredient(product._id)}
           />
         </li>
       )}

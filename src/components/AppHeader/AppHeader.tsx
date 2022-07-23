@@ -14,50 +14,41 @@ import {
 import LogoMobile from '../../assets/images/logo.svg';
 
 import {ReducersParams} from '../../utils/types';
+import {exit} from '../../utils/functions';
 import {useAppDispatch, useAppSelector} from '../../services/store';
-import {logout} from '../../services/slices/user';
 
 import headerStyles from './AppHeader.module.scss';
 
 const AppHeader = () => {
   const dispatch = useAppDispatch();
   const history = useHistory();
-  const [navigationMenu, setNavigationMenu] = React.useState<{ isOpen: boolean, isExpanded: boolean }>({
-    isOpen: false,
-    isExpanded: false,
-  });
-
-  const isMainPage = useRouteMatch({
-    path: '/',
-    strict: true,
-    sensitive: true
-  });
-
-  const isOrdersPage = useRouteMatch({
-    path: '/orders',
-    strict: false,
-    sensitive: false
-  });
-
-  const isProfilePage = useRouteMatch({
-    path: '/profile',
-    strict: false,
-    sensitive: false
-  });
 
   const {type} = useAppSelector((state: ReducersParams) => {
     return state.ui;
   });
 
-  const exit = () => {
-    dispatch(logout())
-      .unwrap()
-      .then((res) => {
-        if (res.success) {
-          history.replace({pathname: '/login'});
-        }
-      });
-  }
+  const [navigationMenu, setNavigationMenu] = React.useState<{ isOpen: boolean, isExpanded: boolean }>({
+    isOpen: false,
+    isExpanded: false,
+  });
+
+  const pages = {
+    isMainPage: useRouteMatch({
+      path: '/',
+      strict: true,
+      sensitive: true
+    }),
+    isFeedPage: useRouteMatch({
+      path: '/feed',
+      strict: false,
+      sensitive: false
+    }),
+    isProfilePage: useRouteMatch({
+      path: '/profile',
+      strict: false,
+      sensitive: false
+    })
+  };
 
   const closeExpandedMenu = () => {
     setNavigationMenu({
@@ -65,7 +56,7 @@ const AppHeader = () => {
       isOpen: false,
       isExpanded: false
     })
-  }
+  };
 
   return (
     <header className={headerStyles.root}>
@@ -81,7 +72,7 @@ const AppHeader = () => {
                     activeClassName={`${headerStyles.navButton_selected}`}
                     exact={true}
                   >
-                    {isMainPage?.isExact ?
+                    {pages.isMainPage?.isExact ?
                       (<BurgerIcon type={'primary'}/>) :
                       (<BurgerIcon type={'secondary'}/>)}
                     <p className={`${headerStyles.navButtonText} text text_type_main-default`}>Конструктор</p>
@@ -89,11 +80,11 @@ const AppHeader = () => {
                 </li>
                 <li className={`${headerStyles.navButton}`}>
                   <NavLink
-                    to={{pathname: '/orders'}}
+                    to={{pathname: '/feed'}}
                     className={`${headerStyles.navButtonLink} text text_type_main-default text_color_inactive`}
                     activeClassName={`${headerStyles.navButton_selected} `}
                   >
-                    {isOrdersPage?.isExact ?
+                    {pages.isFeedPage?.path === '/feed' ?
                       (<ListIcon type={'primary'}/>) :
                       (<ListIcon type={'secondary'}/>)}
                     <p className={`${headerStyles.navButtonText} text text_type_main-default`}>Лента заказов</p>
@@ -108,7 +99,7 @@ const AppHeader = () => {
                     className={`${headerStyles.navButtonLink} text text_type_main-default text_color_inactive`}
                     activeClassName={`${headerStyles.navButton_selected}`}
                   >
-                    {isProfilePage?.path === '/profile' ?
+                    {pages.isProfilePage?.path === '/profile' ?
                       (<ProfileIcon type={'primary'}/>) :
                       (<ProfileIcon type={'secondary'}/>)}
                     <p className={`${headerStyles.navButtonText} text text_type_main-default`}>Личный кабинет</p>
@@ -135,7 +126,7 @@ const AppHeader = () => {
                       activeClassName={`${headerStyles.expandedMenuPage_selected}`}
                       onClick={closeExpandedMenu}
                     >
-                      {isProfilePage?.path === '/profile' ?
+                      {pages.isProfilePage?.path === '/profile' ?
                         (<ProfileIcon type={'primary'}/>) :
                         (<ProfileIcon type={'secondary'}/>)}
                       <p className={`${headerStyles.expandedMenuPageText} text text_type_main-default`}>Личный
@@ -146,7 +137,7 @@ const AppHeader = () => {
                       }}>
                         {
                           navigationMenu.isExpanded ? (
-                            isProfilePage?.path === '/profile' ?
+                            pages.isProfilePage?.path === '/profile' ?
                               (<ArrowUpIcon type={'primary'} onClick={() => setNavigationMenu({
                                 ...navigationMenu,
                                 isExpanded: false,
@@ -155,7 +146,7 @@ const AppHeader = () => {
                                 ...navigationMenu,
                                 isExpanded: false,
                               })}/>)
-                          ) : isProfilePage?.path === '/profile' ?
+                          ) : pages.isProfilePage?.path === '/profile' ?
                             (<ArrowDownIcon type={'primary'} onClick={() => setNavigationMenu({
                               ...navigationMenu,
                               isExpanded: true,
@@ -198,7 +189,10 @@ const AppHeader = () => {
                               </p>
                             </NavLink>
                           </li>
-                          <li className={headerStyles.expandedMenuSubPageButton} onClick={exit}>
+                          <li className={headerStyles.expandedMenuSubPageButton} onClick={() => {
+                            exit(dispatch, history);
+                            closeExpandedMenu();
+                          }}>
                             <p
                               className={`${headerStyles.expandedMenuSubPageText} text text_type_main-default text_color_inactive`}>
                               Выход
@@ -216,7 +210,7 @@ const AppHeader = () => {
                       exact={true}
                       onClick={closeExpandedMenu}
                     >
-                      {isMainPage?.isExact ?
+                      {pages.isMainPage?.isExact ?
                         (<BurgerIcon type={'primary'}/>) :
                         (<BurgerIcon type={'secondary'}/>)}
                       <p className={`${headerStyles.expandedMenuPageText} text text_type_main-default`}>
@@ -226,12 +220,12 @@ const AppHeader = () => {
                   </li>
                   <li className={headerStyles.expandedMenuPageButton}>
                     <NavLink
-                      to={{pathname: '/orders'}}
+                      to={{pathname: '/feed'}}
                       className={`${headerStyles.expandedMenuPage} text text_type_main-default text_color_inactive`}
                       activeClassName={`${headerStyles.expandedMenuPage_selected}`}
                       onClick={closeExpandedMenu}
                     >
-                      {isOrdersPage?.isExact ?
+                      {pages.isFeedPage?.isExact ?
                         (<ListIcon type={'primary'}/>) :
                         (<ListIcon type={'secondary'}/>)}
                       <p className={`${headerStyles.expandedMenuPageText} text text_type_main-default`}>

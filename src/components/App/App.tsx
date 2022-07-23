@@ -1,16 +1,8 @@
-/*
-  1. React-библиотеки
-  2. Чужие страницы
-  3. Чужие компоненты
-  4. Утилсы, services
-  5. Функции свои
-  6. Свои стили
- */
-
 import React from 'react';
 
 import CustomError from '../CustomError/CustomError';
 import AppHeader from '../AppHeader/AppHeader';
+import CreatedOrderDetails from '../CreatedOrderDetails/CreatedOrderDetails';
 import OrderDetails from '../OrderDetails/OrderDetails';
 import IngredientDetails from '../IngredientDetails/IngredientDetails';
 import Modal from '../Modal/Modal';
@@ -22,6 +14,7 @@ import LoginPage from '../../pages/Login/LoginPage';
 import RegisterPage from '../../pages/Register/RegisterPage';
 import ForgotPasswordPage from '../../pages/ForgotPassword/ForgotPasswordPage';
 import ResetPasswordPage from '../../pages/ResetPassword/ResetPasswordPage';
+import FeedPage from '../../pages/Feed/FeedPage';
 import ProfilePage from '../../pages/Profile/ProfilePage';
 import NotFound404Page from '../../pages/NotFound404/NotFound404Page';
 
@@ -30,6 +23,7 @@ import {useAppDispatch, useAppSelector} from '../../services/store';
 import {uiSlice} from '../../services/slices/ui';
 
 import appStyles from './App.module.scss';
+
 
 function App() {
   const dispatch = useAppDispatch();
@@ -41,8 +35,8 @@ function App() {
 
   const getActualModal = () => {
     switch (modalType) {
-      case 'orderDetails':
-        return (<OrderDetails/>)
+      case 'createdOrderDetails':
+        return (<CreatedOrderDetails/>)
       default:
         return (<CustomError textError={'При открытии модального окна произошла ошибка 😢'}/>);
     }
@@ -73,6 +67,12 @@ function App() {
         <Route path='/' exact={true}>
           <MainPage/>
         </Route>
+        <Route path='/feed' exact={true}>
+          <FeedPage/>
+        </Route>
+        <Route path='/feed/:id' exact={true}>
+          <OrderDetails/>
+        </Route>
         <ProtectedRoute path='/login' exact={true} isNeedAuth={false}>
           <LoginPage/>
         </ProtectedRoute>
@@ -88,23 +88,38 @@ function App() {
         <ProtectedRoute path='/profile'>
           <ProfilePage/>
         </ProtectedRoute>
-        <Route path='/ingredients/:id'>
+        {/*<ProtectedRoute path='/profile/orders/:id' exact={true}>*/}
+        {/*  <OrderDetails/>*/}
+        {/*</ProtectedRoute>*/}
+        <Route path='/ingredients/:id' exact={true}>
           <IngredientDetails/>
         </Route>
         <Route>
           <NotFound404Page/>
         </Route>
       </Switch>
-      <Switch>
-        {background && (
-          <Route path='/ingredients/:id'>
-            <Modal>
-              <IngredientDetails/>
-            </Modal>
-          </Route>
-        )}
-      </Switch>
-      {(modalIsVisible && modalType !== 'ingredientDetails') && <Modal>{getActualModal()}</Modal>}
+      {
+        background && (
+          <Switch>
+            <Route path='/ingredients/:id' exact={true}>
+              <Modal>
+                <IngredientDetails/>
+              </Modal>
+            </Route>
+            <Route path='/feed/:id' exact={true}>
+              <Modal>
+                <OrderDetails/>
+              </Modal>
+            </Route>
+            <Route path='/profile/orders/:id' exact={true}>
+              <Modal>
+                <OrderDetails/>
+              </Modal>
+            </Route>
+          </Switch>
+        )
+      }
+      {(modalIsVisible && modalType !== 'ingredientDetails' && modalType !== 'orderDetails') && <Modal>{getActualModal()}</Modal>}
     </div>
   );
 }

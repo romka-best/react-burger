@@ -1,4 +1,6 @@
+import {PayloadAction} from '@reduxjs/toolkit';
 import PropTypes from 'prop-types';
+import {wsActionsOrders, wsActionsOrdersAll} from '../services/actions';
 
 interface IngredientParams {
   _id: string,
@@ -15,6 +17,22 @@ interface IngredientParams {
   count?: number
 }
 
+interface OrderParams {
+  createdAt: string;
+  ingredients: Array<string>;
+  name: string;
+  number: number;
+  status: string;
+  updatedAt: string;
+  _id: string;
+}
+
+interface OrdersParams {
+  orders: Array<OrderParams>;
+  total: number;
+  totalToday: number;
+}
+
 interface ActionParams {
   type: string,
   value?: IngredientParams
@@ -22,7 +40,7 @@ interface ActionParams {
 
 interface InitialModalParams {
   modalIsVisible: boolean,
-  modalType: '' | 'orderDetails' | 'ingredientDetails',
+  modalType: '' | 'createdOrderDetails' | 'orderDetails' | 'ingredientDetails',
 }
 
 interface InitialIngredientsParams {
@@ -41,6 +59,14 @@ interface InitialBurgerConstructorParams {
 
 interface InitialOrderParams {
   number: number,
+  name?: string,
+  status?: {
+    text: string,
+    textColor: string
+  },
+  date?: string,
+  ingredients?: Array<IngredientParams>,
+  totalPrice: number,
   orderRequest: boolean,
   orderFailed: boolean,
   orderFailedTextError: string,
@@ -66,12 +92,21 @@ interface InitialUserParams {
   userFailedTextError: string,
 }
 
+interface InitialWsParams {
+  wsConnected: boolean,
+  error: PayloadAction | null;
+  orders: Array<OrderParams>;
+  total: number | null,
+  totalToday: number | null
+}
+
 interface ReducersParams {
   user: InitialUserParams,
   modal: InitialModalParams,
   ingredients: InitialIngredientsParams,
   burgerConstructor: InitialBurgerConstructorParams,
   order: InitialOrderParams,
+  ws: InitialWsParams,
   ui: InitialUiParams,
 }
 
@@ -100,6 +135,8 @@ const ingredientDetailsPropTypes = PropTypes.shape({
   image_large: PropTypes.string.isRequired
 });
 
+export type WSAction = typeof wsActionsOrders | typeof wsActionsOrdersAll;
+
 export type {
   IngredientParams,
   InitialModalParams,
@@ -108,9 +145,12 @@ export type {
   InitialBurgerConstructorParams,
   InitialUiParams,
   InitialUserParams,
+  InitialWsParams,
   ReducersParams,
   ItemParams,
   ActionParams,
+  OrderParams,
+  OrdersParams,
   LocationState,
 };
 

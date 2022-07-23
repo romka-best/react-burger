@@ -11,11 +11,9 @@
 }
 
 .content {
-
-}
-
-.content:hover {
-  opacity: .8;
+  &:hover {
+    opacity: .8;
+  }
 }
 
 .contentDrag {

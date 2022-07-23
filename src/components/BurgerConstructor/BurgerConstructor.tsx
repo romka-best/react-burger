@@ -47,7 +47,7 @@ const BurgerConstructor = () => {
     dispatch(createOrder(ingredientsIds))
       .unwrap()
       .then(() => {
-        dispatch(modalSlice.actions.openModal('orderDetails'));
+        dispatch(modalSlice.actions.openModal('createdOrderDetails'));
       });
   }, [buns, dispatch, history, ingredients, isAuthenticated]);
 
@@ -124,9 +124,11 @@ const BurgerConstructor = () => {
                     )
                   }
                 </ul>
-              ) : <p className={`${burgerConstructorStyles.infoMessage} text text_type_main-medium`}>
-                👉 Перетащите сюда ингредиенты слева, чтобы добавить в корзину 👈
-              </p>
+              ) : (
+                <p className={`${burgerConstructorStyles.infoMessage} text text_type_main-medium`}>
+                  👉 Перетащите сюда ингредиенты слева, чтобы добавить в корзину 👈
+                </p>
+              )
               }
             </div>
             {buns[1] && (
@@ -161,8 +163,8 @@ const BurgerConstructor = () => {
           {
             openOrderDetails ? (
               <div className={burgerConstructorStyles.rootExpandedMenu_mobile}>
-                <div className={burgerConstructorStyles.expandedMenuHeader_mobile}>
-                  <h2 className={`${burgerConstructorStyles.expandedMenuTitle_mobile} text text_type_main-medium`}>
+                <div className={burgerConstructorStyles.expandedMenu__header_mobile}>
+                  <h2 className={`${burgerConstructorStyles.expandedMenu__title_mobile} text text_type_main-medium`}>
                     Заказ
                   </h2>
                   <CloseIcon type={'primary'} onClick={() => {

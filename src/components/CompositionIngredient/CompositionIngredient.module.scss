@@ -1,0 +1,31 @@
+@import '../../assets/scss/variables.module.scss';
+
+.root {
+  display: flex;
+  align-items: center;
+
+  width: 100%;
+}
+
+.ingredient {
+  composes: ingredient from '../OrderCard/OrderCard.module.scss';
+
+  &__photo {
+    composes: ingredient__photo from '../OrderCard/OrderCard.module.scss';
+  }
+}
+
+.name {
+  margin: 0 1.6rem;
+  max-width: 32rem;
+}
+
+.priceBlock {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+}
+
+.price {
+  margin-right: .8rem;
+}
