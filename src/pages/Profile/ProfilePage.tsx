@@ -6,16 +6,15 @@ import {Button, Input} from '@ya.praktikum/react-developer-burger-ui-components'
 import {ReducersParams} from '../../utils/types';
 import {isCorrectEmail, isCorrectPassword, isCorrectName} from '../../utils/functions';
 import {useAppDispatch, useAppSelector} from '../../services/store';
-import {WS_CONNECTION_CLOSE_ORDERS, WS_CONNECTION_START_ORDERS} from '../../services/constants';
-import {getIngredients} from '../../services/slices/ingredients';
+import {wsOrdersActions} from '../../services/slices/order';
 import {getUserInfo, logout, userSlice, updateUserInfo} from '../../services/slices/user';
 
 import OrderCard from '../../components/OrderCard/OrderCard';
+import OrderDetails from '../../components/OrderDetails/OrderDetails';
 import Spinner from '../../components/Spinner/Spinner';
 
 import {NameParams, LoginParams, PasswordParams} from './ProfilePageTypes';
 import profileStyles from './ProfilePage.module.scss';
-import OrderDetails from "../../components/OrderDetails/OrderDetails";
 
 const ProfilePage = () => {
   const dispatch = useAppDispatch();
@@ -67,7 +66,7 @@ const ProfilePage = () => {
   });
 
   const {orders} = useAppSelector((state: ReducersParams) => {
-    return state.ws;
+    return state.wsOrders;
   });
 
   const {type} = useAppSelector((state: ReducersParams) => {
@@ -177,10 +176,9 @@ const ProfilePage = () => {
   React.useEffect(() => {
     getInfo();
     if (pages.isOrdersPage?.isExact) {
-      dispatch({type: WS_CONNECTION_START_ORDERS});
-      dispatch(getIngredients());
+      dispatch(wsOrdersActions.connectionInit());
       return () => {
-        dispatch({type: WS_CONNECTION_CLOSE_ORDERS});
+        dispatch(wsOrdersActions.connectionClose());
       }
     }
   }, [dispatch, pages.isOrdersPage?.isExact]);

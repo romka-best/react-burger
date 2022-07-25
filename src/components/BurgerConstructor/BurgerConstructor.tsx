@@ -47,6 +47,7 @@ const BurgerConstructor = () => {
     dispatch(createOrder(ingredientsIds))
       .unwrap()
       .then(() => {
+        dispatch(burgerConstructorSlice.actions.clearAll());
         dispatch(modalSlice.actions.openModal('createdOrderDetails'));
       });
   }, [buns, dispatch, history, ingredients, isAuthenticated]);

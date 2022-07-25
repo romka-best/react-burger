@@ -6,13 +6,7 @@ import {CurrencyIcon} from '@ya.praktikum/react-developer-burger-ui-components';
 import {LocationState, ReducersParams} from '../../utils/types';
 import {createCardDate, getNormalizeIngredientsFromIds, getStatus, getTotalCost} from '../../utils/functions';
 import {useAppDispatch, useAppSelector} from '../../services/store';
-import {
-  WS_CONNECTION_CLOSE_ORDERS, WS_CONNECTION_CLOSE_ORDERS_ALL,
-  WS_CONNECTION_START_ORDERS,
-  WS_CONNECTION_START_ORDERS_ALL
-} from '../../services/constants';
-import {getIngredients} from '../../services/slices/ingredients';
-import {orderSlice} from '../../services/slices/order';
+import {orderSlice, wsOrdersActions, wsOrdersAllActions} from '../../services/slices/order';
 
 import CompositionIngredient from '../CompositionIngredient/CompositionIngredient';
 
@@ -20,6 +14,11 @@ import orderDetailsStyles from './OrderDetails.module.scss';
 
 const OrderDetails = () => {
   const history = useHistory();
+  const dispatch = useAppDispatch();
+  const location = useLocation<LocationState>();
+  const {path} = useRouteMatch();
+  const {params} = useRouteMatch<{ id: string }>();
+  const background = location.state?.background;
 
   const order = useAppSelector(
     (state: ReducersParams) => {
@@ -33,17 +32,11 @@ const OrderDetails = () => {
     return state.ingredients;
   });
 
-  const {orders} = useAppSelector(
+  const {orders: wsOrders, ordersAll: wsOrdersAll} = useAppSelector(
     (state: ReducersParams) => {
-      return state.ws
+      return {orders: state.wsOrders.orders, ordersAll: state.wsOrdersAll.orders}
     }
   );
-
-  const dispatch = useAppDispatch();
-  const location = useLocation<LocationState>();
-  const {path} = useRouteMatch();
-  const {params} = useRouteMatch<{ id: string }>();
-  const background = location.state?.background;
 
   const getCompositionIngredients = () => {
     const compositionIngredients = {};
@@ -91,17 +84,16 @@ const OrderDetails = () => {
     () => {
       if (order.number === -1) {
         if (path.includes('profile')) {
-          dispatch({type: WS_CONNECTION_START_ORDERS});
+          dispatch(wsOrdersActions.connectionInit());
         } else {
-          dispatch({type: WS_CONNECTION_START_ORDERS_ALL});
+          dispatch(wsOrdersAllActions.connectionInit());
         }
-        dispatch(getIngredients());
 
         return () => {
           if (path.includes('profile')) {
-            dispatch({type: WS_CONNECTION_CLOSE_ORDERS});
+            dispatch(wsOrdersActions.connectionClose());
           } else {
-            dispatch({type: WS_CONNECTION_CLOSE_ORDERS_ALL});
+            dispatch(wsOrdersAllActions.connectionClose());
           }
         }
       }
@@ -109,13 +101,16 @@ const OrderDetails = () => {
   );
 
   React.useEffect(() => {
-    if (order.number === -1 && orders.length > 0) {
+    const orders = path.includes('profile') ? wsOrders : wsOrdersAll;
+    if (order.number === -1 && (wsOrders.length > 0 || wsOrdersAll.length > 0)) {
       const order = orders.filter((order) => {
         return order.number === Number(params.id)
       })[0];
 
       if (!order) {
-        history.replace({pathname: '/feed'});
+        path.includes('profile') ?
+          history.replace({pathname: '/profile/orders'})
+          : history.replace({pathname: '/feed'});
         return;
       }
 
@@ -130,7 +125,7 @@ const OrderDetails = () => {
         totalPrice
       }));
     }
-  }, [allIngredients, dispatch, history, order.number, orders, params.id]);
+  }, [allIngredients, dispatch, history, order.number, wsOrders, wsOrdersAll, params.id, path]);
 
   return (
     <div className={`${orderDetailsStyles.root} ${!background ? orderDetailsStyles.root__big : ''}`}>

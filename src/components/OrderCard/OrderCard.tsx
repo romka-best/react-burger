@@ -40,10 +40,6 @@ const OrderCard = ({order, statusIsNeed}: OrderCardProps) => {
     return state.ingredients;
   });
 
-  const {type: typeDevice} = useAppSelector((state: ReducersParams) => {
-    return state.ui;
-  });
-
   const {createdAt, ingredients, name, number, status} = order;
 
   const getPhotosIngredients = React.useCallback(() => {
@@ -87,7 +83,7 @@ const OrderCard = ({order, statusIsNeed}: OrderCardProps) => {
   const handleClickOrder = () => {
     const {bun, other} = getNormalizeIngredientsFromIds(allIngredients, ingredients, false);
     const totalPrice = getTotalCost(bun, other);
-    const fullIngredients = [...other]
+    const fullIngredients = [...other];
     if (bun) {
       fullIngredients.push(bun);
       fullIngredients.push(bun);

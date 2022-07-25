@@ -2,12 +2,8 @@ import React from 'react';
 
 import {ReducersParams} from '../../utils/types';
 import {countOrders} from '../../utils/functions';
-import {
-  WS_CONNECTION_CLOSE_ORDERS_ALL,
-  WS_CONNECTION_START_ORDERS_ALL
-} from '../../services/constants';
-import {getIngredients} from '../../services/slices/ingredients';
 import {useAppDispatch, useAppSelector} from '../../services/store';
+import {wsOrdersAllActions} from '../../services/slices/order';
 
 import Spinner from '../../components/Spinner/Spinner';
 import OrderCard from '../../components/OrderCard/OrderCard';
@@ -23,7 +19,7 @@ const FeedPage = () => {
   }>({ready: [], inWork: []});
 
   const {orders, total, totalToday, wsConnected} = useAppSelector((state: ReducersParams) => {
-    return state.ws;
+    return state.wsOrdersAll;
   });
 
   const {type} = useAppSelector((state: ReducersParams) => {
@@ -31,10 +27,9 @@ const FeedPage = () => {
   });
 
   React.useEffect(() => {
-    dispatch({type: WS_CONNECTION_START_ORDERS_ALL});
-    dispatch(getIngredients());
+    dispatch(wsOrdersAllActions.connectionInit());
     return () => {
-      dispatch({type: WS_CONNECTION_CLOSE_ORDERS_ALL});
+      dispatch(wsOrdersAllActions.connectionClose());
     }
   }, [dispatch]);
 

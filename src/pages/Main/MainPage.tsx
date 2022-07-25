@@ -9,13 +9,11 @@ import BurgerIngredients from '../../components/BurgerIngredients/BurgerIngredie
 import BurgerConstructor from '../../components/BurgerConstructor/BurgerConstructor';
 
 import {ReducersParams} from '../../utils/types';
-import {getIngredients} from '../../services/slices/ingredients';
-import {useAppDispatch, useAppSelector} from '../../services/store';
+import {useAppSelector} from '../../services/store';
 
 import mainStyles from './MainPage.module.scss';
 
 const MainPage = () => {
-  const dispatch = useAppDispatch();
   const {
     ingredientsRequest,
     ingredientsFailed,
@@ -31,12 +29,6 @@ const MainPage = () => {
   const {type} = useAppSelector((state: ReducersParams) => {
     return state.ui;
   });
-
-  React.useEffect(
-    () => {
-      dispatch(getIngredients());
-    }, [dispatch]
-  );
 
   return (
     <main className={`${mainStyles.root}`}>

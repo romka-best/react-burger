@@ -1,6 +1,5 @@
 import {PayloadAction} from '@reduxjs/toolkit';
 import PropTypes from 'prop-types';
-import {wsActionsOrders, wsActionsOrdersAll} from '../services/actions';
 
 interface IngredientParams {
   _id: string,
@@ -106,7 +105,8 @@ interface ReducersParams {
   ingredients: InitialIngredientsParams,
   burgerConstructor: InitialBurgerConstructorParams,
   order: InitialOrderParams,
-  ws: InitialWsParams,
+  wsOrders: InitialWsParams,
+  wsOrdersAll: InitialWsParams,
   ui: InitialUiParams,
 }
 
@@ -134,8 +134,6 @@ const ingredientDetailsPropTypes = PropTypes.shape({
   image_mobile: PropTypes.string.isRequired,
   image_large: PropTypes.string.isRequired
 });
-
-export type WSAction = typeof wsActionsOrders | typeof wsActionsOrdersAll;
 
 export type {
   IngredientParams,

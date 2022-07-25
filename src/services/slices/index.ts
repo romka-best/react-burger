@@ -4,8 +4,7 @@ import {userReducer} from './user';
 import {modalReducer} from './modal';
 import {ingredientsReducer} from './ingredients';
 import {burgerConstructorReducer} from './burgerConstructor';
-import {orderReducer} from './order';
-import {wsReducer} from './ws';
+import {orderReducer, wsOrdersAllReducer, wsOrdersReducer} from './order';
 import {uiReducer} from './ui';
 
 
@@ -15,7 +14,8 @@ const rootReducer = combineReducers({
   ingredients: ingredientsReducer,
   burgerConstructor: burgerConstructorReducer,
   order: orderReducer,
-  ws: wsReducer,
+  wsOrders: wsOrdersReducer,
+  wsOrdersAll: wsOrdersAllReducer,
   ui: uiReducer,
 });
 

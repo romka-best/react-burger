@@ -3,7 +3,7 @@ import {useLocation, useRouteMatch} from 'react-router-dom';
 
 import {IngredientParams, LocationState, ReducersParams} from '../../utils/types';
 import {useAppDispatch, useAppSelector} from '../../services/store';
-import {getIngredients, ingredientsSlice} from '../../services/slices/ingredients';
+import {ingredientsSlice} from '../../services/slices/ingredients';
 
 import ingredientDetailsStyle from './IngredientDetails.module.scss';
 
@@ -11,21 +11,18 @@ const IngredientDetails = () => {
   const dispatch = useAppDispatch();
   const location = useLocation<LocationState>();
   const {params} = useRouteMatch<{ id: string }>();
-  const currentIngredient = useAppSelector((state: ReducersParams) => {
-    return state.ingredients.currentIngredient;
+
+  const {currentIngredient, ingredients, ingredientsRequest} = useAppSelector((state: ReducersParams) => {
+    return state.ingredients;
   });
 
   React.useEffect(
     () => {
-      if (currentIngredient._id === '') {
-        dispatch(getIngredients())
-          .unwrap()
-          .then((allIngredients) => {
-            const ingredient = allIngredients.filter((ingredient: IngredientParams) => ingredient._id === params.id)[0];
-            dispatch(ingredientsSlice.actions.putIngredientDetails(ingredient));
-          });
+      if (!ingredientsRequest && currentIngredient._id === '') {
+        const ingredient = ingredients.filter((ingredient: IngredientParams) => ingredient._id === params.id)[0];
+        dispatch(ingredientsSlice.actions.putIngredientDetails(ingredient));
       }
-    }, [params, currentIngredient._id, dispatch]
+    }, [params, currentIngredient._id, dispatch, ingredients, ingredientsRequest]
   );
 
   const background = location.state?.background;

@@ -21,6 +21,7 @@ import NotFound404Page from '../../pages/NotFound404/NotFound404Page';
 import {LocationState, ReducersParams} from '../../utils/types';
 import {useAppDispatch, useAppSelector} from '../../services/store';
 import {uiSlice} from '../../services/slices/ui';
+import {getIngredients} from '../../services/slices/ingredients';
 
 import appStyles from './App.module.scss';
 
@@ -55,6 +56,10 @@ function App() {
     return () => offSubscribeResize();
 
   }, [dispatch]);
+  
+  React.useEffect(() => {
+    dispatch(getIngredients());
+  }, [dispatch]);
 
   const background = location.state?.background;
 
@@ -88,9 +93,6 @@ function App() {
         <ProtectedRoute path='/profile'>
           <ProfilePage/>
         </ProtectedRoute>
-        {/*<ProtectedRoute path='/profile/orders/:id' exact={true}>*/}
-        {/*  <OrderDetails/>*/}
-        {/*</ProtectedRoute>*/}
         <Route path='/ingredients/:id' exact={true}>
           <IngredientDetails/>
         </Route>

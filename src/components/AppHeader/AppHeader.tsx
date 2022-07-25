@@ -1,5 +1,5 @@
 import React from 'react';
-import {NavLink, useHistory, useRouteMatch} from 'react-router-dom';
+import {NavLink, Link, useHistory, useRouteMatch} from 'react-router-dom';
 
 import {
   Logo,
@@ -91,7 +91,9 @@ const AppHeader = () => {
                   </NavLink>
                 </li>
               </ul>
-              <Logo/>
+              <Link to={{pathname: '/'}}>
+                <Logo/>
+              </Link>
               <ul className={`${headerStyles.navButtons} ${headerStyles.navButtons_right}`}>
                 <li className={`${headerStyles.navButton}`}>
                   <NavLink
