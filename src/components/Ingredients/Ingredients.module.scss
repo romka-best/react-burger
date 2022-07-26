@@ -12,31 +12,31 @@
   @media screen and (max-width: $large-mobile) {
     margin: 2rem .8rem 0;
   }
-}
 
-.root::-webkit-scrollbar {
-  width: .8rem;
+  &::-webkit-scrollbar {
+    width: .8rem;
 
-  @media screen and (max-width: $large-mobile) {
-    display: none;
+    @media screen and (max-width: $large-mobile) {
+      display: none;
+    }
   }
-}
 
-.root::-webkit-scrollbar-track {
-  background: $interface-input-color;
-  margin-bottom: 5.2rem;
-}
+  &::-webkit-scrollbar-track {
+    background: $interface-input-color;
+    margin-bottom: 5.2rem;
+  }
 
-.root::-webkit-scrollbar-thumb {
-  background-color: $text-secondary-color;
+  &::-webkit-scrollbar-thumb {
+    background-color: $text-secondary-color;
+  }
 }
 
 .title {
   margin-bottom: 2.4rem;
-}
 
-.title:not(:first-of-type) {
-  margin: 4rem 0 2.4rem;
+  &:not(:first-of-type) {
+    margin: 4rem 0 2.4rem;
+  }
 }
 
 .data {

@@ -50,14 +50,14 @@
     align-items: center;
     justify-content: space-between;
   }
-}
 
-.navButtons_left {
-  justify-content: flex-start;
-}
+  &_left {
+    justify-content: flex-start;
+  }
 
-.navButtons_right {
-  justify-content: flex-end;
+  &_right {
+    justify-content: flex-end;
+  }
 }
 
 .logoButtonImage {
@@ -76,15 +76,19 @@
 
 .navButton {
   transition: opacity linear .2s;
-}
 
-.navButton:hover {
-  opacity: 50%;
-  cursor: pointer;
-}
+  &_selected {
+    color: $text-primary-color;
+  }
 
-.navButton:not(:first-child) {
-  margin-left: .8rem;
+  &:hover {
+    opacity: 50%;
+    cursor: pointer;
+  }
+
+  &:not(:first-child) {
+    margin-left: .8rem;
+  }
 }
 
 .navButtonLink {
@@ -96,10 +100,6 @@
 
 .navButtonText {
   margin-left: .8rem;
-}
-
-.navButton_selected {
-  color: #f2f2f3;
 }
 
 .rootExpandedMenu {
@@ -128,14 +128,14 @@
 .expandedMenuPage {
   text-decoration: none;
   display: flex;
+
+  &_selected {
+    color: #f2f2f3;
+  }
 }
 
 .expandedMenuPageButton {
   padding: 1.2rem 0;
-}
-
-.expandedMenuPage_selected {
-  color: #f2f2f3;
 }
 
 .expandedMenuPageText {
@@ -154,14 +154,14 @@
 
 .expandedMenuSubPage {
   composes: expandedMenuPage;
+
+  &_selected {
+    composes: expandedMenuPage_selected;
+  }
 }
 
 .expandedMenuSubPageButton {
   padding: 1rem 0;
-}
-
-.expandedMenuSubPage_selected {
-  composes: expandedMenuPage_selected;
 }
 
 .expandedMenuSubPageText {

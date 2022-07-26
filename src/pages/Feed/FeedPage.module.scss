@@ -1,0 +1,131 @@
+@import '../../assets/scss/variables.module';
+
+.root {
+  display: flex;
+  flex-direction: column;
+
+  margin: 4rem auto 0;
+  max-width: 124rem;
+
+  composes: animation from '../BasePage.module.scss';
+}
+
+.title {
+  margin-bottom: 2rem;
+}
+
+.content {
+  display: flex;
+  gap: 6rem;
+}
+
+.orderList {
+  list-style: none;
+  margin: 0;
+  padding: 0 .8rem 0 0;
+
+  max-width: 60rem;
+  max-height: calc(100vh - 20rem);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.6rem;
+
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: $text-secondary-color $interface-input-color;
+
+  &::-webkit-scrollbar {
+    width: .8rem;
+    background: $interface-input-color;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: $text-secondary-color;
+  }
+}
+
+.ordersBoard {
+  display: flex;
+  flex-direction: column;
+  gap: 6rem;
+
+  min-width: 61.2rem;
+  max-height: calc(100vh - 20rem);
+
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: $text-secondary-color $interface-input-color;
+
+  &::-webkit-scrollbar {
+    width: .8rem;
+    background: $interface-input-color;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: $text-secondary-color;
+  }
+}
+
+.readyAndInWorkBlock {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3.6rem;
+}
+
+.ordersBoardTitle {
+
+}
+
+.readyOrdersBlock {
+  min-width: 28rem;
+}
+
+.readyOrdersList {
+  list-style: none;
+  margin: 2.4rem 0 0;
+  padding: 0;
+
+  display: grid;
+  grid-template-columns: repeat(5, 7rem);
+  row-gap: .8rem;
+  column-gap: 1.6rem;
+}
+
+.readyOrdersElement {
+  max-width: 28rem;
+}
+
+.readyOrdersId {
+  display: block;
+}
+
+.inWorkOrdersBlock {
+  composes: readyOrdersBlock;
+}
+
+.inWorkOrdersList {
+  composes: readyOrdersList;
+}
+
+.inWorkOrdersElement {
+  composes: readyOrdersElement;
+}
+.inWorkOrdersId {
+  composes: readyOrdersId;
+}
+
+.completedOrdersBlock {
+
+}
+
+.completedOrdersTitle {
+
+}
+
+.completedOrdersDigits {
+  text-shadow: $number-text-shadow;
+}

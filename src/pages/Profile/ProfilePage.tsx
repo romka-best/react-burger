@@ -1,4 +1,4 @@
-import React, {SyntheticEvent} from 'react';
+import React from 'react';
 import {NavLink, useRouteMatch, Switch, Route, useHistory, Redirect} from 'react-router-dom';
 
 import {Button, Input} from '@ya.praktikum/react-developer-burger-ui-components';
@@ -6,7 +6,12 @@ import {Button, Input} from '@ya.praktikum/react-developer-burger-ui-components'
 import {ReducersParams} from '../../utils/types';
 import {isCorrectEmail, isCorrectPassword, isCorrectName} from '../../utils/functions';
 import {useAppDispatch, useAppSelector} from '../../services/store';
+import {wsOrdersActions} from '../../services/slices/order';
 import {getUserInfo, logout, userSlice, updateUserInfo} from '../../services/slices/user';
+
+import OrderCard from '../../components/OrderCard/OrderCard';
+import OrderDetails from '../../components/OrderDetails/OrderDetails';
+import Spinner from '../../components/Spinner/Spinner';
 
 import {NameParams, LoginParams, PasswordParams} from './ProfilePageTypes';
 import profileStyles from './ProfilePage.module.scss';
@@ -35,10 +40,33 @@ const ProfilePage = () => {
     correctPassword: false,
   });
 
-  const isProfilePage = useRouteMatch({
-    path: '/profile',
-    strict: true,
-    sensitive: true
+  const pages = {
+    isProfilePage: useRouteMatch({
+      path: '/profile',
+      strict: true,
+      sensitive: true
+    }),
+    isOrdersPage: useRouteMatch({
+      path: '/profile/orders',
+      strict: true,
+      sensitive: true
+    }),
+    isOrderInfoPage: useRouteMatch({
+      path: '/profile/orders/:id',
+      strict: true,
+      sensitive: true
+    })
+  }
+
+  const {
+    ingredientsRequest,
+    ingredientsFailed,
+  } = useAppSelector((state: ReducersParams) => {
+    return state.ingredients;
+  });
+
+  const {orders} = useAppSelector((state: ReducersParams) => {
+    return state.wsOrders;
   });
 
   const {type} = useAppSelector((state: ReducersParams) => {
@@ -55,7 +83,7 @@ const ProfilePage = () => {
       });
   }
 
-  const cancel = (event: SyntheticEvent) => {
+  const cancel = (event: React.SyntheticEvent) => {
     event.preventDefault();
 
     setLoginParams({
@@ -72,7 +100,7 @@ const ProfilePage = () => {
     });
   }
 
-  const save = (event: SyntheticEvent) => {
+  const save = (event: React.SyntheticEvent) => {
     event.preventDefault();
     const newValues = createData();
     dispatch(updateUserInfo(newValues))
@@ -113,7 +141,7 @@ const ProfilePage = () => {
           setNameParams({...nameParams, name: res.user.name, oldName: res.user.name});
           setLoginParams({...loginParams, login: res.user.email, oldLogin: res.user.email});
         }
-      })
+      });
   }
 
   const createData = () => {
@@ -147,11 +175,17 @@ const ProfilePage = () => {
 
   React.useEffect(() => {
     getInfo();
-  }, []);
+    if (pages.isOrdersPage?.isExact) {
+      dispatch(wsOrdersActions.connectionInit());
+      return () => {
+        dispatch(wsOrdersActions.connectionClose());
+      }
+    }
+  }, [dispatch, pages.isOrdersPage?.isExact]);
 
   return (
     <main className={profileStyles.root}>
-      {type === 'desktop' || type === 'laptop' || type === 'tablet' ? (
+      {!pages.isOrderInfoPage?.isExact && (type === 'desktop' || type === 'laptop' || type === 'tablet') ? (
         <div className={profileStyles.navigation}>
           <nav>
             <ul className={profileStyles.navButtons}>
@@ -181,7 +215,7 @@ const ProfilePage = () => {
             </ul>
           </nav>
           {
-            isProfilePage?.isExact ? (
+            pages.isProfilePage?.isExact ? (
               <p className={`${profileStyles.info} text text_type_main-small text_color_inactive`}>
                 В этом разделе вы можете изменить свои персональные данные
               </p>
@@ -194,7 +228,7 @@ const ProfilePage = () => {
         </div>
       ) : (
         <h1 className={`${profileStyles.title} text text_type_main-medium`}>
-          {isProfilePage?.isExact ? 'Профиль' : 'История заказов'}
+          {pages.isProfilePage?.isExact ? 'Профиль' : !pages.isOrderInfoPage?.isExact ? 'История заказов' : null}
         </h1>
       )}
       <Switch>
@@ -307,7 +341,25 @@ const ProfilePage = () => {
           </form>
         </Route>
         <Route path={`${path}/orders`} exact={true}>
-
+          {ingredientsRequest && !ingredientsFailed && (<Spinner/>)}
+          {!ingredientsRequest && !ingredientsFailed && (
+            <ul className={profileStyles.orderList}>
+              {
+                orders.map((order) => {
+                  return (
+                    <OrderCard
+                      key={order._id}
+                      order={order}
+                      statusIsNeed={true}
+                    />
+                  );
+                })
+              }
+            </ul>
+          )}
+        </Route>
+        <Route path={`${path}/orders/:id`} exact={true}>
+          <OrderDetails/>
         </Route>
         <Route>
           <Redirect to='/'/>

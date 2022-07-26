@@ -1,13 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {useHistory} from 'react-router-dom';
+import {useHistory, useLocation} from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import {CloseIcon} from '@ya.praktikum/react-developer-burger-ui-components';
 
 import ModalOverlay from '../ModalOverlay/ModalOverlay';
 
-import {ReducersParams} from '../../utils/types';
+import {LocationState, ReducersParams} from '../../utils/types';
 import {useAppDispatch, useAppSelector} from '../../services/store';
 import {modalSlice} from '../../services/slices/modal';
 import {burgerConstructorSlice} from '../../services/slices/burgerConstructor';
@@ -21,6 +21,7 @@ interface ModalProps {
 const Modal = ({children}: ModalProps) => {
   const dispatch = useAppDispatch();
   const history = useHistory();
+  const location = useLocation<LocationState>();
 
   const modalRoot = document.getElementById('modals') as HTMLElement;
   const {modalType} = useAppSelector((state: ReducersParams) => {
@@ -46,6 +47,19 @@ const Modal = ({children}: ModalProps) => {
     setShow(false);
   }
 
+  const closeAfterTransitionEnd = React.useCallback(() => {
+    dispatch(modalSlice.actions.closeModal());
+    if (modalType === 'orderDetails') {
+      dispatch(burgerConstructorSlice.actions.clearAll());
+    }
+    if (location.state?.background) {
+      history.replace({pathname: location.state.background.pathname})
+    } else {
+      history.replace({pathname: '/'});
+    }
+
+  }, [dispatch, history, modalType, location]);
+
   React.useEffect(() => {
     setShow(true);
     document.addEventListener('keydown', handleEscClose);
@@ -59,11 +73,7 @@ const Modal = ({children}: ModalProps) => {
       <ModalOverlay show={show}>
         <div className={`${modalStyles.root} ${show && modalStyles.root_opened}`} onClick={handleCloseModal}
              onTransitionEnd={!show ? () => {
-               dispatch(modalSlice.actions.closeModal());
-               if (modalType === 'orderDetails') {
-                 dispatch(burgerConstructorSlice.actions.clearAll());
-               }
-               history.replace({pathname: '/'});
+               closeAfterTransitionEnd();
              } : undefined}>
           <div className={modalStyles.wrapper}>
             <div className={modalStyles.closeButton} onClick={closeModal}>

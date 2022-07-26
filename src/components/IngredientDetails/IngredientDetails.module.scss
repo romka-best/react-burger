@@ -5,10 +5,10 @@
 
   margin-top: 4rem;
   margin-bottom: 6rem;
-}
 
-.root_big {
-  margin-top: 12rem;
+  &_size_big {
+    margin-top: 12rem;
+  }
 }
 
 .title {
@@ -18,12 +18,11 @@
 
   margin-left: 4rem;
   height: 6.4rem;
-}
 
-.title_big {
-  margin: 0;
-  align-self: center;
-
+  &_size_big {
+    margin: 0;
+    align-self: center;
+  }
 }
 
 .image {
@@ -34,8 +33,6 @@
 }
 
 .description {
-  display: block;
-
   margin: 1.6rem 0 3.2rem;
 }
 
@@ -56,8 +53,6 @@
 }
 
 .typeText {
-  display: block;
-
   margin-bottom: .8rem;
 }
 

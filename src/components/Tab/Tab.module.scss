@@ -17,14 +17,14 @@
     padding-left: 0;
     padding-right: 0;
   }
-}
 
-.root:hover {
-  color: $text-primary-color;
-}
+  &:hover {
+    color: $text-primary-color;
+  }
 
-.root_type_current {
-  box-shadow: inset 0 -.2rem 0 $interface-accent-color;
-  pointer-events: none;
-  color: $text-primary-color;
+  &_type_current {
+    box-shadow: inset 0 -.2rem 0 $interface-accent-color;
+    pointer-events: none;
+    color: $text-primary-color;
+  }
 }
