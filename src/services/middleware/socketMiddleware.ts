@@ -1,15 +1,16 @@
+import * as React from 'react';
 import {AnyAction, MiddlewareAPI} from 'redux';
 
 import {getCookie} from '../../utils/functions';
 
 export const socketMiddleware = (wsUrl: string, wsActions: any, withToken: boolean) => (store: MiddlewareAPI) => {
   let socket: WebSocket | null = null;
-  let connected = false;
+  let connected: boolean = false;
 
   return (next: (i: AnyAction) => void) => (action: AnyAction) => {
-    const {dispatch} = store;
+    const {dispatch}: {dispatch: React.Dispatch<AnyAction>} = store;
     const {type, payload} = action;
-    const token = withToken ? getCookie('accessToken') : null;
+    const token: string | undefined | null = withToken ? getCookie('accessToken') : null;
     if (type === wsActions.connectionInit.type) {
       socket = token
         ? new WebSocket(`${wsUrl}?token=${token}`)
@@ -17,22 +18,22 @@ export const socketMiddleware = (wsUrl: string, wsActions: any, withToken: boole
     }
     if (socket) {
       connected = true;
-      socket.onopen = () => {
+      socket.onopen = (): void => {
         dispatch(wsActions.connectionSuccess());
       };
 
-      socket.onerror = () => {
+      socket.onerror = (): void => {
         dispatch(wsActions.connectionError());
       };
 
-      socket.onmessage = event => {
+      socket.onmessage = (event: MessageEvent) => {
         const {data} = event;
         const parsedData = JSON.parse(data);
         const {success, ...restParsedData} = parsedData;
         dispatch(wsActions.getMessage(restParsedData));
       };
 
-      socket.onclose = () => {
+      socket.onclose = (): void => {
         dispatch(wsActions.connectionClose());
         if (!connected) {
           setTimeout(() => {

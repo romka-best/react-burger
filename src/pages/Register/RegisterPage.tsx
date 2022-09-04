@@ -1,27 +1,29 @@
-import React, {SyntheticEvent} from 'react';
+import * as React from 'react';
 import {Link, useHistory} from 'react-router-dom';
 
 import {Input, PasswordInput, Button} from '@ya.praktikum/react-developer-burger-ui-components';
 
-import {ReducersParams} from '../../utils/types';
+import {TReducerState, TUIState, TUserState, AppDispatch} from '../../utils/types';
 import {isCorrectEmail, isCorrectName, isCorrectPassword} from '../../utils/functions';
 import {useAppDispatch, useAppSelector} from '../../services/store';
 import {registration, userSlice} from '../../services/slices/user';
 
+import {TEmail, TName, TPassword} from './RegisterPageTypes';
 import registerStyles from './RegisterPage.module.scss';
 
 const RegisterPage = () => {
-  const dispatch = useAppDispatch();
+  const dispatch: AppDispatch = useAppDispatch();
+  const history = useHistory<History>();
 
-  const [nameParams, setNameParams] = React.useState({
+  const [nameParams, setNameParams] = React.useState<TName>({
     name: '',
     correctName: false
   });
-  const [emailParams, setEmailParams] = React.useState({
+  const [emailParams, setEmailParams] = React.useState<TEmail>({
     email: '',
     correctEmail: false,
   });
-  const [passwordParams, setPasswordParams] = React.useState(
+  const [passwordParams, setPasswordParams] = React.useState<TPassword>(
     {
       password: '',
       correctPassword: false,
@@ -33,18 +35,18 @@ const RegisterPage = () => {
     userRequest,
     userFailed,
     userFailedTextError
-  } = useAppSelector((state: ReducersParams) => {
+  } = useAppSelector<TUserState>((state: TReducerState) => {
     return state.user;
   });
 
-  const {type} = useAppSelector((state: ReducersParams) => {
+  const {type} = useAppSelector<TUIState>((state: TReducerState) => {
     return state.ui;
   });
 
-  const history = useHistory();
   const register = React.useCallback(
-    (event: SyntheticEvent) => {
+    (event: React.SyntheticEvent): void => {
       event.preventDefault();
+
       if (!isCorrectName(nameParams.name)) {
         setNameParams({
           ...nameParams,
@@ -75,8 +77,8 @@ const RegisterPage = () => {
     [dispatch, emailParams, nameParams, passwordParams, history]
   );
 
-  React.useEffect(() => {
-    return () => {
+  React.useEffect((): () => void => {
+    return (): void => {
       dispatch(userSlice.actions.setDefaultApiState());
     }
   }, [dispatch]);
@@ -88,7 +90,7 @@ const RegisterPage = () => {
         <Input type='text'
                placeholder='Имя'
                value={nameParams.name}
-               onChange={e => {
+               onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                  dispatch(userSlice.actions.setDefaultApiState());
                  setNameParams({
                    ...nameParams,
@@ -97,8 +99,8 @@ const RegisterPage = () => {
                  });
                }}
                name={'name'}
-               icon={nameParams.name ? 'CloseIcon' : undefined}
-               onIconClick={() => {
+               {...(nameParams.name ? {icon: 'CloseIcon'} : {})}
+               onIconClick={(): void => {
                  dispatch(userSlice.actions.setDefaultApiState());
                  setNameParams({
                    ...nameParams,
@@ -111,7 +113,7 @@ const RegisterPage = () => {
         <Input type='email'
                placeholder='Email'
                value={emailParams.email}
-               onChange={e => {
+               onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                  dispatch(userSlice.actions.setDefaultApiState());
                  setEmailParams({
                    ...emailParams,
@@ -120,8 +122,8 @@ const RegisterPage = () => {
                  });
                }}
                name={'email'}
-               icon={emailParams.email ? 'CloseIcon' : undefined}
-               onIconClick={() => {
+               {...(emailParams.email ? {icon: 'CloseIcon'} : {})}
+               onIconClick={(): void => {
                  dispatch(userSlice.actions.setDefaultApiState());
                  setEmailParams({
                    ...emailParams,
@@ -133,7 +135,7 @@ const RegisterPage = () => {
         />
         <PasswordInput
           value={passwordParams.password}
-          onChange={e => {
+          onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
             dispatch(userSlice.actions.setDefaultApiState());
             setPasswordParams({
               ...passwordParams,

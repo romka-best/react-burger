@@ -1,4 +1,6 @@
-export const defaultIngredientParams = {
+import {TIngredient} from './types';
+
+export const defaultIngredientParams: TIngredient = {
   _id: '',
   name: '',
   type: '',

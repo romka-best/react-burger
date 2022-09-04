@@ -1,25 +1,25 @@
-interface NameParams {
+type TName = {
   oldName: string,
   name: string,
   canChange: boolean,
   correctName: boolean
 }
 
-interface LoginParams {
+type TLogin = {
   oldLogin: string,
   login: string,
   correctLogin: boolean,
   canChange: boolean
 }
 
-interface PasswordParams {
+type TPassword = {
   password: string,
   canChange: boolean,
   correctPassword: boolean,
 }
 
 export type {
-  NameParams,
-  LoginParams,
-  PasswordParams,
+  TName,
+  TLogin,
+  TPassword,
 };

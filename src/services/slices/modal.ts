@@ -1,9 +1,10 @@
-import {createSlice} from '@reduxjs/toolkit';
+import {createSlice, Reducer} from '@reduxjs/toolkit';
+
 import {
-  InitialModalParams
+  TModalState
 } from '../../utils/types';
 
-const initialModalState: InitialModalParams = {
+const initialModalState: TModalState = {
   modalIsVisible: false,
   modalType: '',
 }
@@ -12,14 +13,14 @@ export const modalSlice = createSlice({
   name: 'modal',
   initialState: initialModalState,
   reducers: {
-    openModal: (state, action) => {
+    openModal: (state: TModalState, {payload}: { payload: '' | 'createdOrderDetails' | 'orderDetails' | 'ingredientDetails' }): TModalState => {
       return {
         ...state,
         modalIsVisible: true,
-        modalType: action.payload
+        modalType: payload
       }
     },
-    closeModal: (state) => {
+    closeModal: (state: TModalState): TModalState => {
       return {
         ...state,
         modalIsVisible: false,
@@ -29,4 +30,4 @@ export const modalSlice = createSlice({
   },
 });
 
-export const modalReducer = modalSlice.reducer;
+export const modalReducer: Reducer<TModalState> = modalSlice.reducer;

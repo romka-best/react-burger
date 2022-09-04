@@ -1,4 +1,5 @@
-import React from 'react';
+import * as React from 'react';
+
 import spinnerStyles from './Spinner.module.scss';
 
 const Spinner: React.FC = () => {

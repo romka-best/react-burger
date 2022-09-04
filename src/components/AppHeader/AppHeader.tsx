@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import {NavLink, Link, useHistory, useRouteMatch} from 'react-router-dom';
 
 import {
@@ -13,21 +13,22 @@ import {
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import LogoMobile from '../../assets/images/logo.svg';
 
-import {ReducersParams} from '../../utils/types';
+import {AppDispatch, TReducerState, TUIState} from '../../utils/types';
 import {exit} from '../../utils/functions';
 import {useAppDispatch, useAppSelector} from '../../services/store';
 
+import {TNavigationMenu} from './AppHeaderTypes';
 import headerStyles from './AppHeader.module.scss';
 
-const AppHeader = () => {
-  const dispatch = useAppDispatch();
-  const history = useHistory();
+const AppHeader: React.FC = () => {
+  const dispatch: AppDispatch = useAppDispatch();
+  const history = useHistory<History>();
 
-  const {type} = useAppSelector((state: ReducersParams) => {
+  const {type} = useAppSelector<TUIState>((state: TReducerState) => {
     return state.ui;
   });
 
-  const [navigationMenu, setNavigationMenu] = React.useState<{ isOpen: boolean, isExpanded: boolean }>({
+  const [navigationMenu, setNavigationMenu] = React.useState<TNavigationMenu>({
     isOpen: false,
     isExpanded: false,
   });
@@ -50,7 +51,7 @@ const AppHeader = () => {
     })
   };
 
-  const closeExpandedMenu = () => {
+  const closeExpandedMenu = (): void => {
     setNavigationMenu({
       ...navigationMenu,
       isOpen: false,

@@ -3,44 +3,53 @@ import {useHistory, useLocation, useRouteMatch} from 'react-router-dom';
 
 import {CurrencyIcon} from '@ya.praktikum/react-developer-burger-ui-components';
 
-import {LocationState, ReducersParams} from '../../utils/types';
-import {createCardDate, getNormalizeIngredientsFromIds, getStatus, getTotalCost} from '../../utils/functions';
+import {
+  TBurger,
+  TIngredient,
+  TIngredientsState,
+  TLocationState, TOrder,
+  TOrderState,
+  TReducerState,
+  AppDispatch
+} from '../../utils/types';
+import {createCardDate, getBurgerFromIngredientsIds, getStatus, getTotalCost} from '../../utils/functions';
 import {useAppDispatch, useAppSelector} from '../../services/store';
 import {orderSlice, wsOrdersActions, wsOrdersAllActions} from '../../services/slices/order';
 
 import CompositionIngredient from '../CompositionIngredient/CompositionIngredient';
 
+import {TRouteMatch} from './OrderDetailsTypes';
 import orderDetailsStyles from './OrderDetails.module.scss';
 
 const OrderDetails = () => {
-  const history = useHistory();
-  const dispatch = useAppDispatch();
-  const location = useLocation<LocationState>();
-  const {path} = useRouteMatch();
-  const {params} = useRouteMatch<{ id: string }>();
+  const dispatch: AppDispatch = useAppDispatch();
+  const history = useHistory<History>();
+  const location = useLocation<TLocationState>();
+  const {path} = useRouteMatch<string>();
+  const {params} = useRouteMatch<TRouteMatch>();
   const background = location.state?.background;
 
-  const order = useAppSelector(
-    (state: ReducersParams) => {
+  const order = useAppSelector<TOrderState>(
+    (state: TReducerState) => {
       return state.order
     }
   );
 
   const {
     ingredients: allIngredients
-  } = useAppSelector((state: ReducersParams) => {
+  } = useAppSelector<TIngredientsState>((state: TReducerState) => {
     return state.ingredients;
   });
 
-  const {orders: wsOrders, ordersAll: wsOrdersAll} = useAppSelector(
-    (state: ReducersParams) => {
+  const {orders: wsOrders, ordersAll: wsOrdersAll} = useAppSelector<{orders: TOrder[], ordersAll: TOrder[]}>(
+    (state: TReducerState) => {
       return {orders: state.wsOrders.orders, ordersAll: state.wsOrdersAll.orders}
     }
   );
 
-  const getCompositionIngredients = () => {
+  const getCompositionIngredients = (): Array<React.ReactElement> => {
     const compositionIngredients = {};
-    order.ingredients?.forEach((ingredient, number) => {
+    order.ingredients?.forEach((ingredient: TIngredient) => {
       if (ingredient) {
         if (ingredient._id in compositionIngredients) {
           // @ts-ignore
@@ -59,7 +68,7 @@ const OrderDetails = () => {
 
     const arrayComponents: Array<React.ReactElement> = [];
 
-    Object.keys(compositionIngredients).forEach((compositionIngredientId) => {
+    Object.keys(compositionIngredients).forEach((compositionIngredientId: string) => {
       arrayComponents.push(
         (
           <CompositionIngredient
@@ -81,29 +90,28 @@ const OrderDetails = () => {
   }
 
   React.useEffect(
-    () => {
+    (): () => void => {
       if (order.number === -1) {
         if (path.includes('profile')) {
           dispatch(wsOrdersActions.connectionInit());
         } else {
           dispatch(wsOrdersAllActions.connectionInit());
         }
-
-        return () => {
-          if (path.includes('profile')) {
-            dispatch(wsOrdersActions.connectionClose());
-          } else {
-            dispatch(wsOrdersAllActions.connectionClose());
-          }
+      }
+      return () => {
+        if (path.includes('profile')) {
+          dispatch(wsOrdersActions.connectionClose());
+        } else {
+          dispatch(wsOrdersAllActions.connectionClose());
         }
       }
     }, [path, order.number, dispatch]
   );
 
-  React.useEffect(() => {
-    const orders = path.includes('profile') ? wsOrders : wsOrdersAll;
+  React.useEffect((): void => {
+    const orders: Array<TOrder> = path.includes('profile') ? wsOrders : wsOrdersAll;
     if (order.number === -1 && (wsOrders.length > 0 || wsOrdersAll.length > 0)) {
-      const order = orders.filter((order) => {
+      const order: TOrder = orders.filter((order) => {
         return order.number === Number(params.id)
       })[0];
 
@@ -114,8 +122,8 @@ const OrderDetails = () => {
         return;
       }
 
-      const fullIngredients = getNormalizeIngredientsFromIds(allIngredients, order.ingredients, false);
-      const totalPrice = getTotalCost(fullIngredients.bun, fullIngredients.other);
+      const fullIngredients: TBurger = getBurgerFromIngredientsIds(allIngredients, order.ingredients, false);
+      const totalPrice: number = getTotalCost(fullIngredients.bun, fullIngredients.other);
       dispatch(orderSlice.actions.putOrderDetails({
         date: order.createdAt,
         ingredients: [...fullIngredients.other, fullIngredients.bun, fullIngredients.bun],
@@ -128,11 +136,11 @@ const OrderDetails = () => {
   }, [allIngredients, dispatch, history, order.number, wsOrders, wsOrdersAll, params.id, path]);
 
   return (
-    <div className={`${orderDetailsStyles.root} ${!background ? orderDetailsStyles.root__big : ''}`}>
+    <div className={`${orderDetailsStyles.root} ${!background ? orderDetailsStyles.root_size_big : ''}`}>
       <p className={`${orderDetailsStyles.id} text text_type_digits-default`}>#{order.number}</p>
       <div className={`${orderDetailsStyles.info}`}>
         <h2
-          className={`${orderDetailsStyles.title} ${!background ? orderDetailsStyles.title_big : ''} text text_type_main-large`}>
+          className={`${orderDetailsStyles.title} ${!background ? orderDetailsStyles.title_size_big : ''} text text_type_main-large`}>
           {order.name}
         </h2>
         <p

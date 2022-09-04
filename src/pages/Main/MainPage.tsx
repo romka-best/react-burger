@@ -1,4 +1,3 @@
-import React from 'react';
 import {DndProvider} from 'react-dnd';
 import {HTML5Backend} from 'react-dnd-html5-backend';
 import {TouchBackend} from 'react-dnd-touch-backend';
@@ -8,7 +7,7 @@ import CustomError from '../../components/CustomError/CustomError';
 import BurgerIngredients from '../../components/BurgerIngredients/BurgerIngredients';
 import BurgerConstructor from '../../components/BurgerConstructor/BurgerConstructor';
 
-import {ReducersParams} from '../../utils/types';
+import {TIngredientsState, TOrderState, TReducerState, TUIState} from '../../utils/types';
 import {useAppSelector} from '../../services/store';
 
 import mainStyles from './MainPage.module.scss';
@@ -18,15 +17,15 @@ const MainPage = () => {
     ingredientsRequest,
     ingredientsFailed,
     ingredientsFailedTextError
-  } = useAppSelector((state: ReducersParams) => {
+  } = useAppSelector<TIngredientsState>((state: TReducerState) => {
     return state.ingredients;
   });
 
-  const {orderRequest, orderFailed, orderFailedTextError} = useAppSelector((state: ReducersParams) => {
+  const {orderRequest, orderFailed, orderFailedTextError} = useAppSelector<TOrderState>((state: TReducerState) => {
     return state.order;
   });
 
-  const {type} = useAppSelector((state: ReducersParams) => {
+  const {type} = useAppSelector<TUIState>((state: TReducerState) => {
     return state.ui;
   });
 

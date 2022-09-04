@@ -1,8 +1,10 @@
+import {AxiosResponse} from 'axios';
+
 import http from '../utils/http-common';
 import {getCookie} from '../utils/functions';
 
 class DataService {
-  createUser(email: string, password: string, name: string) {
+  createUser(email: string, password: string, name: string): Promise<AxiosResponse> {
     return http.post('/auth/register', {
       email,
       password,
@@ -10,7 +12,7 @@ class DataService {
     });
   }
 
-  getUserInfo() {
+  getUserInfo(): Promise<AxiosResponse> {
     return http.get('/auth/user', {
       headers: {
         Authorization: 'Bearer ' + getCookie('accessToken')
@@ -18,7 +20,7 @@ class DataService {
     });
   }
 
-  updateUserInfo(newValues: object) {
+  updateUserInfo(newValues: object): Promise<AxiosResponse> {
     return http.patch('/auth/user', newValues, {
       headers: {
         Authorization: 'Bearer ' + getCookie('accessToken')
@@ -26,43 +28,43 @@ class DataService {
     });
   }
 
-  login(email: string, password: string) {
+  login(email: string, password: string): Promise<AxiosResponse> {
     return http.post('/auth/login', {
       email,
       password
     });
   }
 
-  logout() {
+  logout(): Promise<AxiosResponse> {
     return http.post('/auth/logout', {
       token: getCookie('refreshToken')
     });
   }
 
-  updateToken() {
+  updateToken(): Promise<AxiosResponse> {
     return http.post('/auth/token', {
       token: getCookie('refreshToken')
     });
   }
 
-  sendCodeForResetPassword(email: string) {
+  sendCodeForResetPassword(email: string): Promise<AxiosResponse> {
     return http.post('/password-reset', {
       email
     });
   }
 
-  resetPassword(password: string, token: string) {
+  resetPassword(password: string, token: string): Promise<AxiosResponse> {
     return http.post('/password-reset/reset', {
       password,
       token
     });
   }
 
-  getAllIngredients() {
+  getAllIngredients(): Promise<AxiosResponse> {
     return http.get('/ingredients');
   }
 
-  createOrder(ingredients: string[]) {
+  createOrder(ingredients: string[]): Promise<AxiosResponse> {
     return http.post('/orders', {
       ingredients
     }, {

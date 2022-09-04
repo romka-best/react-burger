@@ -1,9 +1,9 @@
-import React from 'react';
+import * as React from 'react';
 import {NavLink, useRouteMatch, Switch, Route, useHistory, Redirect} from 'react-router-dom';
 
 import {Button, Input} from '@ya.praktikum/react-developer-burger-ui-components';
 
-import {ReducersParams} from '../../utils/types';
+import {TIngredientsState, TOrder, TReducerState, TUIState, TUser, TWSState, AppDispatch} from '../../utils/types';
 import {isCorrectEmail, isCorrectPassword, isCorrectName} from '../../utils/functions';
 import {useAppDispatch, useAppSelector} from '../../services/store';
 import {wsOrdersActions} from '../../services/slices/order';
@@ -13,28 +13,28 @@ import OrderCard from '../../components/OrderCard/OrderCard';
 import OrderDetails from '../../components/OrderDetails/OrderDetails';
 import Spinner from '../../components/Spinner/Spinner';
 
-import {NameParams, LoginParams, PasswordParams} from './ProfilePageTypes';
+import {TName, TLogin, TPassword} from './ProfilePageTypes';
 import profileStyles from './ProfilePage.module.scss';
 
 const ProfilePage = () => {
-  const dispatch = useAppDispatch();
+  const dispatch: AppDispatch = useAppDispatch();
 
-  const history = useHistory();
-  const {path} = useRouteMatch();
+  const history = useHistory<History>();
+  const {path} = useRouteMatch<string>();
 
-  const [nameParams, setNameParams] = React.useState<NameParams>({
+  const [nameParams, setNameParams] = React.useState<TName>({
     oldName: '',
     name: '',
     canChange: false,
     correctName: true
   });
-  const [loginParams, setLoginParams] = React.useState<LoginParams>({
+  const [loginParams, setLoginParams] = React.useState<TLogin>({
     oldLogin: '',
     login: '',
     correctLogin: true,
     canChange: false
   });
-  const [passwordParams, setPasswordParams] = React.useState<PasswordParams>({
+  const [passwordParams, setPasswordParams] = React.useState<TPassword>({
     password: '',
     canChange: false,
     correctPassword: false,
@@ -44,7 +44,7 @@ const ProfilePage = () => {
     isProfilePage: useRouteMatch({
       path: '/profile',
       strict: true,
-      sensitive: true
+      sensitive: true,
     }),
     isOrdersPage: useRouteMatch({
       path: '/profile/orders',
@@ -61,15 +61,15 @@ const ProfilePage = () => {
   const {
     ingredientsRequest,
     ingredientsFailed,
-  } = useAppSelector((state: ReducersParams) => {
+  } = useAppSelector<TIngredientsState>((state: TReducerState) => {
     return state.ingredients;
   });
 
-  const {orders} = useAppSelector((state: ReducersParams) => {
+  const {orders} = useAppSelector<TWSState>((state: TReducerState) => {
     return state.wsOrders;
   });
 
-  const {type} = useAppSelector((state: ReducersParams) => {
+  const {type} = useAppSelector<TUIState>((state: TReducerState) => {
     return state.ui;
   });
 
@@ -81,9 +81,9 @@ const ProfilePage = () => {
           history.replace({pathname: '/login'});
         }
       });
-  }
+  };
 
-  const cancel = (event: React.SyntheticEvent) => {
+  const cancel = (event: React.SyntheticEvent): void => {
     event.preventDefault();
 
     setLoginParams({
@@ -98,11 +98,12 @@ const ProfilePage = () => {
       ...passwordParams,
       password: ''
     });
-  }
+  };
 
-  const save = (event: React.SyntheticEvent) => {
+  const save = (event: React.SyntheticEvent): void => {
     event.preventDefault();
-    const newValues = createData();
+
+    const newValues: TUser = createData();
     dispatch(updateUserInfo(newValues))
       .unwrap()
       .then((res) => {
@@ -144,8 +145,8 @@ const ProfilePage = () => {
       });
   }
 
-  const createData = () => {
-    const data: { name?: string, email?: string, password?: string } = {};
+  const createData = (): TUser => {
+    const data: TUser = {};
     if (nameParams.oldName !== nameParams.name && isCorrectName(nameParams.name)) {
       data.name = nameParams.name;
     } else if (!isCorrectName(nameParams.name)) {
@@ -175,11 +176,12 @@ const ProfilePage = () => {
 
   React.useEffect(() => {
     getInfo();
+
     if (pages.isOrdersPage?.isExact) {
       dispatch(wsOrdersActions.connectionInit());
-      return () => {
-        dispatch(wsOrdersActions.connectionClose());
-      }
+    }
+    return () => {
+      dispatch(wsOrdersActions.connectionClose());
     }
   }, [dispatch, pages.isOrdersPage?.isExact]);
 
@@ -237,7 +239,7 @@ const ProfilePage = () => {
             <Input type='text'
                    placeholder='Имя'
                    value={nameParams.name}
-                   onChange={(e) => {
+                   onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                      dispatch(userSlice.actions.setDefaultApiState());
                      setNameParams({
                          ...nameParams,
@@ -250,7 +252,7 @@ const ProfilePage = () => {
                    name={'name'}
                    disabled={!nameParams.canChange}
                    icon={'EditIcon'}
-                   onIconClick={() => {
+                   onIconClick={(): void => {
                      dispatch(userSlice.actions.setDefaultApiState());
                      setNameParams({
                        ...nameParams,
@@ -263,7 +265,7 @@ const ProfilePage = () => {
             <Input type='email'
                    placeholder='Логин'
                    value={loginParams.login}
-                   onChange={(e) => {
+                   onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                      dispatch(userSlice.actions.setDefaultApiState());
                      setLoginParams({
                        ...loginParams,
@@ -275,7 +277,7 @@ const ProfilePage = () => {
                    name={'login'}
                    disabled={!loginParams.canChange}
                    icon={'EditIcon'}
-                   onIconClick={() => {
+                   onIconClick={(): void => {
                      dispatch(userSlice.actions.setDefaultApiState());
                      setLoginParams({
                        ...loginParams,
@@ -288,14 +290,14 @@ const ProfilePage = () => {
             <Input type={passwordParams.canChange ? 'text' : 'password'}
                    placeholder={type === 'mobile' ? 'Пароль' : 'Введите новый пароль'}
                    value={passwordParams.password}
-                   onChange={(e) => setPasswordParams({
+                   onChange={(e: React.ChangeEvent<HTMLInputElement>): void => setPasswordParams({
                      ...passwordParams,
                      password: e.target.value,
                      correctPassword: isCorrectPassword(e.target.value)
                    })}
                    disabled={!passwordParams.canChange}
                    icon={'EditIcon'}
-                   onIconClick={() => {
+                   onIconClick={(): void => {
                      dispatch(userSlice.actions.setDefaultApiState());
                      setPasswordParams({
                        ...passwordParams,
@@ -345,7 +347,7 @@ const ProfilePage = () => {
           {!ingredientsRequest && !ingredientsFailed && (
             <ul className={profileStyles.orderList}>
               {
-                orders.map((order) => {
+                orders.map((order: TOrder) => {
                   return (
                     <OrderCard
                       key={order._id}

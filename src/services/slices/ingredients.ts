@@ -1,12 +1,14 @@
-import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
+import {AxiosError, AxiosResponse} from 'axios';
+import {createSlice, createAsyncThunk, AsyncThunk, ActionReducerMapBuilder, Reducer} from '@reduxjs/toolkit';
+
 import DataService from '../dataService';
 import {
-  InitialIngredientsParams,
+  TIngredient,
+  TIngredientsState,
 } from '../../utils/types';
 import {defaultIngredientParams} from '../../utils/defaultData';
-import {AxiosError} from "axios";
 
-const initialIngredientsState: InitialIngredientsParams = {
+const initialIngredientsState: TIngredientsState = {
   ingredients: [],
   currentIngredient: defaultIngredientParams,
   ingredientsRequest: true,
@@ -14,11 +16,11 @@ const initialIngredientsState: InitialIngredientsParams = {
   ingredientsFailedTextError: '',
 }
 
-export const getIngredients = createAsyncThunk(
+export const getIngredients: AsyncThunk<any, void, any> = createAsyncThunk(
   'ingredients/getIngredients',
-  async (_, thunkApi) => {
+  async (_, thunkApi): Promise<any> => {
     try {
-      const res = await DataService.getAllIngredients();
+      const res: AxiosResponse = await DataService.getAllIngredients();
       return res.data.data;
     } catch (error) {
       if (error instanceof AxiosError && error.response) {
@@ -42,31 +44,31 @@ export const ingredientsSlice = createSlice({
   name: 'ingredients',
   initialState: initialIngredientsState,
   reducers: {
-    putIngredientDetails: (state, action) => {
+    putIngredientDetails: (state: TIngredientsState, {payload}: { payload: TIngredient }): TIngredientsState => {
       return {
         ...state,
-        currentIngredient: action.payload
+        currentIngredient: payload
       }
     },
-    removeIngredientDetails: (state, action) => {
+    removeIngredientDetails: (state: TIngredientsState): TIngredientsState => {
       return {
         ...state,
         currentIngredient: defaultIngredientParams
       }
     }
   },
-  extraReducers: (builder) => {
+  extraReducers: (builder: ActionReducerMapBuilder<TIngredientsState>) => {
     builder
-      .addCase(getIngredients.fulfilled, (state, action) => {
+      .addCase(getIngredients.fulfilled, (state: TIngredientsState, {payload}: { payload: Array<TIngredient> }): TIngredientsState => {
         return {
           ...state,
           ingredientsRequest: false,
           ingredientsFailed: false,
           ingredientsFailedTextError: '',
-          ingredients: action.payload
+          ingredients: payload
         };
       })
-      .addCase(getIngredients.pending, (state) => {
+      .addCase(getIngredients.pending, (state: TIngredientsState): TIngredientsState => {
         return {
           ...state,
           ingredientsRequest: true,
@@ -74,15 +76,15 @@ export const ingredientsSlice = createSlice({
           ingredientsFailedTextError: ''
         }
       })
-      .addCase(getIngredients.rejected, (state, action) => {
+      .addCase(getIngredients.rejected, (state: TIngredientsState, {payload}): TIngredientsState => {
         return {
           ...state,
           ingredientsRequest: false,
           ingredientsFailed: true,
-          ingredientsFailedTextError: action.payload as string,
+          ingredientsFailedTextError: payload as string,
         }
       })
   }
 });
 
-export const ingredientsReducer = ingredientsSlice.reducer;
+export const ingredientsReducer: Reducer<TIngredientsState> = ingredientsSlice.reducer;

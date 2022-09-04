@@ -1,41 +1,36 @@
-import React from 'react';
+import * as React from 'react';
 import ReactDOM from 'react-dom';
 import {useHistory, useLocation} from 'react-router-dom';
-import PropTypes from 'prop-types';
 
 import {CloseIcon} from '@ya.praktikum/react-developer-burger-ui-components';
 
 import ModalOverlay from '../ModalOverlay/ModalOverlay';
 
-import {LocationState, ReducersParams} from '../../utils/types';
+import {TLocationState, TModalState, TReducerState, AppDispatch} from '../../utils/types';
 import {useAppDispatch, useAppSelector} from '../../services/store';
 import {modalSlice} from '../../services/slices/modal';
 import {burgerConstructorSlice} from '../../services/slices/burgerConstructor';
 
 import modalStyles from './Modal.module.scss';
 
-interface ModalProps {
-  children: React.ReactElement,
-}
-
-const Modal = ({children}: ModalProps) => {
-  const dispatch = useAppDispatch();
-  const history = useHistory();
-  const location = useLocation<LocationState>();
+const Modal: React.FC = ({children}) => {
+  const dispatch: AppDispatch = useAppDispatch();
+  const history = useHistory<History>();
+  const location = useLocation<TLocationState>();
 
   const modalRoot = document.getElementById('modals') as HTMLElement;
-  const {modalType} = useAppSelector((state: ReducersParams) => {
+  const {modalType} = useAppSelector<TModalState>((state: TReducerState) => {
     return state.modal;
   });
-  const [show, setShow] = React.useState(false);
+  const [show, setShow] = React.useState<boolean>(false);
 
-  const handleEscClose = (evt: KeyboardEvent) => {
+  const handleEscClose = (evt: KeyboardEvent): void => {
     if (evt.code === 'Escape') {
       closeModal();
     }
   }
 
-  const handleCloseModal = (evt: React.SyntheticEvent) => {
+  const handleCloseModal = (evt: React.SyntheticEvent): void => {
     const target = evt.target as HTMLElement;
     if (target.classList.contains(modalStyles.root_opened)) {
       closeModal();
@@ -43,24 +38,24 @@ const Modal = ({children}: ModalProps) => {
     evt.stopPropagation();
   }
 
-  const closeModal = () => {
+  const closeModal = (): void => {
     setShow(false);
   }
 
-  const closeAfterTransitionEnd = React.useCallback(() => {
+  const closeAfterTransitionEnd = React.useCallback((): void => {
     dispatch(modalSlice.actions.closeModal());
     if (modalType === 'orderDetails') {
       dispatch(burgerConstructorSlice.actions.clearAll());
     }
     if (location.state?.background) {
-      history.replace({pathname: location.state.background.pathname})
+      history.replace({pathname: location.state.background.pathname});
     } else {
       history.replace({pathname: '/'});
     }
 
   }, [dispatch, history, modalType, location]);
 
-  React.useEffect(() => {
+  React.useEffect((): () => void => {
     setShow(true);
     document.addEventListener('keydown', handleEscClose);
 
@@ -72,7 +67,7 @@ const Modal = ({children}: ModalProps) => {
   return ReactDOM.createPortal((
       <ModalOverlay show={show}>
         <div className={`${modalStyles.root} ${show && modalStyles.root_opened}`} onClick={handleCloseModal}
-             onTransitionEnd={!show ? () => {
+             onTransitionEnd={!show ? (): void => {
                closeAfterTransitionEnd();
              } : undefined}>
           <div className={modalStyles.wrapper}>
@@ -86,10 +81,6 @@ const Modal = ({children}: ModalProps) => {
     ),
     modalRoot
   );
-}
-
-Modal.propTypes = {
-  children: PropTypes.element.isRequired,
 }
 
 export default Modal;

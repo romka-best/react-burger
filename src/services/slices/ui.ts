@@ -1,9 +1,10 @@
-import {createSlice} from '@reduxjs/toolkit';
+import {createSlice, Reducer} from '@reduxjs/toolkit';
+
 import {
-  InitialUiParams
+  TUIState
 } from '../../utils/types';
 
-const initialUiState: InitialUiParams = {
+const initialUiState: TUIState = {
   width: -1,
   type: 'desktop',
   breakpoints: {
@@ -17,33 +18,33 @@ export const uiSlice = createSlice({
   name: 'order',
   initialState: initialUiState,
   reducers: {
-    updateTypeDevice: (state, action) => {
-      if (action.payload <= state.breakpoints.mobile) {
+    updateTypeDevice: (state: TUIState, {payload}: { payload: number }): TUIState => {
+      if (payload <= state.breakpoints.mobile) {
         return {
           ...state,
-          width: action.payload,
+          width: payload,
           type: 'mobile'
         }
-      } else if (action.payload <= state.breakpoints.tablet) {
+      } else if (payload <= state.breakpoints.tablet) {
         return {
           ...state,
-          width: action.payload,
+          width: payload,
           type: 'tablet'
         }
-      } else if (action.payload <= state.breakpoints.laptop) {
+      } else if (payload <= state.breakpoints.laptop) {
         return {
           ...state,
-          width: action.payload,
+          width: payload,
           type: 'laptop'
         }
       }
       return {
         ...state,
-        width: action.payload,
+        width: payload,
         type: 'desktop'
       }
     }
   }
 });
 
-export const uiReducer = uiSlice.reducer;
+export const uiReducer: Reducer<TUIState> = uiSlice.reducer;

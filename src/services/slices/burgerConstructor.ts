@@ -1,9 +1,9 @@
-import {createSlice} from '@reduxjs/toolkit';
+import {createSlice, Reducer} from '@reduxjs/toolkit';
 import {
-  IngredientParams, InitialBurgerConstructorParams,
+  TIngredient, TBurgerConstructorState,
 } from '../../utils/types';
 
-const initialBurgerConstructorState: InitialBurgerConstructorParams = {
+const initialBurgerConstructorState: TBurgerConstructorState = {
   ingredients: [],
   buns: [],
   totalPrice: 0,
@@ -13,7 +13,7 @@ export const burgerConstructorSlice = createSlice({
   name: 'burgerConstructor',
   initialState: initialBurgerConstructorState,
   reducers: {
-    addOnlyIngredient: (state, {payload}: { payload: IngredientParams }) => {
+    addOnlyIngredient: (state: TBurgerConstructorState, {payload}: { payload: TIngredient }): TBurgerConstructorState => {
       return {
         ...state,
         ingredients: [
@@ -22,7 +22,7 @@ export const burgerConstructorSlice = createSlice({
         ]
       }
     },
-    addIngredient: (state, {payload}: { payload: IngredientParams }) => {
+    addIngredient: (state: TBurgerConstructorState, {payload}: { payload: TIngredient }): TBurgerConstructorState => {
       return {
         ...state,
         ingredients: [
@@ -32,12 +32,12 @@ export const burgerConstructorSlice = createSlice({
         totalPrice: state.totalPrice + payload.price
       }
     },
-    removeOnlyIngredient: (state, action) => {
-      let findId = false;
+    removeOnlyIngredient: (state: TBurgerConstructorState, {payload}: { payload: string }): TBurgerConstructorState => {
+      let findId: boolean = false;
       return {
         ...state,
         ingredients: [...state.ingredients].filter((ingredient) => {
-          if (ingredient._id === action.payload && !findId) {
+          if (ingredient._id === payload && !findId) {
             findId = true;
             return false;
           }
@@ -45,8 +45,8 @@ export const burgerConstructorSlice = createSlice({
         })
       }
     },
-    removeIngredient: (state, {payload: removedIngredient}: { payload: IngredientParams }) => {
-      let findId = false;
+    removeIngredient: (state: TBurgerConstructorState, {payload: removedIngredient}: { payload: TIngredient }): TBurgerConstructorState => {
+      let findId: boolean = false;
       return {
         ...state,
         ingredients: [...state.ingredients].filter((ingredient) => {
@@ -59,7 +59,7 @@ export const burgerConstructorSlice = createSlice({
         totalPrice: state.totalPrice - removedIngredient.price
       }
     },
-    clearAll: (state) => {
+    clearAll: (state: TBurgerConstructorState): TBurgerConstructorState => {
       return {
         ...state,
         ingredients: [],
@@ -67,8 +67,8 @@ export const burgerConstructorSlice = createSlice({
         totalPrice: 0
       }
     },
-    addBuns: (state, {payload: bun}: { payload: IngredientParams }) => {
-      let totalPrice = state.totalPrice;
+    addBuns: (state: TBurgerConstructorState, {payload: bun}: { payload: TIngredient }): TBurgerConstructorState => {
+      let totalPrice: number = state.totalPrice;
       if (state.buns.length > 0) {
         totalPrice -= state.buns[0].price;
         totalPrice -= state.buns[1].price;
@@ -79,7 +79,7 @@ export const burgerConstructorSlice = createSlice({
         totalPrice: totalPrice + bun.price * 2
       }
     },
-    addOnlyBuns: (state, {payload}: { payload: IngredientParams }) => {
+    addOnlyBuns: (state: TBurgerConstructorState, {payload}: { payload: TIngredient }): TBurgerConstructorState => {
       return {
         ...state,
         buns: [
@@ -88,28 +88,35 @@ export const burgerConstructorSlice = createSlice({
         ]
       }
     },
-    removeBuns: (state) => {
+    removeBuns: (state: TBurgerConstructorState): TBurgerConstructorState => {
       return {
         ...state,
         buns: []
       }
     },
-    incrementTotalPrice: (state, action) => {
+    incrementTotalPrice: (state: TBurgerConstructorState, {payload}: { payload: number }) => {
       return {
         ...state,
-        totalPrice: state.totalPrice + action.payload
+        totalPrice: state.totalPrice + payload
       }
     },
-    decrementTotalPrice: (state, action) => {
+    decrementTotalPrice: (state: TBurgerConstructorState, {payload}: { payload: number }): TBurgerConstructorState => {
       return {
         ...state,
-        totalPrice: state.totalPrice - action.payload
+        totalPrice: state.totalPrice - payload
       }
     },
-    changeSort: (state, action) => {
+    changeSort: (state: TBurgerConstructorState, {payload}: {
+      payload: {
+        dragIndex: number,
+        hoverIndex: number,
+        hoverItem: TIngredient,
+        dragItem: TIngredient
+      }
+    }) => {
       const newOrder = [...state.ingredients]
-      newOrder[action.payload.dragIndex] = action.payload.hoverItem
-      newOrder[action.payload.hoverIndex] = action.payload.dragItem
+      newOrder[payload.dragIndex] = payload.hoverItem
+      newOrder[payload.hoverIndex] = payload.dragItem
       return {
         ...state,
         ingredients: newOrder
@@ -118,4 +125,4 @@ export const burgerConstructorSlice = createSlice({
   }
 });
 
-export const burgerConstructorReducer = burgerConstructorSlice.reducer;
+export const burgerConstructorReducer: Reducer<TBurgerConstructorState> = burgerConstructorSlice.reducer;

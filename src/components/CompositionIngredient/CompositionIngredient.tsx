@@ -1,17 +1,22 @@
-import React from 'react';
+import * as React from 'react';
 
 import {CurrencyIcon} from '@ya.praktikum/react-developer-burger-ui-components';
 
 import compositionIngredientStyles from './CompositionIngredient.module.scss';
 
-interface CompositionIngredientProps {
+interface ICompositionIngredient {
   name: string,
   count: number,
   price: number,
   photo: string,
 }
 
-const CompositionIngredient = ({name, count, price, photo}: CompositionIngredientProps) => {
+const CompositionIngredient: React.FC<ICompositionIngredient> = ({
+                                                                   name,
+                                                                   count,
+                                                                   price,
+                                                                   photo
+                                                                 }: ICompositionIngredient) => {
   return (
     <li className={compositionIngredientStyles.root}>
       <div className={compositionIngredientStyles.ingredient}>

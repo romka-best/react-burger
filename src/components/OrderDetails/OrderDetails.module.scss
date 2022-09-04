@@ -18,7 +18,11 @@
 }
 
 .title {
+  display: block;
 
+  &_size_big {
+    display: block;
+  }
 }
 
 .info {
@@ -62,7 +66,7 @@
 }
 
 .date {
-
+  display: block;
 }
 
 .timePriceBlock {

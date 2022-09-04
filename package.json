@@ -1,16 +1,12 @@
 {
   "name": "react-burger",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "private": true,
   "dependencies": {
     "@reduxjs/toolkit": "^1.8.1",
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^12.1.4",
     "@testing-library/user-event": "^13.5.0",
-    "@types/jest": "^27.4.1",
-    "@types/node": "^16.11.26",
-    "@types/react": "^17.0.41",
-    "@types/react-dom": "^17.0.14",
     "@ya.praktikum/react-developer-burger-ui-components": "^1.13.1",
     "axios": "^0.27.2",
     "axios-retry": "^3.2.5",
@@ -55,6 +51,11 @@
     ]
   },
   "devDependencies": {
-    "@types/react-router-dom": "^5.3.3"
+    "@types/jest": "^28.1.8",
+    "@types/node": "^18.7.13",
+    "@types/react": "^17.0.2",
+    "@types/react-dom": "^17.0.2",
+    "@types/react-router-dom": "^5.3.3",
+    "typescript-plugin-css-modules": "^3.4.0"
   }
 }

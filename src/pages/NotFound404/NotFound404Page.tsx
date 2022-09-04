@@ -1,4 +1,3 @@
-import React from 'react';
 import {useHistory} from 'react-router-dom';
 
 import {Logo, Button} from '@ya.praktikum/react-developer-burger-ui-components';
@@ -6,8 +5,8 @@ import {Logo, Button} from '@ya.praktikum/react-developer-burger-ui-components';
 import notFound404Styles from './NotFound404Page.module.scss';
 
 const NotFound404Page = () => {
-  const history = useHistory();
-  const toMainPage = () => {
+  const history = useHistory<History>();
+  const toMainPage = (): void => {
     history.replace({pathname: '/'});
   }
 

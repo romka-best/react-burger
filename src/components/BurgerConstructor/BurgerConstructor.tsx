@@ -1,47 +1,57 @@
 import React from 'react';
 import {useHistory} from 'react-router-dom';
-import {useDrop} from 'react-dnd';
+import {DropTargetMonitor, useDrop} from 'react-dnd';
 
 import {ConstructorElement, CurrencyIcon, Button, CloseIcon} from '@ya.praktikum/react-developer-burger-ui-components';
 
 import BurgerConstructorElement from '../BurgerConstructorElement/BurgerConstructorElement';
 
-import {IngredientParams, ReducersParams} from '../../utils/types';
+import {
+  TBurgerConstructorState,
+  TIngredient,
+  TIngredientsState,
+  TReducerState,
+  TUIState,
+  TUserState,
+  AppDispatch
+} from '../../utils/types';
 import {burgerConstructorSlice} from '../../services/slices/burgerConstructor';
 import {createOrder} from '../../services/slices/order';
 import {useAppDispatch, useAppSelector} from '../../services/store';
 import {modalSlice} from '../../services/slices/modal';
 
+import {TDragResult} from './BurgerConstructorTypes';
 import burgerConstructorStyles from './BurgerConstructor.module.scss';
 
-const BurgerConstructor = () => {
-  const dispatch = useAppDispatch();
-  const history = useHistory();
+const BurgerConstructor: React.FC = () => {
+  const dispatch: AppDispatch = useAppDispatch();
+  const history = useHistory<History>();
 
-  const [openOrderDetails, setOpenOrderDetails] = React.useState(false);
-  const [canOrder, setCanOrder] = React.useState(false);
+  const [openOrderDetails, setOpenOrderDetails] = React.useState<boolean>(false);
+  const [canOrder, setCanOrder] = React.useState<boolean>(false);
 
-  const {buns, ingredients, totalPrice} = useAppSelector(
-    (state: ReducersParams) => state.burgerConstructor
+  const {buns, ingredients, totalPrice} = useAppSelector<TBurgerConstructorState>(
+    (state: TReducerState) => state.burgerConstructor
   );
 
-  const {isAuthenticated} = useAppSelector(
-    (state: ReducersParams) => state.user
+  const {isAuthenticated} = useAppSelector<TUserState>(
+    (state: TReducerState) => state.user
   );
 
-  const {ingredients: allIngredients} = useAppSelector(
-    (state: ReducersParams) => state.ingredients
+  const {ingredients: allIngredients} = useAppSelector<TIngredientsState>(
+    (state: TReducerState) => state.ingredients
   );
 
-  const {type} = useAppSelector((state: ReducersParams) => {
+  const {type} = useAppSelector<TUIState>((state: TReducerState) => {
     return state.ui;
   });
 
-  const handleClickButton = React.useCallback(() => {
+  const handleClickButton = React.useCallback((): void => {
     if (!isAuthenticated) {
       history.replace({pathname: '/login'});
       return;
     }
+
     const ingredientsIds: string[] = [buns[0]._id, buns[1]._id];
     ingredientsIds.push(...ingredients.map((ingredient) => ingredient._id));
     dispatch(createOrder(ingredientsIds))
@@ -52,32 +62,32 @@ const BurgerConstructor = () => {
       });
   }, [buns, dispatch, history, ingredients, isAuthenticated]);
 
-  const deleteIngredient = (deletedIngredientId: string) => {
-    const ingredient = ingredients.filter((ingredient) => ingredient._id === deletedIngredientId)[0];
+  const deleteIngredient = (deletedIngredientId: string): void => {
+    const ingredient: TIngredient = ingredients.filter((ingredient) => ingredient._id === deletedIngredientId)[0];
     dispatch(burgerConstructorSlice.actions.removeIngredient(ingredient));
   }
 
-  const moveBurgerConstructorIngredient = React.useCallback((dragIndex, hoverIndex) => {
-    const dragItem = ingredients[dragIndex];
-    const hoverItem = ingredients[hoverIndex];
+  const moveBurgerConstructorIngredient = React.useCallback((dragIndex: number, hoverIndex: number): void => {
+    const dragItem: TIngredient = ingredients[dragIndex];
+    const hoverItem: TIngredient = ingredients[hoverIndex];
 
     dispatch(burgerConstructorSlice.actions.changeSort({dragIndex, hoverIndex, dragItem, hoverItem}));
   }, [dispatch, ingredients]);
 
-  const [{isHoverBun, isHoverIngredient, canDrop}, dropTarget] = useDrop({
+  const [{isHoverBun, isHoverIngredient, canDrop}, dropTarget] = useDrop<TIngredient, void, TDragResult>({
     accept: 'NEW_INGREDIENT',
-    drop(dragItem: IngredientParams) {
-      const ingredient = allIngredients.filter((ingredient) => ingredient._id === dragItem._id)[0];
-      const dragBuns = canDrop && ingredient && ingredient.type === 'bun';
-      const dragIngredients = canDrop && ingredient && ingredient.type !== 'bun';
-      if (dragBuns) {
+    drop(dragItem: TIngredient): void {
+      const ingredient: TIngredient = allIngredients.filter((ingredient) => ingredient._id === dragItem._id)[0];
+      const isDragBuns: boolean = canDrop && ingredient && ingredient.type === 'bun';
+      const isDragIngredients: boolean = canDrop && ingredient && ingredient.type !== 'bun';
+      if (isDragBuns) {
         dispatch(burgerConstructorSlice.actions.addBuns(ingredient));
-      } else if (dragIngredients) {
+      } else if (isDragIngredients) {
         dispatch(burgerConstructorSlice.actions.addIngredient(ingredient));
       }
     },
-    collect: (monitor) => {
-      const ingredient = monitor.getItem() && allIngredients.filter((ingredient) => ingredient._id === monitor.getItem()._id)[0];
+    collect: (monitor: DropTargetMonitor<TIngredient>): TDragResult => {
+      const ingredient: TIngredient = monitor.getItem() && allIngredients.filter((ingredient) => ingredient._id === monitor.getItem()._id)[0];
       return ({
         isHoverBun: monitor.isOver() && ingredient.type === 'bun',
         isHoverIngredient: monitor.isOver() && ingredient.type !== 'bun',
@@ -168,7 +178,7 @@ const BurgerConstructor = () => {
                   <h2 className={`${burgerConstructorStyles.expandedMenu__title_mobile} text text_type_main-medium`}>
                     Заказ
                   </h2>
-                  <CloseIcon type={'primary'} onClick={() => {
+                  <CloseIcon type={'primary'} onClick={(): void => {
                     setOpenOrderDetails(false)
                   }}/>
                 </div>
@@ -181,7 +191,7 @@ const BurgerConstructor = () => {
                     ) : null}
                     {ingredients.length > 0 ? (
                       <>
-                        {ingredients.map((product, index) => {
+                        {ingredients.map((product: TIngredient, index: number) => {
                           return (
                             <BurgerConstructorElement key={`${product._id}${index}`} product={product} index={index}
                                                       deleteIngredient={deleteIngredient}
@@ -213,7 +223,7 @@ const BurgerConstructor = () => {
                 <CurrencyIcon type={'primary'}/>
               </div>
             </div>
-            <Button type='primary' size='small' disabled={!canOrder} onClick={() => {
+            <Button type='primary' size='small' disabled={!canOrder} onClick={(): void => {
               if (!openOrderDetails) {
                 setOpenOrderDetails(true);
               } else {
