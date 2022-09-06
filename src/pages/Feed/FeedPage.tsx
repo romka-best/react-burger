@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import {TOrder, TReducerState, TStatusOrders, TUIState, TWSState, AppDispatch} from '../../utils/types';
+import {TStatusOrders} from '../../utils/types';
 import {countOrders} from '../../utils/functions';
 import {useAppDispatch, useAppSelector} from '../../services/store';
 import {wsOrdersAllActions} from '../../services/slices/order';
@@ -11,15 +11,15 @@ import OrderCard from '../../components/OrderCard/OrderCard';
 import feedStyles from './FeedPage.module.scss';
 
 const FeedPage: React.FC = () => {
-  const dispatch: AppDispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
 
   const [statusOrders, setStatusOrders] = React.useState<TStatusOrders>({ready: [], inWork: []});
 
-  const {orders, total, totalToday, wsConnected} = useAppSelector<TWSState>((state: TReducerState) => {
+  const {orders, total, totalToday, wsConnected} = useAppSelector((state) => {
     return state.wsOrdersAll;
   });
 
-  const {type} = useAppSelector<TUIState>((state: TReducerState) => {
+  const {type} = useAppSelector((state) => {
     return state.ui;
   });
 
@@ -50,7 +50,7 @@ const FeedPage: React.FC = () => {
                       orders.length ? (
                         <ul className={feedStyles.orderList}>
                           {
-                            orders.map((order: TOrder): React.ReactNode => {
+                            orders.map((order): React.ReactNode => {
                               return (
                                 <OrderCard
                                   key={order._id}
@@ -75,7 +75,7 @@ const FeedPage: React.FC = () => {
                             statusOrders.ready.length ? (
                               <ul className={feedStyles.readyOrdersList}>
                                 {
-                                  statusOrders.ready.map((orderNumber: number): React.ReactNode => {
+                                  statusOrders.ready.map((orderNumber): React.ReactNode => {
                                     return (
                                       <li className={feedStyles.readyOrdersElement} key={orderNumber}>
                                         <p
@@ -100,7 +100,7 @@ const FeedPage: React.FC = () => {
                             statusOrders.inWork.length ? (
                               <ul className={feedStyles.inWorkOrdersList}>
                                 {
-                                  statusOrders.inWork.map((orderNumber: number): React.ReactNode => {
+                                  statusOrders.inWork.map((orderNumber): React.ReactNode => {
                                     return (
                                       <li className={feedStyles.inWorkOrdersElement} key={orderNumber}>
                                         <p className={`${feedStyles.inWorkOrdersId} text text_type_digits-default`}>

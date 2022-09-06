@@ -2,12 +2,12 @@ import * as React from 'react';
 
 import Ingredient from '../Ingredient/Ingredient';
 
-import {TIngredient, TReducerState} from '../../utils/types';
+import {TIngredient} from '../../utils/types';
 import {useAppSelector} from '../../services/store';
 
 import {useInView} from '../../hooks/useInView';
 
-import {TAction} from './IngredientsTypes';
+import {TAction} from './Ingredients.types';
 import ingredientsStyles from './Ingredients.module.scss';
 
 interface IIngredients {
@@ -15,13 +15,13 @@ interface IIngredients {
 }
 
 const Ingredients: React.FC<IIngredients> = ({setCurrentTab}: IIngredients) => {
-  const ingredients = useAppSelector<Array<TIngredient>>((state: TReducerState) => {
+  const ingredients = useAppSelector<Array<TIngredient>>((state) => {
     return state.ingredients.ingredients;
   });
   const {
     ingredients: burgerConstructorIngredients,
     buns: burgerConstructorBuns
-  } = useAppSelector((state: TReducerState) => {
+  } = useAppSelector((state) => {
     return state.burgerConstructor;
   });
 
@@ -36,13 +36,13 @@ const Ingredients: React.FC<IIngredients> = ({setCurrentTab}: IIngredients) => {
         return state;
       }
       case 'remove': {
-        return state.filter((ingredient: TIngredient) => action.ingredient && ingredient._id !== action.ingredient._id);
+        return state.filter((ingredient) => action.ingredient && ingredient._id !== action.ingredient._id);
       }
       case 'removeAll': {
         return defaultArray;
       }
       case 'update': {
-        return state.map((ingredient: TIngredient) => {
+        return state.map((ingredient) => {
           if (action.ingredient && ingredient._id === action.ingredient._id) {
             return {
               ...ingredient,
@@ -112,10 +112,10 @@ const Ingredients: React.FC<IIngredients> = ({setCurrentTab}: IIngredients) => {
   }, [bunsInView, saucesInView, mainInView, setCurrentTab]);
 
   React.useEffect(() => {
-    const burgerConstructorIngredientsIds: Array<string> = burgerConstructorIngredients.map((ingredient: TIngredient) => {
+    const burgerConstructorIngredientsIds: Array<string> = burgerConstructorIngredients.map((ingredient) => {
       return ingredient._id;
     });
-    const burgerConstructorBunsIds = burgerConstructorBuns.map((bun: TIngredient) => {
+    const burgerConstructorBunsIds = burgerConstructorBuns.map((bun) => {
       return bun._id;
     });
 
@@ -125,7 +125,7 @@ const Ingredients: React.FC<IIngredients> = ({setCurrentTab}: IIngredients) => {
           type: 'update',
           ingredient: {
             ...array[i],
-            count: listIds.indexOf(array[i]._id) !== -1 ? listIds.filter((ingredientId: string) => ingredientId === array[i]._id).length : 0
+            count: listIds.indexOf(array[i]._id) !== -1 ? listIds.filter((ingredientId) => ingredientId === array[i]._id).length : 0
           }
         })
       }
@@ -142,18 +142,17 @@ const Ingredients: React.FC<IIngredients> = ({setCurrentTab}: IIngredients) => {
         <h2 className={`${ingredientsStyles.title} text text_type_main-medium`}>Булки</h2>
         <div className={ingredientsStyles.data}>
           {
-            buns.map((bun: TIngredient) =>
+            buns.map((bun) =>
               <Ingredient count={bun.count ? bun.count : 0} key={bun._id} ingredient={bun}/>
             )
           }
         </div>
       </section>
-      <section id={'sauces'} ref={saucesRef} onScroll={() => {
-      }}>
+      <section id={'sauces'} ref={saucesRef}>
         <h2 className={`${ingredientsStyles.title} text text_type_main-medium`}>Соусы</h2>
         <div className={ingredientsStyles.data}>
           {
-            sauces.map((sauce: TIngredient) =>
+            sauces.map((sauce) =>
               <Ingredient count={sauce.count ? sauce.count : 0} key={sauce._id} ingredient={sauce}/>
             )
           }
@@ -163,7 +162,7 @@ const Ingredients: React.FC<IIngredients> = ({setCurrentTab}: IIngredients) => {
         <h2 className={`${ingredientsStyles.title} text text_type_main-medium`} id={'main'}>Начинки</h2>
         <div className={ingredientsStyles.data}>
           {
-            main.map((main: TIngredient) =>
+            main.map((main) =>
               <Ingredient count={main.count ? main.count : 0} key={main._id} ingredient={main}/>
             )
           }

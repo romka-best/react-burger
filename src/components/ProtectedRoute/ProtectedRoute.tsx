@@ -2,7 +2,6 @@ import * as React from 'react';
 
 import {Redirect, Route} from 'react-router-dom';
 
-import {TReducerState, TUserState} from '../../utils/types';
 import {getCookie} from '../../utils/functions';
 import {useAppDispatch, useAppSelector} from '../../services/store';
 import {updateToken, userSlice} from '../../services/slices/user';
@@ -16,7 +15,7 @@ interface IProtectedRoute {
 
 const ProtectedRoute: React.FC<IProtectedRoute> = ({children, isNeedAuth = true, ...rest}: IProtectedRoute) => {
   const dispatch = useAppDispatch();
-  const {isAuthenticated} = useAppSelector<TUserState>((state: TReducerState) => {
+  const {isAuthenticated} = useAppSelector((state) => {
     return state.user;
   });
   const [isUserLoaded, setUserLoaded] = React.useState<boolean>(false);

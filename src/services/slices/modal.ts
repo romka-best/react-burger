@@ -1,4 +1,4 @@
-import {createSlice, Reducer} from '@reduxjs/toolkit';
+import {createSlice} from '@reduxjs/toolkit';
 
 import {
   TModalState
@@ -30,4 +30,4 @@ export const modalSlice = createSlice({
   },
 });
 
-export const modalReducer: Reducer<TModalState> = modalSlice.reducer;
+export const modalReducer = modalSlice.reducer;

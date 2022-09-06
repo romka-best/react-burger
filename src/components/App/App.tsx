@@ -18,7 +18,7 @@ import FeedPage from '../../pages/Feed/FeedPage';
 import ProfilePage from '../../pages/Profile/ProfilePage';
 import NotFound404Page from '../../pages/NotFound404/NotFound404Page';
 
-import {AppDispatch, TLocationState, TModalState, TReducerState} from '../../utils/types';
+import {TLocation} from '../../utils/types';
 import {useAppDispatch, useAppSelector} from '../../services/store';
 import {uiSlice} from '../../services/slices/ui';
 import {getIngredients} from '../../services/slices/ingredients';
@@ -27,10 +27,10 @@ import appStyles from './App.module.scss';
 
 
 const App: React.FC = () => {
-  const dispatch: AppDispatch = useAppDispatch();
-  const location = useLocation<TLocationState>();
+  const dispatch = useAppDispatch();
+  const location = useLocation<TLocation>();
 
-  const {modalIsVisible, modalType} = useAppSelector<TModalState>((state: TReducerState) => {
+  const {modalIsVisible, modalType} = useAppSelector((state) => {
     return state.modal;
   });
 

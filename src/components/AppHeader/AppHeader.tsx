@@ -13,18 +13,17 @@ import {
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import LogoMobile from '../../assets/images/logo.svg';
 
-import {AppDispatch, TReducerState, TUIState} from '../../utils/types';
 import {exit} from '../../utils/functions';
 import {useAppDispatch, useAppSelector} from '../../services/store';
 
-import {TNavigationMenu} from './AppHeaderTypes';
+import {TNavigationMenu} from './AppHeader.types';
 import headerStyles from './AppHeader.module.scss';
 
 const AppHeader: React.FC = () => {
-  const dispatch: AppDispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
   const history = useHistory<History>();
 
-  const {type} = useAppSelector<TUIState>((state: TReducerState) => {
+  const {type} = useAppSelector((state) => {
     return state.ui;
   });
 
@@ -132,8 +131,9 @@ const AppHeader: React.FC = () => {
                       {pages.isProfilePage?.path === '/profile' ?
                         (<ProfileIcon type={'primary'}/>) :
                         (<ProfileIcon type={'secondary'}/>)}
-                      <p className={`${headerStyles.expandedMenuPageText} text text_type_main-default`}>Личный
-                        кабинет</p>
+                      <p className={`${headerStyles.expandedMenuPageText} text text_type_main-default`}>
+                        Личный кабинет
+                      </p>
                       <div className={headerStyles.expandedMenuIconArrow} onClick={(evt: React.SyntheticEvent) => {
                         evt.stopPropagation();
                         evt.preventDefault();

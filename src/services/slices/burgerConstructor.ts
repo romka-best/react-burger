@@ -1,6 +1,7 @@
-import {createSlice, Reducer} from '@reduxjs/toolkit';
+import {createSlice} from '@reduxjs/toolkit';
 import {
-  TIngredient, TBurgerConstructorState,
+  TIngredient,
+  TBurgerConstructorState,
 } from '../../utils/types';
 
 const initialBurgerConstructorState: TBurgerConstructorState = {
@@ -13,7 +14,7 @@ export const burgerConstructorSlice = createSlice({
   name: 'burgerConstructor',
   initialState: initialBurgerConstructorState,
   reducers: {
-    addOnlyIngredient: (state: TBurgerConstructorState, {payload}: { payload: TIngredient }): TBurgerConstructorState => {
+    addOnlyIngredient: (state, {payload}: { payload: TIngredient }) => {
       return {
         ...state,
         ingredients: [
@@ -22,7 +23,7 @@ export const burgerConstructorSlice = createSlice({
         ]
       }
     },
-    addIngredient: (state: TBurgerConstructorState, {payload}: { payload: TIngredient }): TBurgerConstructorState => {
+    addIngredient: (state, {payload}: { payload: TIngredient }) => {
       return {
         ...state,
         ingredients: [
@@ -32,7 +33,7 @@ export const burgerConstructorSlice = createSlice({
         totalPrice: state.totalPrice + payload.price
       }
     },
-    removeOnlyIngredient: (state: TBurgerConstructorState, {payload}: { payload: string }): TBurgerConstructorState => {
+    removeOnlyIngredient: (state, {payload}: { payload: string }) => {
       let findId: boolean = false;
       return {
         ...state,
@@ -45,7 +46,7 @@ export const burgerConstructorSlice = createSlice({
         })
       }
     },
-    removeIngredient: (state: TBurgerConstructorState, {payload: removedIngredient}: { payload: TIngredient }): TBurgerConstructorState => {
+    removeIngredient: (state, {payload: removedIngredient}: { payload: TIngredient }) => {
       let findId: boolean = false;
       return {
         ...state,
@@ -59,7 +60,7 @@ export const burgerConstructorSlice = createSlice({
         totalPrice: state.totalPrice - removedIngredient.price
       }
     },
-    clearAll: (state: TBurgerConstructorState): TBurgerConstructorState => {
+    clearAll: (state) => {
       return {
         ...state,
         ingredients: [],
@@ -67,7 +68,7 @@ export const burgerConstructorSlice = createSlice({
         totalPrice: 0
       }
     },
-    addBuns: (state: TBurgerConstructorState, {payload: bun}: { payload: TIngredient }): TBurgerConstructorState => {
+    addBuns: (state, {payload: bun}: { payload: TIngredient }) => {
       let totalPrice: number = state.totalPrice;
       if (state.buns.length > 0) {
         totalPrice -= state.buns[0].price;
@@ -79,7 +80,7 @@ export const burgerConstructorSlice = createSlice({
         totalPrice: totalPrice + bun.price * 2
       }
     },
-    addOnlyBuns: (state: TBurgerConstructorState, {payload}: { payload: TIngredient }): TBurgerConstructorState => {
+    addOnlyBuns: (state, {payload}: { payload: TIngredient }) => {
       return {
         ...state,
         buns: [
@@ -88,25 +89,25 @@ export const burgerConstructorSlice = createSlice({
         ]
       }
     },
-    removeBuns: (state: TBurgerConstructorState): TBurgerConstructorState => {
+    removeBuns: (state) => {
       return {
         ...state,
         buns: []
       }
     },
-    incrementTotalPrice: (state: TBurgerConstructorState, {payload}: { payload: number }) => {
+    incrementTotalPrice: (state, {payload}: { payload: number }) => {
       return {
         ...state,
         totalPrice: state.totalPrice + payload
       }
     },
-    decrementTotalPrice: (state: TBurgerConstructorState, {payload}: { payload: number }): TBurgerConstructorState => {
+    decrementTotalPrice: (state, {payload}: { payload: number }) => {
       return {
         ...state,
         totalPrice: state.totalPrice - payload
       }
     },
-    changeSort: (state: TBurgerConstructorState, {payload}: {
+    changeSort: (state, {payload}: {
       payload: {
         dragIndex: number,
         hoverIndex: number,
@@ -125,4 +126,4 @@ export const burgerConstructorSlice = createSlice({
   }
 });
 
-export const burgerConstructorReducer: Reducer<TBurgerConstructorState> = burgerConstructorSlice.reducer;
+export const burgerConstructorReducer = burgerConstructorSlice.reducer;

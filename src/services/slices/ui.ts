@@ -1,4 +1,4 @@
-import {createSlice, Reducer} from '@reduxjs/toolkit';
+import {createSlice} from '@reduxjs/toolkit';
 
 import {
   TUIState
@@ -18,7 +18,7 @@ export const uiSlice = createSlice({
   name: 'order',
   initialState: initialUiState,
   reducers: {
-    updateTypeDevice: (state: TUIState, {payload}: { payload: number }): TUIState => {
+    updateTypeDevice: (state, {payload}: { payload: number }) => {
       if (payload <= state.breakpoints.mobile) {
         return {
           ...state,
@@ -47,4 +47,4 @@ export const uiSlice = createSlice({
   }
 });
 
-export const uiReducer: Reducer<TUIState> = uiSlice.reducer;
+export const uiReducer = uiSlice.reducer;

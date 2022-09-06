@@ -9,10 +9,10 @@ import {
 
 import ConstructorElementMobile from '../ConstructorElementMobile/ConstructorElementMobile';
 
-import {TIngredient, TReducerState} from '../../utils/types';
+import {TIngredient} from '../../utils/types';
 import {useAppSelector} from '../../services/store';
 
-import {TDragObject, TDragResult, TDropResult} from './BurgerConstructorElementTypes';
+import {TDragObject, TDragResult, TDropResult} from './BurgerConstructorElement.types';
 import burgerConstructorElementStyles from './BurgerConstructorElement.module.scss';
 
 interface IBurgerConstructorElement {
@@ -36,7 +36,7 @@ const BurgerConstructorElement: React.FC<IBurgerConstructorElement> = ({
     image_mobile
   } = product;
 
-  const {type: typeDevice} = useAppSelector((state: TReducerState) => {
+  const {type: typeDevice} = useAppSelector((state) => {
     return state.ui;
   });
 

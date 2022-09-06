@@ -3,17 +3,18 @@ import {Link, useHistory} from 'react-router-dom';
 
 import {Input, Button} from '@ya.praktikum/react-developer-burger-ui-components';
 
-import {THistory, TReducerState, TUIState, TUserState, AppDispatch} from '../../utils/types';
+import {THistory} from '../../utils/types';
 import {useAppDispatch, useAppSelector} from '../../services/store';
 import {userSlice, resetPassword} from '../../services/slices/user';
+import {useForm} from '../../hooks/useForm';
 
 import resetPasswordStyles from './ResetPasswordPage.module.scss';
 
 const ForgotPasswordPage = () => {
-  const dispatch: AppDispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
   const history = useHistory<THistory>();
 
-  const {type} = useAppSelector<TUIState>((state: TReducerState) => {
+  const {type} = useAppSelector((state) => {
     return state.ui;
   });
 
@@ -21,12 +22,14 @@ const ForgotPasswordPage = () => {
     userRequest,
     userFailed,
     userFailedTextError
-  } = useAppSelector<TUserState>((state: TReducerState) => {
+  } = useAppSelector((state) => {
     return state.user;
   });
 
-  const [token, setToken] = React.useState<string>('');
-  const [password, setPassword] = React.useState<string>('');
+  const {values, handleChange, setValues} = useForm({
+    token: '',
+    password: ''
+  });
 
   const [currentTypePasswordInput, setCurrentTypePasswordInput] = React.useState<'password' | 'text'>('password');
   const onIconPasswordClick = (): void => {
@@ -39,8 +42,8 @@ const ForgotPasswordPage = () => {
 
       dispatch(
         resetPassword({
-          token,
-          password
+          token: values.token,
+          password: values.password
         }))
         .unwrap()
         .then(success => {
@@ -50,12 +53,12 @@ const ForgotPasswordPage = () => {
           }
         })
     },
-    [history, token, password, dispatch]
+    [history, values, dispatch]
   );
 
   React.useEffect((): () => void => {
     const state: THistory = history.location.state;
-    if (!state || (state && state.from.pathname === '/forgot-password')) {
+    if (!state || (state && state.from.pathname !== '/forgot-password')) {
       history.replace({pathname: '/forgot-password', state: {from: history.location}});
     }
     return () => {
@@ -65,12 +68,12 @@ const ForgotPasswordPage = () => {
 
   return (
     <main className={`${resetPasswordStyles.root}`}>
-      <form className={`${resetPasswordStyles.form}`} name={'reset-password'}>
+      <form className={`${resetPasswordStyles.form}`} name={'reset-password'} onSubmit={save}>
         <h2 className={`${resetPasswordStyles.title} text text_type_main-medium`}>Восстановление пароля</h2>
         <Input type={currentTypePasswordInput}
                placeholder='Введите новый пароль'
-               value={password}
-               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
+               value={values.password}
+               onChange={handleChange}
                icon={currentTypePasswordInput === 'password' ? 'ShowIcon' : 'HideIcon'}
                onIconClick={onIconPasswordClick}
                name={'password'}
@@ -80,23 +83,26 @@ const ForgotPasswordPage = () => {
         />
         <Input type='text'
                placeholder='Введите код из письма'
-               value={token}
-               onChange={(e): void=> {
+               value={values.token}
+               onChange={(e): void => {
                  dispatch(userSlice.actions.setDefaultApiState());
-                 setToken(e.target.value)
+                 handleChange(e);
                }}
-               name={'code'}
-               {...(token ? {icon: 'CloseIcon'} : {})}
+               name={'token'}
+               {...(values.token ? {icon: 'CloseIcon'} : {})}
                onIconClick={(): void => {
                  dispatch(userSlice.actions.setDefaultApiState());
-                 setToken('');
+                 setValues({
+                   ...values,
+                   token: ''
+                 });
                }}
                size={type === 'mobile' ? 'small' : 'default'}
                error={userFailed}
                errorText={userFailedTextError}
         />
         <Button type='primary' size={type === 'mobile' ? 'small' : 'medium'}
-                onClick={save} htmlType='submit' disabled={userRequest || !token || !password}>
+                htmlType='submit' disabled={userRequest || !values.token || !values.password}>
           Сохранить
         </Button>
       </form>

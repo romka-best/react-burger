@@ -3,31 +3,31 @@ import {Link, useHistory} from 'react-router-dom';
 
 import {Input, Button} from '@ya.praktikum/react-developer-burger-ui-components';
 
-import {THistory, TReducerState, TUIState, TUserState, AppDispatch} from '../../utils/types';
+import {THistory} from '../../utils/types';
 import {isCorrectEmail} from '../../utils/functions';
 import {useAppDispatch, useAppSelector} from '../../services/store';
 import {sendCodeForResetPassword, userSlice} from '../../services/slices/user';
+import {useForm} from '../../hooks/useForm';
 
-import {TEmail} from './ForgotPasswordTypes';
 import forgotPasswordStyles from './ForgotPasswordPage.module.scss';
 
 const ForgotPasswordPage: React.FC = () => {
-  const dispatch: AppDispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
   const history = useHistory<THistory>();
 
   const {
     userRequest,
     userFailed,
     userFailedTextError
-  } = useAppSelector<TUserState>((state: TReducerState) => {
+  } = useAppSelector((state) => {
     return state.user;
   });
 
-  const {type} = useAppSelector<TUIState>((state: TReducerState) => {
+  const {type} = useAppSelector((state) => {
     return state.ui;
   });
 
-  const [emailParams, setEmailParams] = React.useState<TEmail>({
+  const {values, setValues} = useForm({
     email: '',
     correctEmail: false,
   });
@@ -35,9 +35,9 @@ const ForgotPasswordPage: React.FC = () => {
   const navigationToSecondStep = React.useCallback(
     (event: React.SyntheticEvent): void => {
       event.preventDefault();
-      if (isCorrectEmail(emailParams.email)) {
+      if (isCorrectEmail(values.email)) {
         dispatch(userSlice.actions.setDefaultApiState());
-        dispatch(sendCodeForResetPassword(emailParams.email.toLowerCase()))
+        dispatch(sendCodeForResetPassword(values.email.toLowerCase()))
           .unwrap()
           .then((success: boolean) => {
             if (success) {
@@ -46,7 +46,7 @@ const ForgotPasswordPage: React.FC = () => {
           });
       }
     },
-    [history, dispatch, emailParams.email]
+    [history, dispatch, values.email]
   );
 
   React.useEffect(() => {
@@ -57,29 +57,33 @@ const ForgotPasswordPage: React.FC = () => {
 
   return (
     <main className={`${forgotPasswordStyles.root}`}>
-      <form className={`${forgotPasswordStyles.form}`} name={'forgot-password'}>
+      <form className={`${forgotPasswordStyles.form}`} name={'forgot-password'} onSubmit={navigationToSecondStep}>
         <h2 className={`${forgotPasswordStyles.title} text text_type_main-medium`}>Восстановление пароля</h2>
         <Input type='email'
                placeholder='Укажите e-mail'
-               value={emailParams.email}
+               value={values.email}
                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                  dispatch(userSlice.actions.setDefaultApiState());
-                 setEmailParams({
-                   ...emailParams,
-                   email: e.target.value,
-                   correctEmail: isCorrectEmail(e.target.value),
-                 });
+                 setValues(
+                   {
+                     ...values,
+                     email: e.target.value,
+                     correctEmail: isCorrectEmail(e.target.value)
+                   }
+                 );
                }
                }
                name={'email'}
-               {...(emailParams.email ? {icon: 'CloseIcon'} : {})}
+               {...(values.email ? {icon: 'CloseIcon'} : {})}
                onIconClick={(): void => {
                  dispatch(userSlice.actions.setDefaultApiState());
-                 setEmailParams({
-                   ...emailParams,
-                   email: '',
-                   correctEmail: false,
-                 });
+                 setValues(
+                   {
+                     ...values,
+                     email: '',
+                     correctEmail: false
+                   }
+                 );
                }}
                error={userFailed}
                errorText={userFailedTextError}
@@ -87,9 +91,8 @@ const ForgotPasswordPage: React.FC = () => {
         />
         <Button type='primary'
                 size={type === 'mobile' ? 'small' : 'medium'}
-                onClick={navigationToSecondStep}
                 htmlType='submit'
-                disabled={userRequest || !emailParams.correctEmail}>
+                disabled={userRequest || !values.correctEmail}>
           Восстановить
         </Button>
       </form>

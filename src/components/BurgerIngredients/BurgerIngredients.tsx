@@ -3,7 +3,7 @@ import * as React from 'react';
 import Tab from '../Tab/Tab';
 import Ingredients from '../Ingredients/Ingredients';
 
-import {TReducerState, TTabName, TUIState} from '../../utils/types';
+import {TTabName} from '../../utils/types';
 import {useAppSelector} from '../../services/store';
 
 import burgerIngredientsStyles from './BurgerIngredients.module.scss';
@@ -21,7 +21,7 @@ const BurgerIngredients: React.FC = () => {
     }
   };
 
-  const {type} = useAppSelector<TUIState>((state: TReducerState) => {
+  const {type} = useAppSelector((state) => {
     return state.ui;
   });
 

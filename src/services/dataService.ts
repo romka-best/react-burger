@@ -1,10 +1,8 @@
-import {AxiosResponse} from 'axios';
-
 import http from '../utils/http-common';
 import {getCookie} from '../utils/functions';
 
 class DataService {
-  createUser(email: string, password: string, name: string): Promise<AxiosResponse> {
+  createUser(email: string, password: string, name: string) {
     return http.post('/auth/register', {
       email,
       password,
@@ -12,7 +10,7 @@ class DataService {
     });
   }
 
-  getUserInfo(): Promise<AxiosResponse> {
+  getUserInfo() {
     return http.get('/auth/user', {
       headers: {
         Authorization: 'Bearer ' + getCookie('accessToken')
@@ -20,7 +18,7 @@ class DataService {
     });
   }
 
-  updateUserInfo(newValues: object): Promise<AxiosResponse> {
+  updateUserInfo(newValues: object) {
     return http.patch('/auth/user', newValues, {
       headers: {
         Authorization: 'Bearer ' + getCookie('accessToken')
@@ -28,43 +26,43 @@ class DataService {
     });
   }
 
-  login(email: string, password: string): Promise<AxiosResponse> {
+  login(email: string, password: string) {
     return http.post('/auth/login', {
       email,
       password
     });
   }
 
-  logout(): Promise<AxiosResponse> {
+  logout() {
     return http.post('/auth/logout', {
       token: getCookie('refreshToken')
     });
   }
 
-  updateToken(): Promise<AxiosResponse> {
+  updateToken() {
     return http.post('/auth/token', {
       token: getCookie('refreshToken')
     });
   }
 
-  sendCodeForResetPassword(email: string): Promise<AxiosResponse> {
+  sendCodeForResetPassword(email: string) {
     return http.post('/password-reset', {
       email
     });
   }
 
-  resetPassword(password: string, token: string): Promise<AxiosResponse> {
+  resetPassword(password: string, token: string) {
     return http.post('/password-reset/reset', {
       password,
       token
     });
   }
 
-  getAllIngredients(): Promise<AxiosResponse> {
+  getAllIngredients() {
     return http.get('/ingredients');
   }
 
-  createOrder(ingredients: string[]): Promise<AxiosResponse> {
+  createOrder(ingredients: string[]) {
     return http.post('/orders', {
       ingredients
     }, {

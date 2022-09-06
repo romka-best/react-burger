@@ -6,43 +6,35 @@ import {ConstructorElement, CurrencyIcon, Button, CloseIcon} from '@ya.praktikum
 
 import BurgerConstructorElement from '../BurgerConstructorElement/BurgerConstructorElement';
 
-import {
-  TBurgerConstructorState,
-  TIngredient,
-  TIngredientsState,
-  TReducerState,
-  TUIState,
-  TUserState,
-  AppDispatch
-} from '../../utils/types';
+import {TIngredient} from '../../utils/types';
 import {burgerConstructorSlice} from '../../services/slices/burgerConstructor';
 import {createOrder} from '../../services/slices/order';
 import {useAppDispatch, useAppSelector} from '../../services/store';
 import {modalSlice} from '../../services/slices/modal';
 
-import {TDragResult} from './BurgerConstructorTypes';
+import {TDragResult} from './BurgerConstructor.types';
 import burgerConstructorStyles from './BurgerConstructor.module.scss';
 
 const BurgerConstructor: React.FC = () => {
-  const dispatch: AppDispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
   const history = useHistory<History>();
 
   const [openOrderDetails, setOpenOrderDetails] = React.useState<boolean>(false);
   const [canOrder, setCanOrder] = React.useState<boolean>(false);
 
-  const {buns, ingredients, totalPrice} = useAppSelector<TBurgerConstructorState>(
-    (state: TReducerState) => state.burgerConstructor
+  const {buns, ingredients, totalPrice} = useAppSelector(
+    (state) => state.burgerConstructor
   );
 
-  const {isAuthenticated} = useAppSelector<TUserState>(
-    (state: TReducerState) => state.user
+  const {isAuthenticated} = useAppSelector(
+    (state) => state.user
   );
 
-  const {ingredients: allIngredients} = useAppSelector<TIngredientsState>(
-    (state: TReducerState) => state.ingredients
+  const {ingredients: allIngredients} = useAppSelector(
+    (state) => state.ingredients
   );
 
-  const {type} = useAppSelector<TUIState>((state: TReducerState) => {
+  const {type} = useAppSelector((state) => {
     return state.ui;
   });
 
@@ -191,7 +183,7 @@ const BurgerConstructor: React.FC = () => {
                     ) : null}
                     {ingredients.length > 0 ? (
                       <>
-                        {ingredients.map((product: TIngredient, index: number) => {
+                        {ingredients.map((product, index) => {
                           return (
                             <BurgerConstructorElement key={`${product._id}${index}`} product={product} index={index}
                                                       deleteIngredient={deleteIngredient}

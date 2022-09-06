@@ -1,11 +1,8 @@
 import {
   createSlice,
   createAsyncThunk,
-  AsyncThunk,
-  ActionReducerMapBuilder,
-  Reducer
 } from '@reduxjs/toolkit';
-import {AxiosError, AxiosResponse} from 'axios';
+import {AxiosError} from 'axios';
 
 import DataService from '../dataService';
 import {TIngredient, TOrder, TOrderState, TWSState} from '../../utils/types';
@@ -41,12 +38,12 @@ const initialWsOrdersState: TWSState = {
   totalToday: null,
 };
 
-export const createOrder: AsyncThunk<any, any, any> = createAsyncThunk(
+export const createOrder = createAsyncThunk(
   'orders/create',
   async (ingredients: string[], thunkApi) => {
     try {
-      const res: AxiosResponse = await DataService.createOrder(ingredients);
-      return res.data.order.number;
+      const res = await DataService.createOrder(ingredients);
+      return res.data.order.number as number;
     } catch (error) {
       if (error instanceof AxiosError && error.response) {
         switch (error.response.status) {
@@ -69,40 +66,40 @@ export const wsOrdersAllSlice = createSlice({
   name: 'wsOrdersAll',
   initialState: initialWsOrdersAllState,
   reducers: {
-    connectionInit: (state: TWSState): TWSState => {
+    connectionInit: (state) => {
       return state;
     },
-    connectionClose: (state: TWSState): TWSState => {
+    connectionClose: (state) => {
       return state;
     },
-    sendMessage: (state: TWSState): TWSState => {
+    sendMessage: (state) => {
       return state;
     },
-    connectionSuccess: (state: TWSState): TWSState => {
+    connectionSuccess: (state) => {
       return {
         ...state,
         wsConnected: true
       };
     },
-    connectionError: (state: TWSState): TWSState => {
+    connectionError: (state) => {
       return {
         ...state,
         wsConnected: false
       };
     },
-    connectionClosed: (state: TWSState): TWSState => {
+    connectionClosed: (state) => {
       return {
         ...state,
         wsConnected: false
       };
     },
-    getMessage: (state: TWSState, {payload}: {
+    getMessage: (state, {payload}: {
       payload: {
         orders: Array<TOrder>;
         total: number | null,
         totalToday: number | null
       }
-    }): TWSState => {
+    }) => {
       return {
         ...state,
         orders: payload.orders,
@@ -117,40 +114,40 @@ export const wsOrdersSlice = createSlice({
   name: 'wsOrders',
   initialState: initialWsOrdersState,
   reducers: {
-    connectionInit: (state: TWSState): TWSState => {
+    connectionInit: (state) => {
       return state;
     },
-    connectionClose: (state: TWSState): TWSState => {
+    connectionClose: (state) => {
       return state;
     },
-    sendMessage: (state: TWSState): TWSState => {
+    sendMessage: (state) => {
       return state;
     },
-    connectionSuccess: (state: TWSState): TWSState => {
+    connectionSuccess: (state) => {
       return {
         ...state,
         wsConnected: true
       };
     },
-    connectionError: (state: TWSState): TWSState => {
+    connectionError: (state) => {
       return {
         ...state,
         wsConnected: false
       };
     },
-    connectionClosed: (state: TWSState): TWSState => {
+    connectionClosed: (state) => {
       return {
         ...state,
         wsConnected: false
       };
     },
-    getMessage: (state: TWSState, {payload}: {
+    getMessage: (state, {payload}: {
       payload: {
         orders: Array<TOrder>;
         total: number | null,
         totalToday: number | null
       }
-    }): TWSState => {
+    }) => {
       return {
         ...state,
         orders: payload.orders.reverse(),
@@ -189,7 +186,7 @@ export const orderSlice = createSlice({
       }
     }
   },
-  extraReducers: (builder: ActionReducerMapBuilder<TOrderState>) => {
+  extraReducers: (builder) => {
     builder
       .addCase(createOrder.fulfilled, (state: TOrderState, {payload}: { payload: number }): TOrderState => {
         return {
@@ -223,6 +220,6 @@ export const orderSlice = createSlice({
 export const wsOrdersActions = wsOrdersSlice.actions;
 export const wsOrdersAllActions = wsOrdersAllSlice.actions;
 
-export const wsOrdersReducer: Reducer<TWSState> = wsOrdersSlice.reducer;
-export const wsOrdersAllReducer: Reducer<TWSState> = wsOrdersAllSlice.reducer;
-export const orderReducer: Reducer<TOrderState> = orderSlice.reducer;
+export const wsOrdersReducer = wsOrdersSlice.reducer;
+export const wsOrdersAllReducer = wsOrdersAllSlice.reducer;
+export const orderReducer = orderSlice.reducer;

@@ -6,11 +6,8 @@ import {CurrencyIcon} from '@ya.praktikum/react-developer-burger-ui-components';
 import {
   TBurger,
   TIngredient,
-  TIngredientsState,
-  TLocationState, TOrder,
-  TOrderState,
-  TReducerState,
-  AppDispatch
+  TLocation,
+  TOrder
 } from '../../utils/types';
 import {createCardDate, getBurgerFromIngredientsIds, getStatus, getTotalCost} from '../../utils/functions';
 import {useAppDispatch, useAppSelector} from '../../services/store';
@@ -18,31 +15,31 @@ import {orderSlice, wsOrdersActions, wsOrdersAllActions} from '../../services/sl
 
 import CompositionIngredient from '../CompositionIngredient/CompositionIngredient';
 
-import {TRouteMatch} from './OrderDetailsTypes';
+import {TRouteMatch} from './OrderDetails.types';
 import orderDetailsStyles from './OrderDetails.module.scss';
 
 const OrderDetails = () => {
-  const dispatch: AppDispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
   const history = useHistory<History>();
-  const location = useLocation<TLocationState>();
+  const location = useLocation<TLocation>();
   const {path} = useRouteMatch<string>();
   const {params} = useRouteMatch<TRouteMatch>();
   const background = location.state?.background;
 
-  const order = useAppSelector<TOrderState>(
-    (state: TReducerState) => {
+  const order = useAppSelector(
+    (state) => {
       return state.order
     }
   );
 
   const {
     ingredients: allIngredients
-  } = useAppSelector<TIngredientsState>((state: TReducerState) => {
+  } = useAppSelector((state) => {
     return state.ingredients;
   });
 
-  const {orders: wsOrders, ordersAll: wsOrdersAll} = useAppSelector<{orders: TOrder[], ordersAll: TOrder[]}>(
-    (state: TReducerState) => {
+  const {orders: wsOrders, ordersAll: wsOrdersAll} = useAppSelector(
+    (state) => {
       return {orders: state.wsOrders.orders, ordersAll: state.wsOrdersAll.orders}
     }
   );

@@ -3,40 +3,36 @@ import {NavLink, useRouteMatch, Switch, Route, useHistory, Redirect} from 'react
 
 import {Button, Input} from '@ya.praktikum/react-developer-burger-ui-components';
 
-import {TIngredientsState, TOrder, TReducerState, TUIState, TUser, TWSState, AppDispatch} from '../../utils/types';
+import {TUser} from '../../utils/types';
 import {isCorrectEmail, isCorrectPassword, isCorrectName} from '../../utils/functions';
 import {useAppDispatch, useAppSelector} from '../../services/store';
 import {wsOrdersActions} from '../../services/slices/order';
 import {getUserInfo, logout, userSlice, updateUserInfo} from '../../services/slices/user';
+import {useForm} from '../../hooks/useForm';
 
 import OrderCard from '../../components/OrderCard/OrderCard';
 import OrderDetails from '../../components/OrderDetails/OrderDetails';
 import Spinner from '../../components/Spinner/Spinner';
 
-import {TName, TLogin, TPassword} from './ProfilePageTypes';
 import profileStyles from './ProfilePage.module.scss';
 
 const ProfilePage = () => {
-  const dispatch: AppDispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
 
   const history = useHistory<History>();
   const {path} = useRouteMatch<string>();
 
-  const [nameParams, setNameParams] = React.useState<TName>({
+  const {values, setValues} = useForm({
     oldName: '',
     name: '',
-    canChange: false,
-    correctName: true
-  });
-  const [loginParams, setLoginParams] = React.useState<TLogin>({
+    canChangeName: false,
+    correctName: true,
     oldLogin: '',
     login: '',
     correctLogin: true,
-    canChange: false
-  });
-  const [passwordParams, setPasswordParams] = React.useState<TPassword>({
+    canChangeLogin: false,
     password: '',
-    canChange: false,
+    canChangePassword: false,
     correctPassword: false,
   });
 
@@ -61,15 +57,15 @@ const ProfilePage = () => {
   const {
     ingredientsRequest,
     ingredientsFailed,
-  } = useAppSelector<TIngredientsState>((state: TReducerState) => {
+  } = useAppSelector((state) => {
     return state.ingredients;
   });
 
-  const {orders} = useAppSelector<TWSState>((state: TReducerState) => {
+  const {orders} = useAppSelector((state) => {
     return state.wsOrders;
   });
 
-  const {type} = useAppSelector<TUIState>((state: TReducerState) => {
+  const {type} = useAppSelector((state) => {
     return state.ui;
   });
 
@@ -86,16 +82,10 @@ const ProfilePage = () => {
   const cancel = (event: React.SyntheticEvent): void => {
     event.preventDefault();
 
-    setLoginParams({
-      ...loginParams,
-      login: loginParams.oldLogin
-    });
-    setNameParams({
-      ...nameParams,
-      name: nameParams.oldName
-    });
-    setPasswordParams({
-      ...passwordParams,
+    setValues({
+      ...values,
+      login: values.oldLogin,
+      name: values.oldName,
       password: ''
     });
   };
@@ -108,27 +98,29 @@ const ProfilePage = () => {
       .unwrap()
       .then((res) => {
         if (res.success) {
+          const updateData = {};
           if (res.user.email) {
-            setLoginParams({
-              ...loginParams,
+            Object.assign(updateData, {
               oldLogin: res.user.email,
               login: res.user.email,
-              canChange: false
+              canChangeLogin: false
             });
           }
           if (res.user.name) {
-            setNameParams({
-              ...nameParams,
+            Object.assign(updateData, {
               oldName: res.user.name,
               name: res.user.name,
-              canChange: false
+              canChangeName: false
             });
           }
-          setPasswordParams({
-            ...passwordParams,
+          Object.assign(updateData, {
             password: '',
-            canChange: false,
+            canChangePassword: false,
             correctPassword: false
+          });
+          setValues({
+            ...values,
+            ...updateData
           });
         }
       });
@@ -139,38 +131,47 @@ const ProfilePage = () => {
       .unwrap()
       .then((res) => {
         if (res.success) {
-          setNameParams({...nameParams, name: res.user.name, oldName: res.user.name});
-          setLoginParams({...loginParams, login: res.user.email, oldLogin: res.user.email});
+          setValues(
+            {
+              ...values,
+              name: res.user.name,
+              oldName: res.user.name,
+              login: res.user.email,
+              oldLogin: res.user.email
+            }
+          );
         }
       });
   }
 
   const createData = (): TUser => {
     const data: TUser = {};
-    if (nameParams.oldName !== nameParams.name && isCorrectName(nameParams.name)) {
-      data.name = nameParams.name;
-    } else if (!isCorrectName(nameParams.name)) {
-      setNameParams({
-        ...nameParams,
+    const updateData = {};
+    if (values.oldName !== values.name && isCorrectName(values.name)) {
+      data.name = values.name;
+    } else if (!isCorrectName(values.name)) {
+      Object.assign(updateData, {
         correctName: false
       });
     }
-    if (loginParams.oldLogin !== loginParams.login && isCorrectEmail(loginParams.login)) {
-      data.email = loginParams.login;
-    } else if (!isCorrectEmail(loginParams.login)) {
-      setLoginParams({
-        ...loginParams,
+    if (values.oldLogin !== values.login && isCorrectEmail(values.login)) {
+      data.email = values.login;
+    } else if (!isCorrectEmail(values.login)) {
+      Object.assign(updateData, {
         correctLogin: false
       });
     }
-    if (passwordParams.password && isCorrectPassword(passwordParams.password)) {
-      data.password = passwordParams.password;
-    } else if (passwordParams.password) {
-      setPasswordParams({
-        ...passwordParams,
+    if (values.password && isCorrectPassword(values.password)) {
+      data.password = values.password;
+    } else if (values.password) {
+      Object.assign(updateData, {
         correctPassword: false
       });
     }
+    setValues({
+      ...values,
+      ...updateData
+    });
     return data;
   }
 
@@ -179,9 +180,12 @@ const ProfilePage = () => {
 
     if (pages.isOrdersPage?.isExact) {
       dispatch(wsOrdersActions.connectionInit());
+
+      return () => {
+        dispatch(wsOrdersActions.connectionClose());
+      }
     }
     return () => {
-      dispatch(wsOrdersActions.connectionClose());
     }
   }, [dispatch, pages.isOrdersPage?.isExact]);
 
@@ -235,14 +239,14 @@ const ProfilePage = () => {
       )}
       <Switch>
         <Route path={`${path}/`} exact={true}>
-          <form className={profileStyles.inputs}>
+          <form className={profileStyles.inputs} onSubmit={save} onReset={cancel}>
             <Input type='text'
                    placeholder='Имя'
-                   value={nameParams.name}
+                   value={values.name}
                    onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                      dispatch(userSlice.actions.setDefaultApiState());
-                     setNameParams({
-                         ...nameParams,
+                     setValues({
+                         ...values,
                          name: e.target.value,
                          correctName: isCorrectName(e.target.value)
                        }
@@ -250,13 +254,13 @@ const ProfilePage = () => {
                    }
                    }
                    name={'name'}
-                   disabled={!nameParams.canChange}
+                   disabled={!values.canChangeName}
                    icon={'EditIcon'}
                    onIconClick={(): void => {
                      dispatch(userSlice.actions.setDefaultApiState());
-                     setNameParams({
-                       ...nameParams,
-                       canChange: !nameParams.canChange
+                     setValues({
+                       ...values,
+                       canChangeName: !values.canChangeName
                      });
                    }
                    }
@@ -264,75 +268,71 @@ const ProfilePage = () => {
             />
             <Input type='email'
                    placeholder='Логин'
-                   value={loginParams.login}
+                   value={values.login}
                    onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                      dispatch(userSlice.actions.setDefaultApiState());
-                     setLoginParams({
-                       ...loginParams,
+                     setValues({
+                       ...values,
                        login: e.target.value,
                        correctLogin: isCorrectEmail(e.target.value),
                      });
                    }
                    }
                    name={'login'}
-                   disabled={!loginParams.canChange}
+                   disabled={!values.canChangeLogin}
                    icon={'EditIcon'}
                    onIconClick={(): void => {
                      dispatch(userSlice.actions.setDefaultApiState());
-                     setLoginParams({
-                       ...loginParams,
-                       canChange: !loginParams.canChange
+                     setValues({
+                       ...values,
+                       canChangeLogin: !values.canChangeLogin
                      });
                    }
                    }
                    size={type === 'mobile' ? 'small' : 'default'}
             />
-            <Input type={passwordParams.canChange ? 'text' : 'password'}
+            <Input type={values.canChangePassword ? 'text' : 'password'}
                    placeholder={type === 'mobile' ? 'Пароль' : 'Введите новый пароль'}
-                   value={passwordParams.password}
-                   onChange={(e: React.ChangeEvent<HTMLInputElement>): void => setPasswordParams({
-                     ...passwordParams,
+                   value={values.password}
+                   onChange={(e: React.ChangeEvent<HTMLInputElement>): void => setValues({
+                     ...values,
                      password: e.target.value,
                      correctPassword: isCorrectPassword(e.target.value)
                    })}
-                   disabled={!passwordParams.canChange}
+                   disabled={!values.canChangePassword}
                    icon={'EditIcon'}
                    onIconClick={(): void => {
                      dispatch(userSlice.actions.setDefaultApiState());
-                     setPasswordParams({
-                       ...passwordParams,
-                       canChange: !passwordParams.canChange
+                     setValues({
+                       ...values,
+                       canChangePassword: !values.canChangePassword
                      });
                    }}
                    name={'password'}
                    size={type === 'mobile' ? 'small' : 'default'}
             />
-            {(nameParams.oldName !== nameParams.name ||
-              loginParams.oldLogin !== loginParams.login ||
-              passwordParams.password) && (
+            {(values.oldName !== values.name ||
+              values.oldLogin !== values.login ||
+              values.password) && (
               <div className={profileStyles.choiceButtons}>
                 {
                   type === 'desktop' || type === 'laptop' || type === 'tablet' ? (
                     <>
-                      <Button type='secondary' size='medium' htmlType='reset'
-                              onClick={cancel}>
+                      <Button type='secondary' size='medium' htmlType='reset'>
                         Отмена
                       </Button>
                       <Button type='primary' size='medium' htmlType='submit'
-                              onClick={save}
-                              disabled={!nameParams.correctName || !loginParams.correctLogin}>
+                              disabled={!values.correctName || !values.correctLogin}>
                         Сохранить
                       </Button>
                     </>
                   ) : type === 'mobile' && (
                     <>
                       <Button type='primary' size='small' htmlType='submit'
-                              onClick={save}
-                              disabled={!nameParams.correctName || !loginParams.correctLogin}>
+                              disabled={!values.correctName || !values.correctLogin}>
                         Сохранить
                       </Button>
-                      <Button type='secondary' size='small' htmlType='reset'
-                              onClick={cancel}>
+                      <Button type='secondary' size='small' htmlType='reset'>
                         Отмена
                       </Button>
                     </>
@@ -347,7 +347,7 @@ const ProfilePage = () => {
           {!ingredientsRequest && !ingredientsFailed && (
             <ul className={profileStyles.orderList}>
               {
-                orders.map((order: TOrder) => {
+                orders.map((order) => {
                   return (
                     <OrderCard
                       key={order._id}

@@ -1,26 +1,26 @@
 import * as React from 'react';
 import {useLocation, useRouteMatch} from 'react-router-dom';
 
-import {TIngredient, TIngredientsState, TLocationState, TReducerState, AppDispatch} from '../../utils/types';
+import {TIngredient, TLocation} from '../../utils/types';
 import {useAppDispatch, useAppSelector} from '../../services/store';
 import {ingredientsSlice} from '../../services/slices/ingredients';
 
-import {TRouteMatch} from './IngredientDetailsTypes';
+import {TRouteMatch} from './IngredientDetails.types';
 import ingredientDetailsStyle from './IngredientDetails.module.scss';
 
 const IngredientDetails: React.FC = () => {
-  const dispatch: AppDispatch = useAppDispatch();
-  const location = useLocation<TLocationState>();
+  const dispatch = useAppDispatch();
+  const location = useLocation<TLocation>();
   const {params} = useRouteMatch<TRouteMatch>();
 
-  const {currentIngredient, ingredients, ingredientsRequest} = useAppSelector<TIngredientsState>((state: TReducerState) => {
+  const {currentIngredient, ingredients, ingredientsRequest} = useAppSelector((state) => {
     return state.ingredients;
   });
 
   React.useEffect(
     (): void => {
       if (!ingredientsRequest && currentIngredient._id === '') {
-        const ingredient: TIngredient = ingredients.filter((ingredient: TIngredient) => ingredient._id === params.id)[0];
+        const ingredient: TIngredient = ingredients.filter((ingredient) => ingredient._id === params.id)[0];
         dispatch(ingredientsSlice.actions.putIngredientDetails(ingredient));
       }
     }, [params, currentIngredient._id, dispatch, ingredients, ingredientsRequest]

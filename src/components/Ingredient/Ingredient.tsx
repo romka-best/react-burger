@@ -4,13 +4,13 @@ import {DragSourceMonitor, useDrag} from 'react-dnd';
 
 import {CurrencyIcon, Counter, Button} from '@ya.praktikum/react-developer-burger-ui-components';
 
-import {TIngredient, TLocationState, TReducerState, TUIState, AppDispatch} from '../../utils/types';
+import {TIngredient, TLocation} from '../../utils/types';
 import {useAppDispatch, useAppSelector} from '../../services/store';
 import {modalSlice} from '../../services/slices/modal';
 import {ingredientsSlice} from '../../services/slices/ingredients';
 import {burgerConstructorSlice} from '../../services/slices/burgerConstructor';
 
-import {TDragResult, TIngredientID} from './IngredientTypes';
+import {TDragResult, TIngredientID} from './Ingredient.types';
 import ingredientStyles from './Ingredient.module.scss';
 
 interface IIngredient {
@@ -19,13 +19,13 @@ interface IIngredient {
 }
 
 const Ingredient: React.FC<IIngredient> = ({ingredient, count = 0}: IIngredient) => {
-  const dispatch: AppDispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
   const history = useHistory();
-  const location = useLocation<TLocationState>();
+  const location = useLocation<TLocation>();
 
   const handleClickIngredient = (): void => {
     dispatch(ingredientsSlice.actions.putIngredientDetails(ingredient));
-    history.replace({pathname: `/ingredients/${ingredient._id}`}, {background: location} as TLocationState);
+    history.replace({pathname: `/ingredients/${ingredient._id}`}, {background: location});
     dispatch(modalSlice.actions.openModal('ingredientDetails'));
   }
 
@@ -35,7 +35,7 @@ const Ingredient: React.FC<IIngredient> = ({ingredient, count = 0}: IIngredient)
     price,
     image,
     type
-  }: TIngredient = ingredient;
+  } = ingredient;
 
   const [{ingredientStyleRoot}, ref] = useDrag<TIngredientID, unknown, TDragResult>({
     type: 'NEW_INGREDIENT',
@@ -45,7 +45,7 @@ const Ingredient: React.FC<IIngredient> = ({ingredient, count = 0}: IIngredient)
     })
   });
 
-  const {type: typeDevice} = useAppSelector<TUIState>((state: TReducerState) => {
+  const {type: typeDevice} = useAppSelector((state) => {
     return state.ui;
   });
 

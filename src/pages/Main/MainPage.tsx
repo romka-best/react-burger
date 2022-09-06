@@ -7,7 +7,6 @@ import CustomError from '../../components/CustomError/CustomError';
 import BurgerIngredients from '../../components/BurgerIngredients/BurgerIngredients';
 import BurgerConstructor from '../../components/BurgerConstructor/BurgerConstructor';
 
-import {TIngredientsState, TOrderState, TReducerState, TUIState} from '../../utils/types';
 import {useAppSelector} from '../../services/store';
 
 import mainStyles from './MainPage.module.scss';
@@ -17,15 +16,15 @@ const MainPage = () => {
     ingredientsRequest,
     ingredientsFailed,
     ingredientsFailedTextError
-  } = useAppSelector<TIngredientsState>((state: TReducerState) => {
+  } = useAppSelector((state) => {
     return state.ingredients;
   });
 
-  const {orderRequest, orderFailed, orderFailedTextError} = useAppSelector<TOrderState>((state: TReducerState) => {
+  const {orderRequest, orderFailed, orderFailedTextError} = useAppSelector((state) => {
     return state.order;
   });
 
-  const {type} = useAppSelector<TUIState>((state: TReducerState) => {
+  const {type} = useAppSelector((state) => {
     return state.ui;
   });
 

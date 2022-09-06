@@ -6,7 +6,7 @@ import {CloseIcon} from '@ya.praktikum/react-developer-burger-ui-components';
 
 import ModalOverlay from '../ModalOverlay/ModalOverlay';
 
-import {TLocationState, TModalState, TReducerState, AppDispatch} from '../../utils/types';
+import {TLocation} from '../../utils/types';
 import {useAppDispatch, useAppSelector} from '../../services/store';
 import {modalSlice} from '../../services/slices/modal';
 import {burgerConstructorSlice} from '../../services/slices/burgerConstructor';
@@ -14,12 +14,12 @@ import {burgerConstructorSlice} from '../../services/slices/burgerConstructor';
 import modalStyles from './Modal.module.scss';
 
 const Modal: React.FC = ({children}) => {
-  const dispatch: AppDispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
   const history = useHistory<History>();
-  const location = useLocation<TLocationState>();
+  const location = useLocation<TLocation>();
 
   const modalRoot = document.getElementById('modals') as HTMLElement;
-  const {modalType} = useAppSelector<TModalState>((state: TReducerState) => {
+  const {modalType} = useAppSelector((state) => {
     return state.modal;
   });
   const [show, setShow] = React.useState<boolean>(false);

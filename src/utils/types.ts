@@ -117,11 +117,10 @@ type TReducerState = {
   ui: TUIState,
 }
 
-type TLocationState = {
-  background: any;
-  from: {
-    pathname: string;
-  };
+type TLocation = {
+  from?: Location;
+  background?: Location;
+  pathname?: string;
 }
 
 type THistory = {
@@ -155,7 +154,7 @@ export type {
   TUserState,
   TWSState,
   TReducerState,
-  TLocationState,
+  TLocation,
   RootState,
   AppDispatch,
 };

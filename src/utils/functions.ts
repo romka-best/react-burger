@@ -89,14 +89,14 @@ export const countOrders = (orders: Array<TOrder>): TStatusOrders => {
 export const getBurgerFromIngredientsIds = (allIngredients: Array<TIngredient>,
                                                ingredientsIds: Array<string>,
                                                isUnique: boolean): TBurger => {
-  const bun: TIngredient = ingredientsIds.map((currentIngredientId: string) => {
-    return allIngredients.filter((ingredient: TIngredient) => {
+  const bun: TIngredient = ingredientsIds.map((currentIngredientId) => {
+    return allIngredients.filter((ingredient) => {
       return currentIngredientId === ingredient._id && ingredient.type === 'bun';
     })[0];
   })[0];
 
-  const other: Array<TIngredient> = ingredientsIds.map((currentIngredientId: string) => {
-    return allIngredients.filter((ingredient: TIngredient) => {
+  const other: Array<TIngredient> = ingredientsIds.map((currentIngredientId) => {
+    return allIngredients.filter((ingredient) => {
       return currentIngredientId === ingredient._id && ingredient.type !== 'bun';
     })[0];
   });
@@ -105,7 +105,7 @@ export const getBurgerFromIngredientsIds = (allIngredients: Array<TIngredient>,
     const unique: Array<string> = [];
     return {
       bun,
-      other: other.filter((ingredient: TIngredient) => {
+      other: other.filter((ingredient) => {
         if (ingredient) {
           if (unique.indexOf(ingredient._id) !== -1) {
             return false;
@@ -120,7 +120,7 @@ export const getBurgerFromIngredientsIds = (allIngredients: Array<TIngredient>,
   } else {
     return {
       bun,
-      other: other.filter((ingredient: TIngredient) => {
+      other: other.filter((ingredient) => {
         return ingredient !== undefined;
       })
     }

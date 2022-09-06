@@ -3,7 +3,12 @@ import {useHistory, useLocation, useRouteMatch} from 'react-router-dom';
 
 import {CurrencyIcon} from '@ya.praktikum/react-developer-burger-ui-components';
 
-import {TBurger, TIngredient, TIngredientsState, TOrder, TReducerState, AppDispatch} from '../../utils/types';
+import {
+  TBurger,
+  TIngredient,
+  TOrder,
+  TLocation
+} from '../../utils/types';
 import {createCardDate, getBurgerFromIngredientsIds, getStatus, getTotalCost} from '../../utils/functions';
 import {orderSlice} from '../../services/slices/order';
 import {modalSlice} from '../../services/slices/modal';
@@ -17,18 +22,18 @@ interface IOrderCard {
 }
 
 const OrderCard: React.FC<IOrderCard> = ({order, statusIsNeed}: IOrderCard) => {
-  const dispatch: AppDispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
 
   const history = useHistory();
   const {path} = useRouteMatch();
-  const location = useLocation<Location>();
+  const location = useLocation<TLocation>();
 
   const [bun, setBun] = React.useState<TIngredient | null>(null);
   const [other, setOther] = React.useState<Array<TIngredient>>([]);
 
   const {
     ingredients: allIngredients
-  } = useAppSelector<TIngredientsState>((state: TReducerState) => {
+  } = useAppSelector((state) => {
     return state.ingredients;
   });
 

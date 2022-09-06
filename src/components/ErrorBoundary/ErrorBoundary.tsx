@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import {TErrorBoundaryState} from './ErrorBoundaryTypes';
+import {TErrorBoundaryState} from './ErrorBoundary.types';
 import errorBoundaryStyles from './ErrorBoundary.module.scss';
 
 interface IErrorBoundary {

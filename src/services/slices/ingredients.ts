@@ -1,5 +1,5 @@
-import {AxiosError, AxiosResponse} from 'axios';
-import {createSlice, createAsyncThunk, AsyncThunk, ActionReducerMapBuilder, Reducer} from '@reduxjs/toolkit';
+import {AxiosError} from 'axios';
+import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
 
 import DataService from '../dataService';
 import {
@@ -16,12 +16,12 @@ const initialIngredientsState: TIngredientsState = {
   ingredientsFailedTextError: '',
 }
 
-export const getIngredients: AsyncThunk<any, void, any> = createAsyncThunk(
+export const getIngredients = createAsyncThunk(
   'ingredients/getIngredients',
   async (_, thunkApi): Promise<any> => {
     try {
-      const res: AxiosResponse = await DataService.getAllIngredients();
-      return res.data.data;
+      const res = await DataService.getAllIngredients();
+      return res.data.data as Array<TIngredient>;
     } catch (error) {
       if (error instanceof AxiosError && error.response) {
         switch (error.response.status) {
@@ -44,22 +44,22 @@ export const ingredientsSlice = createSlice({
   name: 'ingredients',
   initialState: initialIngredientsState,
   reducers: {
-    putIngredientDetails: (state: TIngredientsState, {payload}: { payload: TIngredient }): TIngredientsState => {
+    putIngredientDetails: (state, {payload}: { payload: TIngredient }) => {
       return {
         ...state,
         currentIngredient: payload
       }
     },
-    removeIngredientDetails: (state: TIngredientsState): TIngredientsState => {
+    removeIngredientDetails: (state) => {
       return {
         ...state,
         currentIngredient: defaultIngredientParams
       }
     }
   },
-  extraReducers: (builder: ActionReducerMapBuilder<TIngredientsState>) => {
+  extraReducers: (builder) => {
     builder
-      .addCase(getIngredients.fulfilled, (state: TIngredientsState, {payload}: { payload: Array<TIngredient> }): TIngredientsState => {
+      .addCase(getIngredients.fulfilled, (state, {payload}: { payload: Array<TIngredient> }) => {
         return {
           ...state,
           ingredientsRequest: false,
@@ -68,7 +68,7 @@ export const ingredientsSlice = createSlice({
           ingredients: payload
         };
       })
-      .addCase(getIngredients.pending, (state: TIngredientsState): TIngredientsState => {
+      .addCase(getIngredients.pending, (state) => {
         return {
           ...state,
           ingredientsRequest: true,
@@ -76,7 +76,7 @@ export const ingredientsSlice = createSlice({
           ingredientsFailedTextError: ''
         }
       })
-      .addCase(getIngredients.rejected, (state: TIngredientsState, {payload}): TIngredientsState => {
+      .addCase(getIngredients.rejected, (state, {payload}) => {
         return {
           ...state,
           ingredientsRequest: false,
@@ -87,4 +87,4 @@ export const ingredientsSlice = createSlice({
   }
 });
 
-export const ingredientsReducer: Reducer<TIngredientsState> = ingredientsSlice.reducer;
+export const ingredientsReducer = ingredientsSlice.reducer;
