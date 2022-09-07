@@ -1,16 +1,20 @@
-import React from 'react';
+import * as React from 'react';
 
 import {CurrencyIcon} from '@ya.praktikum/react-developer-burger-ui-components';
 
 import constructorElementMobileStyles from './ConstructorElementMobile.module.scss';
 
-interface ConstructorElementMobileProps {
+interface IConstructorElementMobile {
   text: string,
   price: number,
   thumbnail: string,
 }
 
-const ConstructorElementMobile = ({text, price, thumbnail}: ConstructorElementMobileProps) => {
+const ConstructorElementMobile: React.FC<IConstructorElementMobile> = ({
+                                                                         text,
+                                                                         price,
+                                                                         thumbnail
+                                                                       }: IConstructorElementMobile) => {
   return (
     <div className={constructorElementMobileStyles.root}>
       <img className={constructorElementMobileStyles.image} src={thumbnail} alt={text}/>

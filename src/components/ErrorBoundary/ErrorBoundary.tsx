@@ -1,26 +1,28 @@
-import React, {ErrorInfo} from 'react';
+import * as React from 'react';
 
+import {TErrorBoundaryState} from './ErrorBoundary.types';
 import errorBoundaryStyles from './ErrorBoundary.module.scss';
 
-interface ErrorBoundaryProps {
+interface IErrorBoundary {
 
 }
 
-export default class ErrorBoundary extends React.Component<{}, { hasError: boolean }> {
-  constructor(props: ErrorBoundaryProps) {
+export default class ErrorBoundary extends React.Component<IErrorBoundary, TErrorBoundaryState> {
+  constructor(props: IErrorBoundary) {
     super(props);
     this.state = {hasError: false};
   }
 
   static getDerivedStateFromError(error: string) {
+    console.log('Поймали ошибку:', error);
     return {hasError: true};
   }
 
-  componentDidCatch(error: Error, info: ErrorInfo) {
+  override componentDidCatch(error: Error, info: React.ErrorInfo) {
     console.log('Возникла ошибка!', error, info);
   }
 
-  render() {
+  override render(): React.ReactNode {
     if (this.state.hasError) {
       return (
         <div className={errorBoundaryStyles.root}>

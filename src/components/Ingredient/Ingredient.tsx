@@ -1,28 +1,29 @@
-import React from 'react';
+import * as React from 'react';
 import {useLocation, useHistory} from 'react-router-dom';
-import {useDrag} from 'react-dnd';
+import {DragSourceMonitor, useDrag} from 'react-dnd';
 
 import {CurrencyIcon, Counter, Button} from '@ya.praktikum/react-developer-burger-ui-components';
 
-import {ingredientDetailsPropTypes, IngredientParams, ReducersParams} from '../../utils/types';
+import {TIngredient, TLocation} from '../../utils/types';
 import {useAppDispatch, useAppSelector} from '../../services/store';
 import {modalSlice} from '../../services/slices/modal';
 import {ingredientsSlice} from '../../services/slices/ingredients';
 import {burgerConstructorSlice} from '../../services/slices/burgerConstructor';
 
+import {TDragResult, TIngredientID} from './Ingredient.types';
 import ingredientStyles from './Ingredient.module.scss';
 
-interface IngredientProps {
-  ingredient: IngredientParams,
+interface IIngredient {
+  ingredient: TIngredient,
   count: number
 }
 
-const Ingredient = ({ingredient, count = 0}: IngredientProps) => {
+const Ingredient: React.FC<IIngredient> = ({ingredient, count = 0}: IIngredient) => {
   const dispatch = useAppDispatch();
   const history = useHistory();
-  const location = useLocation();
+  const location = useLocation<TLocation>();
 
-  const handleClickIngredient = () => {
+  const handleClickIngredient = (): void => {
     dispatch(ingredientsSlice.actions.putIngredientDetails(ingredient));
     history.replace({pathname: `/ingredients/${ingredient._id}`}, {background: location});
     dispatch(modalSlice.actions.openModal('ingredientDetails'));
@@ -36,15 +37,15 @@ const Ingredient = ({ingredient, count = 0}: IngredientProps) => {
     type
   } = ingredient;
 
-  const [{ingredientStyleRoot}, ref] = useDrag({
+  const [{ingredientStyleRoot}, ref] = useDrag<TIngredientID, unknown, TDragResult>({
     type: 'NEW_INGREDIENT',
     item: {_id},
-    collect: monitor => ({
+    collect: (monitor: DragSourceMonitor<TIngredientID>): TDragResult => ({
       ingredientStyleRoot: monitor.isDragging() ? `${ingredientStyles.content} ${ingredientStyles.contentDrag}` : ingredientStyles.content,
     })
   });
 
-  const {type: typeDevice} = useAppSelector((state: ReducersParams) => {
+  const {type: typeDevice} = useAppSelector((state) => {
     return state.ui;
   });
 
@@ -76,10 +77,6 @@ const Ingredient = ({ingredient, count = 0}: IngredientProps) => {
       }
     </div>
   );
-}
-
-Ingredient.propTypes = {
-  ingredient: ingredientDetailsPropTypes.isRequired,
 }
 
 export default Ingredient;

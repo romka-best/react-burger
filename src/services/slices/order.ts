@@ -1,11 +1,13 @@
-import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
-import DataService from '../dataService';
 import {
-  InitialOrderParams, InitialWsParams
-} from '../../utils/types';
+  createSlice,
+  createAsyncThunk,
+} from '@reduxjs/toolkit';
 import {AxiosError} from 'axios';
 
-const initialOrderState: InitialOrderParams = {
+import DataService from '../dataService';
+import {TIngredient, TOrder, TOrderState, TWSState} from '../../utils/types';
+
+const initialOrderState: TOrderState = {
   number: -1,
   name: '',
   status: {
@@ -20,7 +22,7 @@ const initialOrderState: InitialOrderParams = {
   orderFailedTextError: '',
 };
 
-const initialWsOrdersAllState: InitialWsParams = {
+const initialWsOrdersAllState: TWSState = {
   wsConnected: false,
   error: null,
   orders: [],
@@ -28,7 +30,7 @@ const initialWsOrdersAllState: InitialWsParams = {
   totalToday: null,
 };
 
-const initialWsOrdersState: InitialWsParams = {
+const initialWsOrdersState: TWSState = {
   wsConnected: false,
   error: null,
   orders: [],
@@ -41,7 +43,7 @@ export const createOrder = createAsyncThunk(
   async (ingredients: string[], thunkApi) => {
     try {
       const res = await DataService.createOrder(ingredients);
-      return res.data.order.number;
+      return res.data.order.number as number;
     } catch (error) {
       if (error instanceof AxiosError && error.response) {
         switch (error.response.status) {
@@ -64,39 +66,45 @@ export const wsOrdersAllSlice = createSlice({
   name: 'wsOrdersAll',
   initialState: initialWsOrdersAllState,
   reducers: {
-    connectionInit: (state: InitialWsParams): InitialWsParams => {
+    connectionInit: (state) => {
       return state;
     },
-    connectionClose: (state: InitialWsParams): InitialWsParams => {
+    connectionClose: (state) => {
       return state;
     },
-    sendMessage: (state: InitialWsParams): InitialWsParams => {
+    sendMessage: (state) => {
       return state;
     },
-    connectionSuccess: (state: InitialWsParams): InitialWsParams => {
+    connectionSuccess: (state) => {
       return {
         ...state,
         wsConnected: true
       };
     },
-    connectionError: (state: InitialWsParams): InitialWsParams => {
+    connectionError: (state) => {
       return {
         ...state,
         wsConnected: false
       };
     },
-    connectionClosed: (state: InitialWsParams): InitialWsParams => {
+    connectionClosed: (state) => {
       return {
         ...state,
         wsConnected: false
       };
     },
-    getMessage: (state: InitialWsParams, action): InitialWsParams => {
+    getMessage: (state, {payload}: {
+      payload: {
+        orders: Array<TOrder>;
+        total: number | null,
+        totalToday: number | null
+      }
+    }) => {
       return {
         ...state,
-        orders: action.payload.orders,
-        total: action.payload.total,
-        totalToday: action.payload.totalToday
+        orders: payload.orders,
+        total: payload.total,
+        totalToday: payload.totalToday
       };
     },
   }
@@ -106,39 +114,45 @@ export const wsOrdersSlice = createSlice({
   name: 'wsOrders',
   initialState: initialWsOrdersState,
   reducers: {
-    connectionInit: (state: InitialWsParams): InitialWsParams => {
+    connectionInit: (state) => {
       return state;
     },
-    connectionClose: (state: InitialWsParams): InitialWsParams => {
+    connectionClose: (state) => {
       return state;
     },
-    sendMessage: (state: InitialWsParams): InitialWsParams => {
+    sendMessage: (state) => {
       return state;
     },
-    connectionSuccess: (state: InitialWsParams): InitialWsParams => {
+    connectionSuccess: (state) => {
       return {
         ...state,
         wsConnected: true
       };
     },
-    connectionError: (state: InitialWsParams): InitialWsParams => {
+    connectionError: (state) => {
       return {
         ...state,
         wsConnected: false
       };
     },
-    connectionClosed: (state: InitialWsParams): InitialWsParams => {
+    connectionClosed: (state) => {
       return {
         ...state,
         wsConnected: false
       };
     },
-    getMessage: (state: InitialWsParams, action): InitialWsParams => {
+    getMessage: (state, {payload}: {
+      payload: {
+        orders: Array<TOrder>;
+        total: number | null,
+        totalToday: number | null
+      }
+    }) => {
       return {
         ...state,
-        orders: action.payload.orders.reverse(),
-        total: action.payload.total,
-        totalToday: action.payload.totalToday
+        orders: payload.orders.reverse(),
+        total: payload.total,
+        totalToday: payload.totalToday
       };
     },
   }
@@ -148,30 +162,42 @@ export const orderSlice = createSlice({
   name: 'order',
   initialState: initialOrderState,
   reducers: {
-    putOrderDetails: (state, action) => {
+    putOrderDetails: (state: TOrderState, {payload}: {
+      payload: {
+        number: number,
+        name: string,
+        status: {
+          text: string,
+          textColor: string
+        },
+        date: string,
+        ingredients: Array<TIngredient>,
+        totalPrice: number
+      }
+    }): TOrderState => {
       return {
         ...state,
-        number: action.payload.number,
-        name: action.payload.name,
-        status: action.payload.status,
-        date: action.payload.date,
-        ingredients: action.payload.ingredients,
-        totalPrice: action.payload.totalPrice
+        number: payload.number,
+        name: payload.name,
+        status: payload.status,
+        date: payload.date,
+        ingredients: payload.ingredients,
+        totalPrice: payload.totalPrice
       }
     }
   },
   extraReducers: (builder) => {
     builder
-      .addCase(createOrder.fulfilled, (state, action) => {
+      .addCase(createOrder.fulfilled, (state: TOrderState, {payload}: { payload: number }): TOrderState => {
         return {
           ...state,
           orderRequest: false,
           orderFailed: false,
           orderFailedTextError: '',
-          number: action.payload
+          number: payload
         };
       })
-      .addCase(createOrder.pending, (state) => {
+      .addCase(createOrder.pending, (state: TOrderState): TOrderState => {
         return {
           ...state,
           orderRequest: true,
@@ -179,12 +205,12 @@ export const orderSlice = createSlice({
           orderFailedTextError: '',
         };
       })
-      .addCase(createOrder.rejected, (state, action) => {
+      .addCase(createOrder.rejected, (state: TOrderState, {payload}): TOrderState => {
         return {
           ...state,
           orderRequest: false,
           orderFailed: true,
-          orderFailedTextError: action.payload as string,
+          orderFailedTextError: payload as string,
           number: initialOrderState.number
         };
       })

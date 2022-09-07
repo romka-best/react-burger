@@ -1,18 +1,18 @@
-import React from 'react';
+import * as React from 'react';
 
 import Tab from '../Tab/Tab';
 import Ingredients from '../Ingredients/Ingredients';
 
-import {ReducersParams} from '../../utils/types';
+import {TTabName} from '../../utils/types';
 import {useAppSelector} from '../../services/store';
 
 import burgerIngredientsStyles from './BurgerIngredients.module.scss';
 
-const BurgerIngredients = () => {
-  const [current, setCurrent] = React.useState('buns');
+const BurgerIngredients: React.FC = () => {
+  const [current, setCurrent] = React.useState<TTabName>('buns');
 
-  const handleClick = (value: string) => {
-    const element = document.getElementById(value);
+  const handleClick = (value: TTabName) => {
+    const element: HTMLElement | null = document.getElementById(value);
     if (element !== null) {
       setCurrent(value);
       element.scrollIntoView({
@@ -21,7 +21,7 @@ const BurgerIngredients = () => {
     }
   };
 
-  const {type} = useAppSelector((state: ReducersParams) => {
+  const {type} = useAppSelector((state) => {
     return state.ui;
   });
 

@@ -1,13 +1,14 @@
+import * as React from 'react';
+
 import {useAppSelector} from '../../services/store';
-import {ReducersParams} from '../../utils/types';
 
 import done from '../../assets/images/done.png';
 
 import createdOrderDetailsStyles from './CreatedOrderDetails.module.scss';
 
-const CreatedOrderDetails = () => {
+const CreatedOrderDetails: React.FC = () => {
   const number = useAppSelector(
-    (state: ReducersParams) => {
+    (state) => {
       return state.order.number
     }
   );

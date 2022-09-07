@@ -1,11 +1,10 @@
-import {IngredientParams, OrderParams} from './types';
+import {TBurger, TIngredient, TOrder, TStatusOrders, AppDispatch} from './types';
 
 import {History} from 'history';
 
-import {AppDispatch} from '../services/store';
 import {logout} from '../services/slices/user';
 
-export const isCorrectEmail = (email: string) => {
+export const isCorrectEmail = (email: string): boolean => {
   return Boolean(
     String(email)
       .toLowerCase()
@@ -15,7 +14,7 @@ export const isCorrectEmail = (email: string) => {
   );
 };
 
-export const isCorrectPassword = (password: string) => {
+export const isCorrectPassword = (password: string): boolean => {
   return Boolean(
     String(password)
       .match(
@@ -24,7 +23,7 @@ export const isCorrectPassword = (password: string) => {
   );
 }
 
-export const isCorrectName = (name: string) => {
+export const isCorrectName = (name: string): boolean => {
   return Boolean(
     String(name)
       .match(
@@ -33,14 +32,14 @@ export const isCorrectName = (name: string) => {
   )
 }
 
-export function getCookie(name: string) {
+export function getCookie(name: string): string | undefined {
   const matches = document.cookie.match(
     new RegExp('(?:^|; )' + name.replace(/([.$?*|{}()[\]\\/+^])/g, '\\$1') + '=([^;]*)')
   );
   return matches ? decodeURIComponent(matches[1]) : undefined;
 }
 
-export function setCookie(name: string, value: null | string, props: { [x: string]: any; expires: any }) {
+export function setCookie(name: string, value: null | string, props: { [x: string]: any; expires: any }): void {
   if (props.expires) {
     const d = new Date();
     d.setTime(d.getTime() + props.expires * 1000);
@@ -63,20 +62,17 @@ export function setCookie(name: string, value: null | string, props: { [x: strin
   document.cookie = updatedCookie;
 }
 
-export function deleteCookie(name: string) {
+export function deleteCookie(name: string): void {
   setCookie(name, null, {expires: -1});
 }
 
-export const countOrders = (orders: Array<OrderParams>) => {
-  const statusOrders = {
+export const countOrders = (orders: Array<TOrder>): TStatusOrders => {
+  const statusOrders: TStatusOrders = {
     ready: [],
     inWork: []
-  } as {
-    ready: Array<number>,
-    inWork: Array<number>
-  }
+  };
 
-  orders.forEach((order) => {
+  orders.forEach((order: TOrder) => {
     switch (order.status) {
       case 'done':
         statusOrders.ready.push(order.number);
@@ -90,19 +86,19 @@ export const countOrders = (orders: Array<OrderParams>) => {
   return statusOrders;
 }
 
-export const getNormalizeIngredientsFromIds = (allIngredients: Array<IngredientParams>,
+export const getBurgerFromIngredientsIds = (allIngredients: Array<TIngredient>,
                                                ingredientsIds: Array<string>,
-                                               isUnique: boolean) => {
-  const bun = ingredientsIds.map((currentIngredientId) => {
+                                               isUnique: boolean): TBurger => {
+  const bun: TIngredient = ingredientsIds.map((currentIngredientId) => {
     return allIngredients.filter((ingredient) => {
       return currentIngredientId === ingredient._id && ingredient.type === 'bun';
     })[0];
   })[0];
 
-  const other = ingredientsIds.map((currentIngredientId) => {
+  const other: Array<TIngredient> = ingredientsIds.map((currentIngredientId) => {
     return allIngredients.filter((ingredient) => {
       return currentIngredientId === ingredient._id && ingredient.type !== 'bun';
-    })[0]
+    })[0];
   });
 
   if (isUnique) {
@@ -131,32 +127,32 @@ export const getNormalizeIngredientsFromIds = (allIngredients: Array<IngredientP
   }
 }
 
-export const createCardDate = (date: string) => {
+export const createCardDate = (date: string): string => {
   const dayCreated: Date = new Date(date);
   const today: Date = new Date();
   today.setHours(0, 0, 0, 0);
   const diffTime: number = Math.ceil((today.getTime() - dayCreated.getTime()) / (60 * 60 * 24 * 1000));
-  const hours = dayCreated.getHours() > 9 ? dayCreated.getHours() : `0${dayCreated.getHours()}`
-  const min = dayCreated.getMinutes() > 9 ? dayCreated.getMinutes() : `0${dayCreated.getMinutes()}`
+  const hours: number | string = dayCreated.getHours() > 9 ? dayCreated.getHours() : `0${dayCreated.getHours()}`
+  const min: number | string = dayCreated.getMinutes() > 9 ? dayCreated.getMinutes() : `0${dayCreated.getMinutes()}`
 
   return `${getCardDate(diffTime)}, ${hours}:${min} i-GMT+${dayCreated.getTimezoneOffset() * (-1) / 60}`;
 };
 
-export const getTotalCost = (bun: IngredientParams | null, arrayOtherIngredients: Array<IngredientParams>) => {
-  const bunPrice = bun ? bun.price : 0;
+export const getTotalCost = (bun: TIngredient | null, arrayOtherIngredients: Array<TIngredient>): number => {
+  const bunPrice: number = bun ? bun.price : 0;
   return (
     bunPrice * 2 + arrayOtherIngredients.reduce((acc, curr) => (acc + curr.price), 0)
   );
 };
 
-const getCardDate = (days: number) => (
+const getCardDate = (days: number): string => (
   days === 0 ? 'Сегодня'
     : days === 1 ? 'Вчера'
       : days > 1 ? `${days} дня(-ей) назад`
         : 'Недавно'
 );
 
-export const getStatus = (status: string) => {
+export const getStatus = (status: string): { text: string, textColor: string } => {
   return status === 'done'
     ? {text: 'Выполнен', textColor: 'success'}
     : status === 'pending'
@@ -164,7 +160,7 @@ export const getStatus = (status: string) => {
       : {text: 'Отменен', textColor: 'error'};
 }
 
-export const exit = (dispatch: AppDispatch, history: History) => {
+export const exit = (dispatch: AppDispatch, history: History): void => {
   dispatch(logout())
     .unwrap()
     .then((res) => {

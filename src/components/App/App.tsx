@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 
 import CustomError from '../CustomError/CustomError';
 import AppHeader from '../AppHeader/AppHeader';
@@ -18,7 +18,7 @@ import FeedPage from '../../pages/Feed/FeedPage';
 import ProfilePage from '../../pages/Profile/ProfilePage';
 import NotFound404Page from '../../pages/NotFound404/NotFound404Page';
 
-import {LocationState, ReducersParams} from '../../utils/types';
+import {TLocation} from '../../utils/types';
 import {useAppDispatch, useAppSelector} from '../../services/store';
 import {uiSlice} from '../../services/slices/ui';
 import {getIngredients} from '../../services/slices/ingredients';
@@ -26,15 +26,15 @@ import {getIngredients} from '../../services/slices/ingredients';
 import appStyles from './App.module.scss';
 
 
-function App() {
+const App: React.FC = () => {
   const dispatch = useAppDispatch();
-  const location = useLocation<LocationState>();
+  const location = useLocation<TLocation>();
 
-  const {modalIsVisible, modalType} = useAppSelector((state: ReducersParams) => {
+  const {modalIsVisible, modalType} = useAppSelector((state) => {
     return state.modal;
   });
 
-  const getActualModal = () => {
+  const getActualModal = (): React.ReactNode => {
     switch (modalType) {
       case 'createdOrderDetails':
         return (<CreatedOrderDetails/>)
@@ -43,21 +43,21 @@ function App() {
     }
   }
 
-  React.useEffect(() => {
-    const handleSubscribeResize = () => {
+  React.useEffect((): () => void => {
+    const handleSubscribeResize = (): void => {
       dispatch(uiSlice.actions.updateTypeDevice(document.documentElement.clientWidth));
     }
 
-    const onSubscribeResize = () => window.addEventListener('resize', handleSubscribeResize);
-    const offSubscribeResize = () => window.removeEventListener('resize', handleSubscribeResize);
+    const onSubscribeResize: Function = () => window.addEventListener('resize', handleSubscribeResize);
+    const offSubscribeResize: Function = () => window.removeEventListener('resize', handleSubscribeResize);
     handleSubscribeResize();
     onSubscribeResize();
 
     return () => offSubscribeResize();
 
   }, [dispatch]);
-  
-  React.useEffect(() => {
+
+  React.useEffect((): void => {
     dispatch(getIngredients());
   }, [dispatch]);
 
@@ -121,7 +121,10 @@ function App() {
           </Switch>
         )
       }
-      {(modalIsVisible && modalType !== 'ingredientDetails' && modalType !== 'orderDetails') && <Modal>{getActualModal()}</Modal>}
+      {(modalIsVisible && modalType !== 'ingredientDetails' && modalType !== 'orderDetails') &&
+      <Modal>
+        {getActualModal()}
+      </Modal>}
     </div>
   );
 }

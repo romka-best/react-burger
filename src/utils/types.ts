@@ -1,7 +1,8 @@
 import {PayloadAction} from '@reduxjs/toolkit';
-import PropTypes from 'prop-types';
+import {Location} from 'history';
+import {store} from '../services/store';
 
-interface IngredientParams {
+type TIngredient = {
   _id: string,
   name: string,
   type: string,
@@ -14,9 +15,14 @@ interface IngredientParams {
   image_mobile: string,
   image_large: string,
   count?: number
-}
+};
 
-interface OrderParams {
+type TBurger = {
+  bun: TIngredient,
+  other: Array<TIngredient>
+};
+
+type TOrder = {
   createdAt: string;
   ingredients: Array<string>;
   name: string;
@@ -24,39 +30,34 @@ interface OrderParams {
   status: string;
   updatedAt: string;
   _id: string;
-}
+};
 
-interface OrdersParams {
-  orders: Array<OrderParams>;
+type TOrders = {
+  orders: Array<TOrder>;
   total: number;
   totalToday: number;
-}
+};
 
-interface ActionParams {
-  type: string,
-  value?: IngredientParams
-}
-
-interface InitialModalParams {
+type TModalState = {
   modalIsVisible: boolean,
   modalType: '' | 'createdOrderDetails' | 'orderDetails' | 'ingredientDetails',
 }
 
-interface InitialIngredientsParams {
-  ingredients: Array<IngredientParams>,
-  currentIngredient: IngredientParams,
+type TIngredientsState = {
+  ingredients: Array<TIngredient>,
+  currentIngredient: TIngredient,
   ingredientsRequest: boolean,
   ingredientsFailed: boolean,
   ingredientsFailedTextError: string,
 }
 
-interface InitialBurgerConstructorParams {
-  ingredients: Array<IngredientParams>,
-  buns: Array<IngredientParams>,
+type TBurgerConstructorState = {
+  ingredients: Array<TIngredient>,
+  buns: Array<TIngredient>,
   totalPrice: number,
 }
 
-interface InitialOrderParams {
+type TOrderState = {
   number: number,
   name?: string,
   status?: {
@@ -64,14 +65,14 @@ interface InitialOrderParams {
     textColor: string
   },
   date?: string,
-  ingredients?: Array<IngredientParams>,
+  ingredients?: Array<TIngredient>,
   totalPrice: number,
   orderRequest: boolean,
   orderFailed: boolean,
   orderFailedTextError: string,
 }
 
-interface InitialUiParams {
+type TUIState = {
   width: number,
   type: 'desktop' | 'laptop' | 'tablet' | 'mobile',
   breakpoints: {
@@ -82,7 +83,13 @@ interface InitialUiParams {
   }
 }
 
-interface InitialUserParams {
+type TUser = {
+  name?: string,
+  email?: string,
+  password?: string
+};
+
+type TUserState = {
   isAuthenticated: boolean,
   email: string,
   name: string,
@@ -91,65 +98,63 @@ interface InitialUserParams {
   userFailedTextError: string,
 }
 
-interface InitialWsParams {
+type TWSState = {
   wsConnected: boolean,
   error: PayloadAction | null;
-  orders: Array<OrderParams>;
+  orders: Array<TOrder>;
   total: number | null,
   totalToday: number | null
 }
 
-interface ReducersParams {
-  user: InitialUserParams,
-  modal: InitialModalParams,
-  ingredients: InitialIngredientsParams,
-  burgerConstructor: InitialBurgerConstructorParams,
-  order: InitialOrderParams,
-  wsOrders: InitialWsParams,
-  wsOrdersAll: InitialWsParams,
-  ui: InitialUiParams,
+type TReducerState = {
+  user: TUserState,
+  modal: TModalState,
+  ingredients: TIngredientsState,
+  burgerConstructor: TBurgerConstructorState,
+  order: TOrderState,
+  wsOrders: TWSState,
+  wsOrdersAll: TWSState,
+  ui: TUIState,
 }
 
-interface ItemParams {
-  index: number
+type TLocation = {
+  from?: Location;
+  background?: Location;
+  pathname?: string;
 }
 
-interface LocationState {
-  background: any;
-  from: {
-    pathname: string;
-  };
-}
-
-const ingredientDetailsPropTypes = PropTypes.shape({
-  _id: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
-  type: PropTypes.string.isRequired,
-  proteins: PropTypes.number.isRequired,
-  fat: PropTypes.number.isRequired,
-  carbohydrates: PropTypes.number.isRequired,
-  calories: PropTypes.number.isRequired,
-  price: PropTypes.number.isRequired,
-  image: PropTypes.string.isRequired,
-  image_mobile: PropTypes.string.isRequired,
-  image_large: PropTypes.string.isRequired
-});
-
-export type {
-  IngredientParams,
-  InitialModalParams,
-  InitialIngredientsParams,
-  InitialOrderParams,
-  InitialBurgerConstructorParams,
-  InitialUiParams,
-  InitialUserParams,
-  InitialWsParams,
-  ReducersParams,
-  ItemParams,
-  ActionParams,
-  OrderParams,
-  OrdersParams,
-  LocationState,
+type THistory = {
+  from: Location
 };
 
-export {ingredientDetailsPropTypes};
+type TStatusOrders = {
+  ready: Array<number>,
+  inWork: Array<number>
+}
+
+type TTabName = 'buns' | 'sauces' | 'main';
+
+type RootState = ReturnType<typeof store.getState>;
+type AppDispatch = typeof store.dispatch;
+
+export type {
+  TIngredient,
+  TUser,
+  THistory,
+  TStatusOrders,
+  TTabName,
+  TOrder,
+  TOrders,
+  TBurger,
+  TModalState,
+  TIngredientsState,
+  TOrderState,
+  TBurgerConstructorState,
+  TUIState,
+  TUserState,
+  TWSState,
+  TReducerState,
+  TLocation,
+  RootState,
+  AppDispatch,
+};

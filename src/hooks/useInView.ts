@@ -1,9 +1,9 @@
-import {useEffect, useState, MutableRefObject} from 'react';
+import * as React from 'react';
 
-export function useInView(ref: MutableRefObject<HTMLElement> | MutableRefObject<null>) {
-  const [isInView, setIsInView] = useState(false);
+export function useInView(ref: React.MutableRefObject<HTMLElement> | React.MutableRefObject<null>): boolean {
+  const [isInView, setIsInView] = React.useState<boolean>(false);
 
-  useEffect(() => {
+  React.useEffect((): () => void => {
     const observer = new IntersectionObserver(
       ([entry]) =>
         setIsInView(entry.isIntersecting),

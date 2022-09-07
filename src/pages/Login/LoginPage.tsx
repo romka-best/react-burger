@@ -1,9 +1,10 @@
-import React, {SyntheticEvent} from 'react';
+import * as React from 'react';
 import {Link, useHistory, useLocation} from 'react-router-dom';
 
 import {PasswordInput, Button, Input} from '@ya.praktikum/react-developer-burger-ui-components';
 
-import {LocationState, ReducersParams} from '../../utils/types';
+import {useForm} from '../../hooks/useForm';
+import {TLocation} from '../../utils/types';
 import {useAppDispatch, useAppSelector} from '../../services/store';
 import {userSlice, signIn} from '../../services/slices/user';
 
@@ -11,80 +12,84 @@ import loginStyles from './LoginPage.module.scss';
 
 const LoginPage = () => {
   const dispatch = useAppDispatch();
-  const history = useHistory();
-  const location = useLocation<LocationState>();
+  const history = useHistory<History>();
+  const location = useLocation<TLocation>();
 
-  const {type} = useAppSelector((state: ReducersParams) => {
+  const {type} = useAppSelector((state) => {
     return state.ui;
   });
 
-  const {userRequest, userFailed, userFailedTextError} = useAppSelector((state: ReducersParams) => {
+  const {userFailed, userFailedTextError} = useAppSelector((state) => {
     return state.user;
   });
 
-  const [email, setEmail] = React.useState('');
-  const [password, setPassword] = React.useState('');
+  const {values, handleChange, setValues} = useForm({
+    email: '',
+    password: ''
+  });
 
   const login = React.useCallback(
-    (evt: SyntheticEvent) => {
+    (evt: React.SyntheticEvent) => {
       evt.preventDefault();
-      dispatch(signIn({email, password}))
+
+      dispatch(signIn({email: values.email, password: values.password}))
         .unwrap()
         .then((res) => {
           if (res.success) {
             dispatch(userSlice.actions.setDefaultApiState());
             const {from} = location.state || {from: {pathname: '/'}};
-            history.replace({pathname: from.pathname});
-
+            history.replace({pathname: from!.pathname});
           }
         });
     },
-    [dispatch, email, password, location.state, history]
+    [dispatch, values, location.state, history]
   );
 
   React.useEffect(() => {
-    return () => {
+    return (): void => {
       dispatch(userSlice.actions.setDefaultApiState());
     }
   }, [dispatch]);
 
   return (
     <main className={`${loginStyles.root}`}>
-      <form className={`${loginStyles.form}`} name={'login'}>
+      <form className={`${loginStyles.form}`} name={'login'} onSubmit={login}>
         <h2
           className={`${loginStyles.title} text text_type_main-medium`}>
           Вход
         </h2>
         <Input type='email'
                placeholder='E-mail'
-               value={email}
+               value={values.email}
                onChange={(e) => {
                  dispatch(userSlice.actions.setDefaultApiState());
-                 setEmail(e.target.value);
+                 handleChange(e);
                }
                }
                name={'email'}
-               icon={email ? 'CloseIcon' : undefined}
+               {...(values.email ? {icon: 'CloseIcon'} : {})}
                onIconClick={() => {
                  dispatch(userSlice.actions.setDefaultApiState());
-                 setEmail('');
+                 setValues({...values, email: ''});
                }}
                size={type === 'mobile' ? 'small' : 'default'}
         />
         <PasswordInput
-          value={password}
-          onChange={e => {
+          value={values.password}
+          onChange={(e) => {
             dispatch(userSlice.actions.setDefaultApiState());
-            setPassword(e.target.value);
+            handleChange(e);
           }}
           name={'password'}
           size={type === 'mobile' ? 'small' : 'default'}
         />
         {userFailed && (
           <p
-            className={`${loginStyles.errorText} text ${type === 'mobile' ? 'text_type_main-small' : 'text_type_main-default'}`}>{userFailedTextError}</p>
+            className={`${loginStyles.errorText} text ${type === 'mobile' ? 'text_type_main-small' : 'text_type_main-default'}`}>
+            {userFailedTextError}
+          </p>
         )}
-        <Button type='primary' size={type === 'mobile' ? 'small' : 'medium'} onClick={login}>
+        <Button type='primary' size={type === 'mobile' ? 'small' : 'medium'} htmlType='submit'>
           Войти
         </Button>
       </form>

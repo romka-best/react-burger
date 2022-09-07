@@ -1,10 +1,10 @@
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
 import DataService from '../dataService';
-import {InitialUserParams} from '../../utils/types';
+import {TUserState, TUser} from '../../utils/types';
 import {AxiosError} from 'axios';
 import {deleteCookie, setCookie} from '../../utils/functions';
 
-const initialUserState: InitialUserParams = {
+const initialUserState: TUserState = {
   isAuthenticated: false,
   email: '',
   name: '',
@@ -18,7 +18,7 @@ export const sendCodeForResetPassword = createAsyncThunk(
   async (email: string, thunkApi) => {
     try {
       const res = await DataService.sendCodeForResetPassword(email);
-      return res.data.success ? res.data.success : thunkApi.rejectWithValue(`Что-то пошло не так, проверьте введенные данные 🧐`);
+      return res.data.success ? res.data.success as boolean : thunkApi.rejectWithValue(`Что-то пошло не так, проверьте введенные данные 🧐`);
     } catch (error) {
       if (error instanceof AxiosError && error.response) {
         switch (error.response.status) {
@@ -137,7 +137,7 @@ export const getUserInfo = createAsyncThunk(
 
 export const updateUserInfo = createAsyncThunk(
   'user/updateUserInfo',
-  async (data: { name?: string, email?: string, password?: string }, thunkApi) => {
+  async (data: TUser, thunkApi) => {
     try {
       const res = await DataService.updateUserInfo(data);
       return res.data.success ? res.data : thunkApi.rejectWithValue(`При получении информации пользователя что-то пошло не так 🧐`);
@@ -207,12 +207,12 @@ export const resetPassword = createAsyncThunk(
   }
 );
 
-const setTokens = (accessToken: string, refreshToken: string) => {
+const setTokens = (accessToken: string, refreshToken: string): void => {
   setCookie('accessToken', accessToken.split('Bearer ')[1], {expires: 1200});
   setCookie('refreshToken', refreshToken, {expires: 1800});
 }
 
-const removeTokens = () => {
+const removeTokens = (): void => {
   deleteCookie('accessToken');
   deleteCookie('refreshToken');
 }
@@ -268,6 +268,7 @@ export const userSlice = createSlice({
           ...state,
           userRequest: false,
           userFailed: true,
+          // @ts-ignore
           userFailedTextError: action.error.message ? 'Что-то пошло не так 😬' : action.toString()
         }
       })
@@ -315,7 +316,7 @@ export const userSlice = createSlice({
           userFailedTextError: ''
         }
       })
-      .addCase(signIn.rejected, (state, action) => {
+      .addCase(signIn.rejected, (state, {payload}) => {
         return {
           ...state,
           isAuthenticated: false,
@@ -323,16 +324,25 @@ export const userSlice = createSlice({
           name: '',
           userRequest: false,
           userFailed: true,
-          userFailedTextError: action.payload as string
+          userFailedTextError: payload as string
         }
       })
-      .addCase(registration.fulfilled, (state, action) => {
-        setTokens(action.payload.accessToken, action.payload.refreshToken);
+      .addCase(registration.fulfilled, (state, {payload}: {
+        payload: {
+          accessToken: string,
+          refreshToken: string,
+          user: {
+            email: string,
+            name: string
+          }
+        }
+      }) => {
+        setTokens(payload.accessToken, payload.refreshToken);
         return {
           ...state,
           isAuthenticated: true,
-          email: action.payload.user.email,
-          name: action.payload.user.name,
+          email: payload.user.email,
+          name: payload.user.name,
           userRequest: false,
           userFailed: false,
           userFailedTextError: ''
@@ -346,18 +356,23 @@ export const userSlice = createSlice({
           userFailedTextError: ''
         }
       })
-      .addCase(registration.rejected, (state, action) => {
+      .addCase(registration.rejected, (state, {payload}) => {
         return {
           ...state,
           email: '',
           name: '',
           userRequest: false,
           userFailed: true,
-          userFailedTextError: action.payload as string
+          userFailedTextError: payload as string
         }
       })
-      .addCase(updateToken.fulfilled, (state, action) => {
-        setTokens(action.payload.accessToken, action.payload.refreshToken);
+      .addCase(updateToken.fulfilled, (state, {payload}: {
+        payload: {
+          accessToken: string,
+          refreshToken: string
+        }
+      }) => {
+        setTokens(payload.accessToken, payload.refreshToken);
         return {
           ...state,
           isAuthenticated: true,
@@ -374,7 +389,7 @@ export const userSlice = createSlice({
           userFailedTextError: ''
         }
       })
-      .addCase(updateToken.rejected, (state, action) => {
+      .addCase(updateToken.rejected, (state, {payload}) => {
         return {
           ...state,
           isAuthenticated: false,
@@ -382,14 +397,21 @@ export const userSlice = createSlice({
           name: '',
           userRequest: false,
           userFailed: true,
-          userFailedTextError: action.payload as string
+          userFailedTextError: payload as string
         }
       })
-      .addCase(getUserInfo.fulfilled, (state, action) => {
+      .addCase(getUserInfo.fulfilled, (state, {payload}: {
+        payload: {
+          user: {
+            email: string,
+            name: string
+          }
+        }
+      }) => {
         return {
           ...state,
-          email: action.payload.user.email,
-          name: action.payload.user.name,
+          email: payload.user.email,
+          name: payload.user.name,
           userRequest: false,
           userFailed: false,
           userFailedTextError: ''
@@ -403,15 +425,15 @@ export const userSlice = createSlice({
           userFailedTextError: ''
         }
       })
-      .addCase(getUserInfo.rejected, (state, action) => {
+      .addCase(getUserInfo.rejected, (state, {payload}) => {
         return {
           ...state,
           userRequest: false,
           userFailed: true,
-          userFailedTextError: action.payload as string
+          userFailedTextError: payload as string
         }
       })
-      .addCase(logout.fulfilled, (state, action) => {
+      .addCase(logout.fulfilled, (state) => {
         removeTokens();
         return {
           ...state,
@@ -431,12 +453,12 @@ export const userSlice = createSlice({
           userFailedTextError: ''
         }
       })
-      .addCase(logout.rejected, (state, action) => {
+      .addCase(logout.rejected, (state, {payload}) => {
         return {
           ...state,
           userRequest: false,
           userFailed: true,
-          userFailedTextError: action.payload as string
+          userFailedTextError: payload as string
         }
       })
   }

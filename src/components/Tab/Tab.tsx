@@ -1,14 +1,18 @@
-import React from 'react';
+import * as React from 'react';
 
+import {TTabName} from '../../utils/types';
 import tabStyles from './Tab.module.scss';
 
-const Tab: React.FC<{
-  active: boolean;
-  value: string;
-  onClick: (value: string) => void;
-}> = ({active, value, children, onClick: handleClick}) => {
-  const className = `${tabStyles.root} ${active ? tabStyles.root_type_current : ''}`;
-  const onClick = React.useCallback(() => {
+interface ITab {
+  active: boolean,
+  value: TTabName,
+  onClick: (value: TTabName) => void,
+  children: React.ReactNode
+}
+
+const Tab: React.FC<ITab> = ({active, value, onClick: handleClick, children}: ITab) => {
+  const className: string = `${tabStyles.root} ${active ? tabStyles.root_type_current : ''}`;
+  const onClick = React.useCallback((): void => {
     if (typeof handleClick === 'function') {
       handleClick(value);
     }

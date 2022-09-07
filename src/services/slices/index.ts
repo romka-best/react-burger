@@ -8,15 +8,16 @@ import {orderReducer, wsOrdersAllReducer, wsOrdersReducer} from './order';
 import {uiReducer} from './ui';
 
 
-const rootReducer = combineReducers({
-  user: userReducer,
-  modal: modalReducer,
-  ingredients: ingredientsReducer,
-  burgerConstructor: burgerConstructorReducer,
-  order: orderReducer,
-  wsOrders: wsOrdersReducer,
-  wsOrdersAll: wsOrdersAllReducer,
-  ui: uiReducer,
-});
+const rootReducer =
+  combineReducers({
+    user: userReducer,
+    modal: modalReducer,
+    ingredients: ingredientsReducer,
+    burgerConstructor: burgerConstructorReducer,
+    order: orderReducer,
+    wsOrders: wsOrdersReducer,
+    wsOrdersAll: wsOrdersAllReducer,
+    ui: uiReducer,
+  });
 
 export default rootReducer;

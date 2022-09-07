@@ -1,24 +1,18 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import * as React from 'react';
 
 import modalOverlayStyles from './ModalOverlay.module.scss';
 
-interface ModalOverlayProps {
+interface IModalOverlay {
   children: React.ReactElement,
   show: boolean
 }
 
-const ModalOverlay = ({children, show}: ModalOverlayProps) => {
+const ModalOverlay: React.FC<IModalOverlay> = ({children, show}: IModalOverlay) => {
   return (
     <div className={`${modalOverlayStyles.root} ${show ? modalOverlayStyles.root_opened : ''}`}>
       {children}
     </div>
   );
-}
-
-ModalOverlay.propTypes = {
-  children: PropTypes.element.isRequired,
-  show: PropTypes.bool.isRequired
 }
 
 export default ModalOverlay;

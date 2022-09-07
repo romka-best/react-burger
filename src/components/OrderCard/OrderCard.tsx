@@ -1,49 +1,46 @@
-import React from 'react';
+import * as React from 'react';
 import {useHistory, useLocation, useRouteMatch} from 'react-router-dom';
 
 import {CurrencyIcon} from '@ya.praktikum/react-developer-burger-ui-components';
 
-import {IngredientParams, ReducersParams} from '../../utils/types';
-import {createCardDate, getNormalizeIngredientsFromIds, getStatus, getTotalCost} from '../../utils/functions';
+import {
+  TBurger,
+  TIngredient,
+  TOrder,
+  TLocation
+} from '../../utils/types';
+import {createCardDate, getBurgerFromIngredientsIds, getStatus, getTotalCost} from '../../utils/functions';
 import {orderSlice} from '../../services/slices/order';
 import {modalSlice} from '../../services/slices/modal';
 import {useAppDispatch, useAppSelector} from '../../services/store';
 
 import orderCardStyles from './OrderCard.module.scss';
 
-interface OrderCardProps {
-  order: {
-    createdAt: string,
-    updatedAt: string,
-    ingredients: Array<string>,
-    name: string,
-    number: number,
-    status: string,
-    _id: string
-  },
+interface IOrderCard {
+  order: TOrder,
   statusIsNeed: boolean,
 }
 
-const OrderCard = ({order, statusIsNeed}: OrderCardProps) => {
+const OrderCard: React.FC<IOrderCard> = ({order, statusIsNeed}: IOrderCard) => {
   const dispatch = useAppDispatch();
 
   const history = useHistory();
   const {path} = useRouteMatch();
-  const location = useLocation();
+  const location = useLocation<TLocation>();
 
-  const [bun, setBun] = React.useState<IngredientParams | null>(null);
-  const [other, setOther] = React.useState<Array<IngredientParams>>([]);
+  const [bun, setBun] = React.useState<TIngredient | null>(null);
+  const [other, setOther] = React.useState<Array<TIngredient>>([]);
 
   const {
     ingredients: allIngredients
-  } = useAppSelector((state: ReducersParams) => {
+  } = useAppSelector((state) => {
     return state.ingredients;
   });
 
-  const {createdAt, ingredients, name, number, status} = order;
+  const {createdAt, ingredients, name, number, status}: TOrder = order;
 
-  const getPhotosIngredients = React.useCallback(() => {
-    const photos = []
+  const getPhotosIngredients = React.useCallback((): Array<React.ReactNode> => {
+    const photos: Array<React.ReactNode> = [];
 
     if (bun) {
       photos.push((
@@ -80,10 +77,10 @@ const OrderCard = ({order, statusIsNeed}: OrderCardProps) => {
     return photos;
   }, [bun, ingredients.length, other]);
 
-  const handleClickOrder = () => {
-    const {bun, other} = getNormalizeIngredientsFromIds(allIngredients, ingredients, false);
-    const totalPrice = getTotalCost(bun, other);
-    const fullIngredients = [...other];
+  const handleClickOrder = (): void => {
+    const {bun, other}: TBurger = getBurgerFromIngredientsIds(allIngredients, ingredients, false);
+    const totalPrice: number = getTotalCost(bun, other);
+    const fullIngredients: Array<TIngredient> = [...other];
     if (bun) {
       fullIngredients.push(bun);
       fullIngredients.push(bun);
@@ -100,11 +97,11 @@ const OrderCard = ({order, statusIsNeed}: OrderCardProps) => {
     dispatch(modalSlice.actions.openModal('orderDetails'));
   }
 
-  React.useEffect(() => {
-    const {bun, other} = getNormalizeIngredientsFromIds(allIngredients, ingredients, true);
+  React.useEffect((): void => {
+    const {bun, other}: TBurger = getBurgerFromIngredientsIds(allIngredients, ingredients, true);
     setBun(bun);
     setOther(other);
-  }, [allIngredients, ingredients])
+  }, [allIngredients, ingredients]);
 
   return (
     <li

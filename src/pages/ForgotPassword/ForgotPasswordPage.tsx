@@ -1,90 +1,98 @@
-import React, {SyntheticEvent} from 'react';
+import * as React from 'react';
 import {Link, useHistory} from 'react-router-dom';
 
 import {Input, Button} from '@ya.praktikum/react-developer-burger-ui-components';
 
-import {ReducersParams} from '../../utils/types';
+import {THistory} from '../../utils/types';
 import {isCorrectEmail} from '../../utils/functions';
 import {useAppDispatch, useAppSelector} from '../../services/store';
 import {sendCodeForResetPassword, userSlice} from '../../services/slices/user';
+import {useForm} from '../../hooks/useForm';
 
 import forgotPasswordStyles from './ForgotPasswordPage.module.scss';
 
-const ForgotPasswordPage = () => {
+const ForgotPasswordPage: React.FC = () => {
   const dispatch = useAppDispatch();
+  const history = useHistory<THistory>();
+
   const {
     userRequest,
     userFailed,
     userFailedTextError
-  } = useAppSelector((state: ReducersParams) => {
+  } = useAppSelector((state) => {
     return state.user;
   });
 
-  const {type} = useAppSelector((state: ReducersParams) => {
+  const {type} = useAppSelector((state) => {
     return state.ui;
   });
 
-  const [emailParams, setEmailParams] = React.useState({
+  const {values, setValues} = useForm({
     email: '',
     correctEmail: false,
   });
 
-  const history = useHistory();
   const navigationToSecondStep = React.useCallback(
-    (event: SyntheticEvent) => {
+    (event: React.SyntheticEvent): void => {
       event.preventDefault();
-      if (isCorrectEmail(emailParams.email)) {
+      if (isCorrectEmail(values.email)) {
         dispatch(userSlice.actions.setDefaultApiState());
-        dispatch(sendCodeForResetPassword(emailParams.email.toLowerCase()))
+        dispatch(sendCodeForResetPassword(values.email.toLowerCase()))
           .unwrap()
-          .then(success => {
+          .then((success: boolean) => {
             if (success) {
               history.replace({pathname: '/reset-password', state: {from: history.location}});
             }
           });
       }
     },
-    [history, dispatch, emailParams.email]
+    [history, dispatch, values.email]
   );
 
   React.useEffect(() => {
-    return () => {
+    return (): void => {
       dispatch(userSlice.actions.setDefaultApiState());
     }
   }, [dispatch]);
 
   return (
     <main className={`${forgotPasswordStyles.root}`}>
-      <form className={`${forgotPasswordStyles.form}`} name={'forgot-password'}>
+      <form className={`${forgotPasswordStyles.form}`} name={'forgot-password'} onSubmit={navigationToSecondStep}>
         <h2 className={`${forgotPasswordStyles.title} text text_type_main-medium`}>Восстановление пароля</h2>
         <Input type='email'
                placeholder='Укажите e-mail'
-               value={emailParams.email}
-               onChange={(e) => {
+               value={values.email}
+               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                  dispatch(userSlice.actions.setDefaultApiState());
-                 setEmailParams({
-                   ...emailParams,
-                   email: e.target.value,
-                   correctEmail: isCorrectEmail(e.target.value),
-                 });
+                 setValues(
+                   {
+                     ...values,
+                     email: e.target.value,
+                     correctEmail: isCorrectEmail(e.target.value)
+                   }
+                 );
                }
                }
                name={'email'}
-               icon={emailParams.email ? 'CloseIcon' : undefined}
-               onIconClick={() => {
+               {...(values.email ? {icon: 'CloseIcon'} : {})}
+               onIconClick={(): void => {
                  dispatch(userSlice.actions.setDefaultApiState());
-                 setEmailParams({
-                   ...emailParams,
-                   email: '',
-                   correctEmail: false,
-                 });
+                 setValues(
+                   {
+                     ...values,
+                     email: '',
+                     correctEmail: false
+                   }
+                 );
                }}
                error={userFailed}
                errorText={userFailedTextError}
                size={type === 'mobile' ? 'small' : 'default'}
         />
-        <Button type='primary' size={type === 'mobile' ? 'small' : 'medium'} onClick={navigationToSecondStep}
-                htmlType='submit' disabled={userRequest || !emailParams.correctEmail}>
+        <Button type='primary'
+                size={type === 'mobile' ? 'small' : 'medium'}
+                htmlType='submit'
+                disabled={userRequest || !values.correctEmail}>
           Восстановить
         </Button>
       </form>

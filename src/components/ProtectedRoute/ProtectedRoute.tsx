@@ -1,33 +1,32 @@
-import React from 'react';
+import * as React from 'react';
 
 import {Redirect, Route} from 'react-router-dom';
 
-import {ReducersParams} from '../../utils/types';
 import {getCookie} from '../../utils/functions';
 import {useAppDispatch, useAppSelector} from '../../services/store';
 import {updateToken, userSlice} from '../../services/slices/user';
 
-interface ProtectedRouteProps {
+interface IProtectedRoute {
   children: React.ReactElement,
   isNeedAuth?: boolean,
   path?: string,
   exact?: boolean
 }
 
-export default function ProtectedRoute({children, isNeedAuth = true, ...rest}: ProtectedRouteProps) {
+const ProtectedRoute: React.FC<IProtectedRoute> = ({children, isNeedAuth = true, ...rest}: IProtectedRoute) => {
   const dispatch = useAppDispatch();
-  const {isAuthenticated} = useAppSelector((state: ReducersParams) => {
+  const {isAuthenticated} = useAppSelector((state) => {
     return state.user;
   });
-  const [isUserLoaded, setUserLoaded] = React.useState(false);
+  const [isUserLoaded, setUserLoaded] = React.useState<boolean>(false);
 
-  const init = async () => {
-    new Promise<boolean>(function (resolve, reject) {
-      const accessToken = getCookie('accessToken');
+  const init = async (): Promise<void> => {
+    new Promise<boolean>(function (resolve: (value: (boolean | PromiseLike<boolean>)) => void, reject: (reason?: any) => void) {
+      const accessToken: string | undefined = getCookie('accessToken');
       if (accessToken) {
         resolve(true);
       }
-      const refreshToken = getCookie('refreshToken');
+      const refreshToken: string | undefined = getCookie('refreshToken');
       if (refreshToken) {
         dispatch(updateToken())
           .unwrap()
@@ -57,7 +56,7 @@ export default function ProtectedRoute({children, isNeedAuth = true, ...rest}: P
       })
   };
 
-  React.useEffect(() => {
+  React.useEffect((): void => {
     init();
   }, []);
 
@@ -87,3 +86,5 @@ export default function ProtectedRoute({children, isNeedAuth = true, ...rest}: P
     />
   );
 }
+
+export default ProtectedRoute;
